@@ -68,11 +68,11 @@ namespace SensorAM2302
             else
             {
                 homieNode.setProperty("humidity").send(String(event.relative_humidity));
-                if (event.relative_humidity < 50)
+                if (event.relative_humidity < 55.0)
                 {
                     ledStatus = StatusLEDs::OK;
                 }
-                else if (event.relative_humidity < 55)
+                else if (event.relative_humidity < 60.0)
                 {
                     ledStatus = StatusLEDs::WARNING_WEAK;
                 }
