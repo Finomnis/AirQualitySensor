@@ -1,0 +1,11 @@
+{
+    "name": "Air Sensor 1",
+    "device_id": "air-sensor-1",
+    "wifi": {
+        "ssid": "MausNet",
+        "password": <wifi-password>
+    },
+    "mqtt": {
+        "host": "192.168.133.4"
+    }
+}
