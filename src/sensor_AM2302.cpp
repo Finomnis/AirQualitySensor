@@ -6,15 +6,16 @@
 #include <DHT.h>
 #include <DHT_U.h>
 
-#define DHTPIN 4
-#define DHTTYPE DHT22 // DHT 22 (AM2302)
+#include "pinout.hpp"
 
 namespace
 {
     HomieNode homieNode("am2302", "AM2302", "airsensor");
-    DHT_Unified am2302(DHTPIN, DHTTYPE);
+    DHT_Unified am2302(PINS::AM2302, DHT22);
     unsigned long delayMS;
     unsigned long nextUpdate = 0;
+
+    StatusLEDs::Status ledStatus = StatusLEDs::ERROR;
 }
 
 namespace SensorAM2302
@@ -41,7 +42,7 @@ namespace SensorAM2302
         Serial.println("AM2302 initialization finished.");
     }
 
-    void update()
+    StatusLEDs::Status update()
     {
         if (millis() > nextUpdate)
         {
@@ -62,13 +63,28 @@ namespace SensorAM2302
             if (isnan(event.relative_humidity))
             {
                 Serial.println(F("Error reading humidity!"));
+                ledStatus = StatusLEDs::ERROR;
             }
             else
             {
                 homieNode.setProperty("humidity").send(String(event.relative_humidity));
+                if (event.relative_humidity < 50)
+                {
+                    ledStatus = StatusLEDs::OK;
+                }
+                else if (event.relative_humidity < 55)
+                {
+                    ledStatus = StatusLEDs::WARNING_WEAK;
+                }
+                else
+                {
+                    ledStatus = StatusLEDs::WARNING_STRONG;
+                }
             }
 
             nextUpdate = millis() + delayMS;
         }
+
+        return ledStatus;
     }
 }

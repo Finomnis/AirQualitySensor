@@ -1,10 +1,13 @@
 #include <Homie.h>
 
 #include "sensor_AM2302.hpp"
+#include "status_leds.hpp"
 
 void loopHandler()
 {
-    SensorAM2302::update();
+    StatusLEDs::startUpdate();
+    StatusLEDs::addStatus(SensorAM2302::update());
+    StatusLEDs::finishUpdate();
 }
 
 void setup()
@@ -17,6 +20,7 @@ void setup()
 
     // Setup Temperature sensor
     SensorAM2302::setup();
+    StatusLEDs::setup();
 
     // HOMIE Setup
     Homie.setup();
