@@ -4,10 +4,11 @@ namespace StatusLEDs
 {
     enum Status
     {
-        OK = 1,
-        WARNING_WEAK = 2,
-        WARNING_STRONG = 3,
-        ERROR = 4,
+        EXCELLENT = 1,
+        OK = 2,
+        WARNING_WEAK = 3,
+        WARNING_STRONG = 4,
+        ERROR = 5,
     };
 
     void setup();

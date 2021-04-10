@@ -62,7 +62,11 @@ StatusLEDs::Status SensorAM2302::update()
         else
         {
             homieNode.setProperty("humidity").send(String(event.relative_humidity));
-            if (event.relative_humidity < 55.0)
+            if (event.relative_humidity < 47.0)
+            {
+                ledStatus = StatusLEDs::EXCELLENT;
+            }
+            else if (event.relative_humidity < 55.0)
             {
                 ledStatus = StatusLEDs::OK;
             }
