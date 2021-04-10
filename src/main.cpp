@@ -2,11 +2,16 @@
 
 #include "sensor_AM2302.hpp"
 #include "status_leds.hpp"
+#include "pinout.hpp"
+
+SensorAM2302 am2302{PINS::AM2302, "am2302", "AM2302"};
+SensorAM2302 am2302_2{PINS::AM2302_2, "am2302_2", "AM2302 #2"};
 
 void loopHandler()
 {
     StatusLEDs::startUpdate();
-    StatusLEDs::addStatus(SensorAM2302::update());
+    StatusLEDs::addStatus(am2302.update());
+    StatusLEDs::addStatus(am2302_2.update());
     StatusLEDs::finishUpdate();
 }
 
@@ -19,7 +24,8 @@ void setup()
     Homie.setLoopFunction(loopHandler);
 
     // Setup Temperature sensor
-    SensorAM2302::setup();
+    am2302.setup();
+    am2302_2.setup();
     StatusLEDs::setup();
 
     // HOMIE Setup
