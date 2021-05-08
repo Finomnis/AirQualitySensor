@@ -95,6 +95,10 @@ StatusLEDs::Status SensorS8LP::update()
                 {
                     ledStatus = StatusLEDs::WARNING_WEAK;
                 }
+                else if (value > 600.0f)
+                {
+                    ledStatus = StatusLEDs::OK;
+                }
                 else
                 {
                     ledStatus = StatusLEDs::EXCELLENT;
