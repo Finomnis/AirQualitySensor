@@ -19,6 +19,35 @@ void SensorS8LP::setup()
 {
     // Initialize device.
     Serial.println(F("Initializing SenseAir S8 ..."));
+
+    Serial.println("  Input Registers:");
+    for (uint16_t i = 0; i < 32; i++)
+    {
+        uint16_t value;
+        bool success = readIRegisters(i, 1, &value);
+        if (success)
+        {
+            Serial.print("    IR");
+            Serial.print(i + 1, DEC);
+            Serial.print(": 0x");
+            Serial.println(value, HEX);
+        }
+    }
+
+    Serial.println("   Holding Registers:");
+    for (uint16_t i = 0; i < 32; i++)
+    {
+        uint16_t value;
+        bool success = readHRegisters(i, 1, &value);
+        if (success)
+        {
+            Serial.print("    HR");
+            Serial.print(i + 1, DEC);
+            Serial.print(": 0x");
+            Serial.println(value, HEX);
+        }
+    }
+
     // Initialize homie
     homieNode.advertise("co2").setName("CO2").setDatatype("float").setUnit("ppm");
 
@@ -31,34 +60,31 @@ StatusLEDs::Status SensorS8LP::update()
     {
         nextUpdate = millis() + delayMS;
 
-        /*if (!sendModbusRequest('\x04', (const uint8_t *)"\x00\x00\x00\x04", 4))
+        uint16_t data[4];
+        if (!readIRegisters(0x0, 4, data))
         {
             ledStatus = StatusLEDs::ERROR;
-            return ledStatus;
         }
-
-        uint8_t response[9];
-        if (!receiveModbusResponse('\x04', response, 9))
+        else
         {
-            ledStatus = StatusLEDs::ERROR;
-            return ledStatus;
-        }
-
-        Serial.print("Response:");
-        for (size_t i = 0; i < 9; i++)
-        {
-            Serial.print(" ");
-            Serial.print(response[i], HEX);
-        }
-        Serial.println();*/
-
-        uint16_t sensor_value;
-        if (readIRegisters(0x3, 1, &sensor_value))
-        {
-            Serial.print("CO2: ");
-            Serial.print(sensor_value, DEC);
-            Serial.println(" ppm");
-            ledStatus = StatusLEDs::EXCELLENT;
+            if (data[0] != 0 || data[1] != 0 || data[2] != 0)
+            {
+                ledStatus = StatusLEDs::ERROR;
+                Serial.print("Sensair S8 is in an error state: 0x");
+                Serial.print(data[0]);
+                Serial.print(" 0x");
+                Serial.print(data[1]);
+                Serial.print(" 0x");
+                Serial.println(data[2]);
+            }
+            else
+            {
+                // Serial.print("CO2: ");
+                // Serial.print(data[3], DEC);
+                // Serial.println(" ppm");
+                homieNode.setProperty("co2").send(String(float(data[3])));
+                ledStatus = StatusLEDs::EXCELLENT;
+            }
         }
     }
 
@@ -119,6 +145,7 @@ bool SensorS8LP::sendModbusRequest(uint8_t function_code, const uint8 *data, siz
     message[data_len + 2] = uint8_t(crc & 0xff);
     message[data_len + 3] = uint8_t((crc >> 8) & 0xff);
 
+    /*
     Serial.print("Sending ");
     for (size_t i = 0; i < message_len; i++)
     {
@@ -126,6 +153,7 @@ bool SensorS8LP::sendModbusRequest(uint8_t function_code, const uint8 *data, siz
         Serial.print(" ");
     }
     Serial.println("...");
+    */
 
     // Clear receiver buffer
     while (receiver->available() > 0)
@@ -146,52 +174,80 @@ bool SensorS8LP::sendModbusRequest(uint8_t function_code, const uint8 *data, siz
 
 bool SensorS8LP::receiveModbusResponse(uint8_t function_code, uint8_t *data, size_t data_len)
 {
-    uint8_t message[MESSAGE_MAX_SIZE];
-    size_t message_len = data_len + 4;
+    constexpr size_t PAYLOAD_MAX_SIZE = MESSAGE_MAX_SIZE - 2;
+    uint8_t payload[PAYLOAD_MAX_SIZE];
+    size_t payload_len = data_len + 2;
 
-    if (message_len > MESSAGE_MAX_SIZE)
+    if (payload_len > PAYLOAD_MAX_SIZE)
     {
         Serial.println("ERROR: receiveModbusResponse data was too large!");
         return false;
     }
 
-    size_t bytes_read = Serial.readBytes(message, message_len);
-    if (bytes_read != message_len)
+    uint8_t address;
+    if (1 != Serial.readBytes(&address, 1))
     {
-        Serial.println("SensorS8LP: Error: Serial.readBytes failed!");
+        Serial.println("SensorS8LP: Error: Sensor did not respond!");
+        return false;
+    }
+    if (address != uint8_t('\xfe'))
+    {
+        Serial.print("SensorS8LP: Error: Invalid message address: ");
+        Serial.println(address, HEX);
         return false;
     }
 
-    if (message[0] != '\xfe')
+    uint8_t actual_function_code;
+    if (1 != Serial.readBytes(&actual_function_code, 1))
     {
-        Serial.println("SensorS8LP: Error: Invalid message address!");
+        Serial.println("SensorS8LP: Error: Unable to read function code!");
         return false;
     }
-
-    if (message[1] != function_code)
+    if (actual_function_code != function_code)
     {
+        if (actual_function_code == (function_code | uint8_t(0x80)))
+        {
+            uint8_t dummy[3];
+            // read three more to leave the bus in a clean state
+            Serial.readBytes(dummy, 3);
+            return false;
+        }
+
         Serial.print("SensorS8LP: Error: Function code didn't match: ");
-        Serial.print(message[1], HEX);
+        Serial.print(actual_function_code, HEX);
         Serial.print(" != ");
         Serial.println(function_code, HEX);
         return false;
     }
 
-    uint16_t crc = initCRC();
-    for (size_t i = 0; i < data_len + 2; i++)
-    {
-        updateCRC(crc, message[i]);
-    }
+    size_t bytes_read = Serial.readBytes(payload, payload_len);
 
-    uint16_t actual_crc = (uint16_t(message[data_len + 3]) << 8) + uint16_t(message[data_len + 2]);
-
-    if (crc != actual_crc)
+    if (bytes_read != payload_len)
     {
-        Serial.println("SensorS8LP: Error: CRC didn't match!");
+        Serial.println("SensorS8LP: Error: Serial.readBytes failed!");
         return false;
     }
 
-    memcpy(data, &message[2], data_len);
+    uint16_t crc = initCRC();
+    updateCRC(crc, address);
+    updateCRC(crc, actual_function_code);
+    for (size_t i = 0; i < payload_len - 2; i++)
+    {
+        updateCRC(crc, payload[i]);
+    }
+
+    uint16_t actual_crc = (uint16_t(payload[payload_len - 1]) << 8) + uint16_t(payload[payload_len - 2]);
+
+    if (crc != actual_crc)
+    {
+        Serial.print("SensorS8LP: Error: CRC didn't match: ");
+        Serial.print(actual_crc, HEX);
+        Serial.print(" != ");
+        Serial.println(crc, HEX);
+        return false;
+    }
+
+    memcpy(data, payload, data_len);
     return true;
 }
 
@@ -209,10 +265,10 @@ bool SensorS8LP::readRegisters(uint8_t function_code, uint16_t start_addr, uint1
 {
 
     uint8_t request_data[4];
-    request_data[0] = start_addr & 0xff;
-    request_data[1] = (start_addr >> 8) & 0xff;
-    request_data[2] = num_registers & 0xff;
-    request_data[3] = (num_registers >> 8) & 0xff;
+    request_data[0] = (start_addr >> 8) & 0xff;
+    request_data[1] = start_addr & 0xff;
+    request_data[2] = (num_registers >> 8) & 0xff;
+    request_data[3] = num_registers & 0xff;
 
     constexpr size_t RESPONSE_MAX_SIZE = MESSAGE_MAX_SIZE - 4;
     uint8_t response_data[RESPONSE_MAX_SIZE];
@@ -236,7 +292,7 @@ bool SensorS8LP::readRegisters(uint8_t function_code, uint16_t start_addr, uint1
 
     for (int i = 0; i < num_registers; i++)
     {
-        output[i] = uint16_t(response_data[i + 1] << 8) + response_data[i + 2];
+        output[i] = uint16_t(response_data[2 * i + 1] << 8) + response_data[2 * i + 2];
     }
 
     return true;
