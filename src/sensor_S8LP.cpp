@@ -20,6 +20,9 @@ void SensorS8LP::setup()
     // Initialize device.
     Serial.println(F("Initializing SenseAir S8 ..."));
 
+    // Uncomment to run a sensor calibration
+    //runBackgroundCalibration();
+
     Serial.println("  Input Registers:");
     for (uint16_t i = 0; i < 32; i++)
     {
@@ -67,7 +70,7 @@ StatusLEDs::Status SensorS8LP::update()
         }
         else
         {
-            if (data[0] != 0 || data[1] != 0 || data[2] != 0)
+            if (data[0] != 0)
             {
                 ledStatus = StatusLEDs::ERROR;
                 Serial.print("Sensair S8 is in an error state: 0x");
@@ -82,8 +85,22 @@ StatusLEDs::Status SensorS8LP::update()
                 // Serial.print("CO2: ");
                 // Serial.print(data[3], DEC);
                 // Serial.println(" ppm");
-                homieNode.setProperty("co2").send(String(float(data[3])));
-                ledStatus = StatusLEDs::EXCELLENT;
+                float value = data[3];
+
+                if (value > 1400.0f)
+                {
+                    ledStatus = StatusLEDs::WARNING_STRONG;
+                }
+                else if (value > 1000.0f)
+                {
+                    ledStatus = StatusLEDs::WARNING_WEAK;
+                }
+                else
+                {
+                    ledStatus = StatusLEDs::EXCELLENT;
+                }
+
+                homieNode.setProperty("co2").send(String(value));
             }
         }
     }
