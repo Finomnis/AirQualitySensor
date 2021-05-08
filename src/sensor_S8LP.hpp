@@ -11,6 +11,8 @@ public:
     void setup();
     StatusLEDs::Status update();
 
+    void runBackgroundCalibration();
+
 private:
     bool sendModbusRequest(uint8_t function_code, const uint8_t *data, size_t data_len);
     bool receiveModbusResponse(uint8_t function_code, uint8_t *data, size_t data_len);

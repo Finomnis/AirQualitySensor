@@ -33,6 +33,7 @@ void setup()
     am2302.setup();
     am2302_2.setup();
     s8lp.setup();
+    s8lp.runBackgroundCalibration();
     StatusLEDs::setup();
 
     // HOMIE Setup

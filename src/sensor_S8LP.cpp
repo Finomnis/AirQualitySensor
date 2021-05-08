@@ -91,6 +91,63 @@ StatusLEDs::Status SensorS8LP::update()
     return ledStatus;
 }
 
+void SensorS8LP::runBackgroundCalibration()
+{
+    Serial.println("Starting Sensair S8 Calibration routine ...");
+
+    if (!sendModbusRequest(0x06, (const uint8_t *)"\x00\x00\x00\x00", 4))
+    {
+        Serial.println("Resetting calibration register failed!");
+        return;
+    }
+
+    uint8_t response[4];
+    if (!receiveModbusResponse(0x06, response, 4))
+    {
+        Serial.println("Resetting calibration register was not responded!");
+        return;
+    }
+    if (response[0] != 0 || response[1] != 0 || response[2] != 0 || response[3] != 0)
+    {
+        Serial.println("Resetting calibration register was not successful!");
+        return;
+    }
+
+    if (!sendModbusRequest(0x06, (const uint8_t *)"\x00\x01\x7c\x06", 4))
+    {
+        Serial.println("Sending calibration request failed!");
+        return;
+    }
+    if (!receiveModbusResponse(0x06, response, 4))
+    {
+        Serial.println("Sending calibration request was not responded!");
+        return;
+    }
+    if (response[0] != 0x00 || response[1] != 0x01 || response[2] != 0x7c || response[3] != 0x06)
+    {
+        Serial.println("Sending calibration request was not successful!");
+        return;
+    }
+
+    Serial.println("Waiting for calibration to finish ...");
+    delay(delayMS);
+
+    uint16_t registerContent;
+    if (!readHRegisters(0x00, 1, &registerContent))
+    {
+        Serial.println("Unable to read calibration state!");
+        return;
+    }
+
+    if (registerContent != 0x0020)
+    {
+        Serial.println("Calibration did not succeed.");
+        return;
+    }
+
+    Serial.println("Calibration was successful.");
+}
+
 namespace
 {
     uint16_t initCRC()
