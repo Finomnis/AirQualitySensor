@@ -49,7 +49,10 @@ StatusLEDs::Status SensorAM2302::update()
         }
         else
         {
-            homieNode.setProperty("temperature").send(String(event.temperature));
+            if (Homie.isConnected())
+            {
+                homieNode.setProperty("temperature").send(String(event.temperature));
+            }
         }
 
         // Get humidity event and broadcast its value.
@@ -61,7 +64,11 @@ StatusLEDs::Status SensorAM2302::update()
         }
         else
         {
-            homieNode.setProperty("humidity").send(String(event.relative_humidity));
+            if (Homie.isConnected())
+            {
+                homieNode.setProperty("humidity").send(String(event.relative_humidity));
+            }
+
             if (event.relative_humidity < 47.0)
             {
                 ledStatus = StatusLEDs::EXCELLENT;

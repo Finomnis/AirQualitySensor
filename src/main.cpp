@@ -8,14 +8,6 @@
 SensorAM2302 am2302{PINS::AM2302, "am2302", "AM2302"};
 SensorS8LP s8lp{&Serial1, &Serial, "s8lp", "SenseAir S8 LP"};
 
-void loopHandler()
-{
-    StatusLEDs::startUpdate();
-    StatusLEDs::addStatus(am2302.update());
-    StatusLEDs::addStatus(s8lp.update());
-    StatusLEDs::finishUpdate();
-}
-
 void setup()
 {
     Serial.begin(9600);
@@ -23,8 +15,8 @@ void setup()
 
     Serial << endl
            << endl;
+
     Homie_setFirmware("finomnis-air-sensor", "0.0.1");
-    Homie.setLoopFunction(loopHandler);
     Homie.disableLedFeedback();
 
     // Setup Temperature sensor
@@ -39,4 +31,8 @@ void setup()
 void loop()
 {
     Homie.loop();
+    StatusLEDs::startUpdate();
+    StatusLEDs::addStatus(am2302.update());
+    StatusLEDs::addStatus(s8lp.update());
+    StatusLEDs::finishUpdate();
 }

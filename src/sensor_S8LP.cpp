@@ -129,7 +129,10 @@ StatusLEDs::Status SensorS8LP::update()
                     ledStatus = StatusLEDs::EXCELLENT;
                 }
 
-                homieNode.setProperty("co2").send(String(value));
+                if (Homie.isConnected())
+                {
+                    homieNode.setProperty("co2").send(String(value));
+                }
             }
         }
     }
@@ -139,6 +142,10 @@ StatusLEDs::Status SensorS8LP::update()
 
 bool SensorS8LP::updateCalibration()
 {
+    if (!Homie.isConnected())
+    {
+        return false;
+    }
 
     switch (calibration_state)
     {
