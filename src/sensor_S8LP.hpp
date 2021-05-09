@@ -11,7 +11,16 @@ public:
     void setup();
     StatusLEDs::Status update();
 
-    void runBackgroundCalibration();
+private:
+    enum CalibrationState
+    {
+        CALIBRATION_BOOTUP,
+        CALIBRATION_IDLE,
+        CALIBRATION_REQUESTED,
+        CALIBRATION_RUNNING,
+        CALIBRATION_FAILED,
+        CALIBRATION_SUCCEEDED
+    };
 
 private:
     bool sendModbusRequest(uint8_t function_code, const uint8_t *data, size_t data_len);
@@ -20,6 +29,10 @@ private:
     bool readIRegisters(uint16_t start_addr, uint16_t num_registers, uint16_t *output);
     bool readRegisters(uint8_t function_code, uint16_t start_addr, uint16_t num_registers, uint16_t *output);
 
+    void setCalibrationState(CalibrationState state);
+    bool runBackgroundCalibration();
+    bool updateCalibration();
+
 private:
     HomieNode homieNode;
     HardwareSerial *sender;
@@ -27,6 +40,9 @@ private:
 
     unsigned long delayMS;
     unsigned long nextUpdate;
+
+    CalibrationState calibration_state;
+    unsigned long last_calibration;
 
     StatusLEDs::Status ledStatus;
 };

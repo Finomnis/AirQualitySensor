@@ -6,7 +6,7 @@
 #include "pinout.hpp"
 
 SensorAM2302 am2302{PINS::AM2302, "am2302", "AM2302"};
-SensorS8LP s8lp{&Serial1, &Serial, "sensair_s8lp", "SensAir S8 LP"};
+SensorS8LP s8lp{&Serial1, &Serial, "s8lp", "SenseAir S8 LP"};
 
 void loopHandler()
 {
