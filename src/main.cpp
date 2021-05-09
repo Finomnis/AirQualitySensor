@@ -6,14 +6,12 @@
 #include "pinout.hpp"
 
 SensorAM2302 am2302{PINS::AM2302, "am2302", "AM2302"};
-SensorAM2302 am2302_2{PINS::AM2302_2, "am2302_2", "AM2302 #2"};
 SensorS8LP s8lp{&Serial1, &Serial, "sensair_s8lp", "SensAir S8 LP"};
 
 void loopHandler()
 {
     StatusLEDs::startUpdate();
     StatusLEDs::addStatus(am2302.update());
-    StatusLEDs::addStatus(am2302_2.update());
     StatusLEDs::addStatus(s8lp.update());
     StatusLEDs::finishUpdate();
 }
@@ -31,7 +29,6 @@ void setup()
 
     // Setup Temperature sensor
     am2302.setup();
-    am2302_2.setup();
     s8lp.setup();
     StatusLEDs::setup();
 
