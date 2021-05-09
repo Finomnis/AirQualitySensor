@@ -17,7 +17,7 @@ void setup()
            << endl;
 
     Homie_setFirmware("finomnis-air-sensor", "0.0.1");
-    Homie.disableLedFeedback();
+    Homie.setLedPin(PINS::LED_HOMIE, HIGH);
 
     // Setup Temperature sensor
     am2302.setup();
