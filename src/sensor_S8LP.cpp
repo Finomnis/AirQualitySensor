@@ -112,11 +112,11 @@ StatusLEDs::Status SensorS8LP::update()
                 // Serial.println(" ppm");
                 float value = data[3];
 
-                if (value > 1400.0f)
+                if (value > 1450.0f)
                 {
                     ledStatus = StatusLEDs::WARNING_STRONG;
                 }
-                else if (value > 950.0f)
+                else if (value > 1000.0f)
                 {
                     ledStatus = StatusLEDs::WARNING_WEAK;
                 }
