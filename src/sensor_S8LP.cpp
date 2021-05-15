@@ -41,7 +41,7 @@ void SensorS8LP::setup()
         else if (i == 0)
         {
             responsive = false;
-            Serial.println("Sensor doesn't seem to be connected.");
+            Serial.println("Sensor S8LP doesn't seem to be connected.");
         }
     }
 
