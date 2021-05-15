@@ -26,7 +26,8 @@ void SensorS8LP::setup()
     //runBackgroundCalibration();
 
     Serial.println("  Input Registers:");
-    for (uint16_t i = 0; i < 32; i++)
+    bool responsive = true;
+    for (uint16_t i = 0; i < 32 && responsive; i++)
     {
         uint16_t value;
         bool success = readIRegisters(i, 1, &value);
@@ -37,10 +38,15 @@ void SensorS8LP::setup()
             Serial.print(": 0x");
             Serial.println(value, HEX);
         }
+        else if (i == 0)
+        {
+            responsive = false;
+            Serial.println("Sensor doesn't seem to be connected.");
+        }
     }
 
     Serial.println("   Holding Registers:");
-    for (uint16_t i = 0; i < 32; i++)
+    for (uint16_t i = 0; i < 32 && responsive; i++)
     {
         uint16_t value;
         bool success = readHRegisters(i, 1, &value);
