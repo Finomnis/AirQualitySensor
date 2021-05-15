@@ -263,7 +263,7 @@ namespace
     }
 }
 
-bool SensorS8LP::sendModbusRequest(uint8_t function_code, const uint8 *data, size_t data_len)
+bool SensorS8LP::sendModbusRequest(uint8_t function_code, const uint8_t *data, size_t data_len)
 {
     uint8_t message[MESSAGE_MAX_SIZE];
     size_t message_len = data_len + 4;
