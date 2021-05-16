@@ -17,7 +17,7 @@ SensorAM2302::SensorAM2302(uint8_t pin, const char *id, const char *name)
 void SensorAM2302::setup()
 {
     // Initialize device.
-    Serial.println(F("Initializing AM2302 ..."));
+    Homie.getLogger() << "Initializing AM2302 ..." << endl;
     am2302.begin();
 
     // Get sensor polling frequency
@@ -25,15 +25,13 @@ void SensorAM2302::setup()
     am2302.temperature().getSensor(&sensor);
     delayMS = sensor.min_delay / 1000;
 
-    Serial.print(F("Got sensor polling delay of "));
-    Serial.print(delayMS);
-    Serial.println(F(" ms."));
+    Homie.getLogger() << "Got sensor polling delay of " << delayMS << " ms." << endl;
 
     // Initialize homie
     homieNode.advertise("temperature").setName("Temperature").setDatatype("float").setUnit("ºC");
     homieNode.advertise("humidity").setName("Humidity").setDatatype("float").setUnit("%");
 
-    Serial.println("AM2302 initialization finished.");
+    Homie.getLogger() << "AM2302 initialization finished." << endl;
 }
 
 StatusLEDs::Status SensorAM2302::update()
@@ -45,7 +43,7 @@ StatusLEDs::Status SensorAM2302::update()
         am2302.temperature().getEvent(&event);
         if (isnan(event.temperature))
         {
-            Serial.println(F("Error reading temperature!"));
+            Homie.getLogger() << F("Error reading temperature!") << endl;
         }
         else
         {
@@ -59,7 +57,7 @@ StatusLEDs::Status SensorAM2302::update()
         am2302.humidity().getEvent(&event);
         if (isnan(event.relative_humidity))
         {
-            Serial.println(F("Error reading humidity!"));
+            Homie.getLogger() << F("Error reading humidity!") << endl;
             ledStatus = StatusLEDs::ERROR;
         }
         else

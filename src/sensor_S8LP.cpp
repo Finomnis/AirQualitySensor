@@ -20,12 +20,12 @@ SensorS8LP::SensorS8LP(HardwareSerial *sender, HardwareSerial *receiver, const c
 void SensorS8LP::setup()
 {
     // Initialize device.
-    Serial.println(F("Initializing SenseAir S8 ..."));
+    Homie.getLogger().println(F("Initializing SenseAir S8 ..."));
 
     // Uncomment to run a sensor calibration
     //runBackgroundCalibration();
 
-    Serial.println("  Input Registers:");
+    Homie.getLogger().println("  Input Registers:");
     bool responsive = true;
     for (uint16_t i = 0; i < 32 && responsive; i++)
     {
@@ -33,29 +33,29 @@ void SensorS8LP::setup()
         bool success = readIRegisters(i, 1, &value);
         if (success)
         {
-            Serial.print("    IR");
-            Serial.print(i + 1, DEC);
-            Serial.print(": 0x");
-            Serial.println(value, HEX);
+            Homie.getLogger().print("    IR");
+            Homie.getLogger().print(i + 1, DEC);
+            Homie.getLogger().print(": 0x");
+            Homie.getLogger().println(value, HEX);
         }
         else if (i == 0)
         {
             responsive = false;
-            Serial.println("Sensor S8LP doesn't seem to be connected.");
+            Homie.getLogger().println("Sensor S8LP doesn't seem to be connected.");
         }
     }
 
-    Serial.println("   Holding Registers:");
+    Homie.getLogger().println("   Holding Registers:");
     for (uint16_t i = 0; i < 32 && responsive; i++)
     {
         uint16_t value;
         bool success = readHRegisters(i, 1, &value);
         if (success)
         {
-            Serial.print("    HR");
-            Serial.print(i + 1, DEC);
-            Serial.print(": 0x");
-            Serial.println(value, HEX);
+            Homie.getLogger().print("    HR");
+            Homie.getLogger().print(i + 1, DEC);
+            Homie.getLogger().print(": 0x");
+            Homie.getLogger().println(value, HEX);
         }
     }
 
@@ -68,13 +68,13 @@ void SensorS8LP::setup()
         .settable([this](const HomieRange &range, const String &value) {
             if (value != "true")
             {
-                Serial.println("Invalid value received for 'calibrate'. Only 'true' is valid.");
+                Homie.getLogger().println("Invalid value received for 'calibrate'. Only 'true' is valid.");
                 return false;
             }
 
             if (calibration_state != CALIBRATION_IDLE)
             {
-                Serial.println("Can't start calibration, not in IDLE state.");
+                Homie.getLogger().println("Can't start calibration, not in IDLE state.");
                 return false;
             }
 
@@ -82,7 +82,7 @@ void SensorS8LP::setup()
             return true;
         });
 
-    Serial.println("SenseAir S8 initialization finished.");
+    Homie.getLogger().println("SenseAir S8 initialization finished.");
 }
 
 StatusLEDs::Status SensorS8LP::update()
@@ -104,18 +104,18 @@ StatusLEDs::Status SensorS8LP::update()
             if (data[0] != 0)
             {
                 ledStatus = StatusLEDs::ERROR;
-                Serial.print("Sensair S8 is in an error state: 0x");
-                Serial.print(data[0]);
-                Serial.print(" 0x");
-                Serial.print(data[1]);
-                Serial.print(" 0x");
-                Serial.println(data[2]);
+                Homie.getLogger().print("Sensair S8 is in an error state: 0x");
+                Homie.getLogger().print(data[0]);
+                Homie.getLogger().print(" 0x");
+                Homie.getLogger().print(data[1]);
+                Homie.getLogger().print(" 0x");
+                Homie.getLogger().println(data[2]);
             }
             else
             {
-                // Serial.print("CO2: ");
-                // Serial.print(data[3], DEC);
-                // Serial.println(" ppm");
+                // Homie.getLogger().print("CO2: ");
+                // Homie.getLogger().print(data[3], DEC);
+                // Homie.getLogger().println(" ppm");
                 float value = data[3];
 
                 if (value > 1450.0f)
@@ -188,59 +188,59 @@ bool SensorS8LP::updateCalibration()
 
 bool SensorS8LP::runBackgroundCalibration()
 {
-    Serial.println("Starting Sensair S8 Calibration routine ...");
+    Homie.getLogger().println("Starting Sensair S8 Calibration routine ...");
 
     if (!sendModbusRequest(0x06, (const uint8_t *)"\x00\x00\x00\x00", 4))
     {
-        Serial.println("Resetting calibration register failed!");
+        Homie.getLogger().println("Resetting calibration register failed!");
         return false;
     }
 
     uint8_t response[4];
     if (!receiveModbusResponse(0x06, response, 4))
     {
-        Serial.println("Resetting calibration register was not responded!");
+        Homie.getLogger().println("Resetting calibration register was not responded!");
         return false;
     }
     if (response[0] != 0 || response[1] != 0 || response[2] != 0 || response[3] != 0)
     {
-        Serial.println("Resetting calibration register was not successful!");
+        Homie.getLogger().println("Resetting calibration register was not successful!");
         return false;
     }
 
     if (!sendModbusRequest(0x06, (const uint8_t *)"\x00\x01\x7c\x06", 4))
     {
-        Serial.println("Sending calibration request failed!");
+        Homie.getLogger().println("Sending calibration request failed!");
         return false;
     }
     if (!receiveModbusResponse(0x06, response, 4))
     {
-        Serial.println("Sending calibration request was not responded!");
+        Homie.getLogger().println("Sending calibration request was not responded!");
         return false;
     }
     if (response[0] != 0x00 || response[1] != 0x01 || response[2] != 0x7c || response[3] != 0x06)
     {
-        Serial.println("Sending calibration request was not successful!");
+        Homie.getLogger().println("Sending calibration request was not successful!");
         return false;
     }
 
-    Serial.println("Waiting for calibration to finish ...");
+    Homie.getLogger().println("Waiting for calibration to finish ...");
     delay(delayMS);
 
     uint16_t registerContent;
     if (!readHRegisters(0x00, 1, &registerContent))
     {
-        Serial.println("Unable to read calibration state!");
+        Homie.getLogger().println("Unable to read calibration state!");
         return false;
     }
 
     if (registerContent != 0x0020)
     {
-        Serial.println("Calibration did not succeed.");
+        Homie.getLogger().println("Calibration did not succeed.");
         return false;
     }
 
-    Serial.println("Calibration was successful.");
+    Homie.getLogger().println("Calibration was successful.");
     return true;
 }
 
@@ -276,7 +276,7 @@ bool SensorS8LP::sendModbusRequest(uint8_t function_code, const uint8_t *data, s
 
     if (message_len > MESSAGE_MAX_SIZE)
     {
-        Serial.println("ERROR: sendModbusRequest data was too large!");
+        Homie.getLogger().println("ERROR: sendModbusRequest data was too large!");
         return false;
     }
 
@@ -299,13 +299,13 @@ bool SensorS8LP::sendModbusRequest(uint8_t function_code, const uint8_t *data, s
     message[data_len + 3] = uint8_t((crc >> 8) & 0xff);
 
     /*
-    Serial.print("Sending ");
+    Homie.getLogger().print("Sending ");
     for (size_t i = 0; i < message_len; i++)
     {
-        Serial.print(message[i], HEX);
-        Serial.print(" ");
+        Homie.getLogger().print(message[i], HEX);
+        Homie.getLogger().print(" ");
     }
-    Serial.println("...");
+    Homie.getLogger().println("...");
     */
 
     // Clear receiver buffer
@@ -318,7 +318,7 @@ bool SensorS8LP::sendModbusRequest(uint8_t function_code, const uint8_t *data, s
 
     if (bytes_written != message_len)
     {
-        Serial.println("SensorS8LP: Error: Serial.write failed!");
+        Homie.getLogger().println("SensorS8LP: Error: sender->write failed!");
         return false;
     }
 
@@ -333,27 +333,27 @@ bool SensorS8LP::receiveModbusResponse(uint8_t function_code, uint8_t *data, siz
 
     if (payload_len > PAYLOAD_MAX_SIZE)
     {
-        Serial.println("ERROR: receiveModbusResponse data was too large!");
+        Homie.getLogger().println("ERROR: receiveModbusResponse data was too large!");
         return false;
     }
 
     uint8_t address;
-    if (1 != Serial.readBytes(&address, 1))
+    if (1 != receiver->readBytes(&address, 1))
     {
-        Serial.println("SensorS8LP: Error: Sensor did not respond!");
+        Homie.getLogger().println("SensorS8LP: Error: Sensor did not respond!");
         return false;
     }
     if (address != uint8_t('\xfe'))
     {
-        Serial.print("SensorS8LP: Error: Invalid message address: ");
-        Serial.println(address, HEX);
+        Homie.getLogger().print("SensorS8LP: Error: Invalid message address: ");
+        Homie.getLogger().println(address, HEX);
         return false;
     }
 
     uint8_t actual_function_code;
-    if (1 != Serial.readBytes(&actual_function_code, 1))
+    if (1 != receiver->readBytes(&actual_function_code, 1))
     {
-        Serial.println("SensorS8LP: Error: Unable to read function code!");
+        Homie.getLogger().println("SensorS8LP: Error: Unable to read function code!");
         return false;
     }
     if (actual_function_code != function_code)
@@ -362,22 +362,22 @@ bool SensorS8LP::receiveModbusResponse(uint8_t function_code, uint8_t *data, siz
         {
             uint8_t dummy[3];
             // read three more to leave the bus in a clean state
-            Serial.readBytes(dummy, 3);
+            receiver->readBytes(dummy, 3);
             return false;
         }
 
-        Serial.print("SensorS8LP: Error: Function code didn't match: ");
-        Serial.print(actual_function_code, HEX);
-        Serial.print(" != ");
-        Serial.println(function_code, HEX);
+        Homie.getLogger().print("SensorS8LP: Error: Function code didn't match: ");
+        Homie.getLogger().print(actual_function_code, HEX);
+        Homie.getLogger().print(" != ");
+        Homie.getLogger().println(function_code, HEX);
         return false;
     }
 
-    size_t bytes_read = Serial.readBytes(payload, payload_len);
+    size_t bytes_read = receiver->readBytes(payload, payload_len);
 
     if (bytes_read != payload_len)
     {
-        Serial.println("SensorS8LP: Error: Serial.readBytes failed!");
+        Homie.getLogger().println("SensorS8LP: Error: receiver->readBytes failed!");
         return false;
     }
 
@@ -393,10 +393,10 @@ bool SensorS8LP::receiveModbusResponse(uint8_t function_code, uint8_t *data, siz
 
     if (crc != actual_crc)
     {
-        Serial.print("SensorS8LP: Error: CRC didn't match: ");
-        Serial.print(actual_crc, HEX);
-        Serial.print(" != ");
-        Serial.println(crc, HEX);
+        Homie.getLogger().print("SensorS8LP: Error: CRC didn't match: ");
+        Homie.getLogger().print(actual_crc, HEX);
+        Homie.getLogger().print(" != ");
+        Homie.getLogger().println(crc, HEX);
         return false;
     }
 
@@ -429,7 +429,7 @@ bool SensorS8LP::readRegisters(uint8_t function_code, uint16_t start_addr, uint1
 
     if (response_size > RESPONSE_MAX_SIZE)
     {
-        Serial.println("ERROR: cannot read that many registers at once!");
+        Homie.getLogger().println("ERROR: cannot read that many registers at once!");
         return false;
     }
 
