@@ -17,7 +17,7 @@ SensorAM2302::SensorAM2302(uint8_t pin, const char *id, const char *name)
 void SensorAM2302::setup()
 {
     // Initialize device.
-    Homie.getLogger() << "Initializing AM2302 ..." << endl;
+    Homie.getLogger() << F("Initializing AM2302 ...") << endl;
     am2302.begin();
 
     // Get sensor polling frequency
@@ -25,13 +25,13 @@ void SensorAM2302::setup()
     am2302.temperature().getSensor(&sensor);
     delayMS = sensor.min_delay / 1000;
 
-    Homie.getLogger() << "Got sensor polling delay of " << delayMS << " ms." << endl;
+    Homie.getLogger() << F("Got sensor polling delay of ") << delayMS << F(" ms.") << endl;
 
     // Initialize homie
     homieNode.advertise("temperature").setName("Temperature").setDatatype("float").setUnit("ºC");
     homieNode.advertise("humidity").setName("Humidity").setDatatype("float").setUnit("%");
 
-    Homie.getLogger() << "AM2302 initialization finished." << endl;
+    Homie.getLogger() << F("AM2302 initialization finished.") << endl;
 }
 
 StatusLEDs::Status SensorAM2302::update()

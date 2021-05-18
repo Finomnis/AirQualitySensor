@@ -318,7 +318,7 @@ bool SensorS8LP::sendModbusRequest(uint8_t function_code, const uint8_t *data, s
 
     if (bytes_written != message_len)
     {
-        Homie.getLogger().println("SensorS8LP: Error: sender->write failed!");
+        Homie.getLogger().println(F("SensorS8LP: Error: sender->write failed!"));
         return false;
     }
 
@@ -333,19 +333,19 @@ bool SensorS8LP::receiveModbusResponse(uint8_t function_code, uint8_t *data, siz
 
     if (payload_len > PAYLOAD_MAX_SIZE)
     {
-        Homie.getLogger().println("ERROR: receiveModbusResponse data was too large!");
+        Homie.getLogger().println(F("ERROR: receiveModbusResponse data was too large!"));
         return false;
     }
 
     uint8_t address;
     if (1 != receiver->readBytes(&address, 1))
     {
-        Homie.getLogger().println("SensorS8LP: Error: Sensor did not respond!");
+        Homie.getLogger().println(F("SensorS8LP: Error: Sensor did not respond!"));
         return false;
     }
     if (address != uint8_t('\xfe'))
     {
-        Homie.getLogger().print("SensorS8LP: Error: Invalid message address: ");
+        Homie.getLogger().print(F("SensorS8LP: Error: Invalid message address: "));
         Homie.getLogger().println(address, HEX);
         return false;
     }
@@ -353,7 +353,7 @@ bool SensorS8LP::receiveModbusResponse(uint8_t function_code, uint8_t *data, siz
     uint8_t actual_function_code;
     if (1 != receiver->readBytes(&actual_function_code, 1))
     {
-        Homie.getLogger().println("SensorS8LP: Error: Unable to read function code!");
+        Homie.getLogger().println(F("SensorS8LP: Error: Unable to read function code!"));
         return false;
     }
     if (actual_function_code != function_code)
@@ -366,9 +366,9 @@ bool SensorS8LP::receiveModbusResponse(uint8_t function_code, uint8_t *data, siz
             return false;
         }
 
-        Homie.getLogger().print("SensorS8LP: Error: Function code didn't match: ");
+        Homie.getLogger().print(F("SensorS8LP: Error: Function code didn't match: "));
         Homie.getLogger().print(actual_function_code, HEX);
-        Homie.getLogger().print(" != ");
+        Homie.getLogger().print(F(" != "));
         Homie.getLogger().println(function_code, HEX);
         return false;
     }
@@ -377,7 +377,7 @@ bool SensorS8LP::receiveModbusResponse(uint8_t function_code, uint8_t *data, siz
 
     if (bytes_read != payload_len)
     {
-        Homie.getLogger().println("SensorS8LP: Error: receiver->readBytes failed!");
+        Homie.getLogger().println(F("SensorS8LP: Error: receiver->readBytes failed!"));
         return false;
     }
 
@@ -393,9 +393,9 @@ bool SensorS8LP::receiveModbusResponse(uint8_t function_code, uint8_t *data, siz
 
     if (crc != actual_crc)
     {
-        Homie.getLogger().print("SensorS8LP: Error: CRC didn't match: ");
+        Homie.getLogger().print(F("SensorS8LP: Error: CRC didn't match: "));
         Homie.getLogger().print(actual_crc, HEX);
-        Homie.getLogger().print(" != ");
+        Homie.getLogger().print(F(" != "));
         Homie.getLogger().println(crc, HEX);
         return false;
     }
@@ -429,7 +429,7 @@ bool SensorS8LP::readRegisters(uint8_t function_code, uint16_t start_addr, uint1
 
     if (response_size > RESPONSE_MAX_SIZE)
     {
-        Homie.getLogger().println("ERROR: cannot read that many registers at once!");
+        Homie.getLogger().println(F("ERROR: cannot read that many registers at once!"));
         return false;
     }
 
