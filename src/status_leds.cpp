@@ -21,12 +21,12 @@ namespace StatusLEDs
 
     void setup()
     {
-        pinMode(PINS::LED_RED, OUTPUT);
-        pinMode(PINS::LED_YELLOW, OUTPUT);
-        pinMode(PINS::LED_GREEN, OUTPUT);
-        digitalWrite(PINS::LED_RED, LOW);
-        digitalWrite(PINS::LED_YELLOW, LOW);
-        digitalWrite(PINS::LED_GREEN, LOW);
+        // pinMode(PINS::LED_RED, OUTPUT);
+        // pinMode(PINS::LED_YELLOW, OUTPUT);
+        // pinMode(PINS::LED_GREEN, OUTPUT);
+        // digitalWrite(PINS::LED_RED, LOW);
+        // digitalWrite(PINS::LED_YELLOW, LOW);
+        // digitalWrite(PINS::LED_GREEN, LOW);
         previousPinState = {false, false, false};
     }
 
@@ -71,9 +71,9 @@ namespace StatusLEDs
             previousPinState.yellow != pinState.yellow ||
             previousPinState.green != pinState.green)
         {
-            digitalWrite(PINS::LED_RED, pinState.red);
-            digitalWrite(PINS::LED_YELLOW, pinState.yellow);
-            digitalWrite(PINS::LED_GREEN, pinState.green);
+            // digitalWrite(PINS::LED_RED, pinState.red);
+            // digitalWrite(PINS::LED_YELLOW, pinState.yellow);
+            // digitalWrite(PINS::LED_GREEN, pinState.green);
             previousPinState = pinState;
         }
     }
