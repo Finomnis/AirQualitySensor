@@ -41,6 +41,7 @@ StatusLEDs::Status SensorAM2302::update()
         // Get temperature event and broadcast its value.
         sensors_event_t event;
         am2302.temperature().getEvent(&event);
+        lastTemperature = event.temperature;
         if (isnan(event.temperature))
         {
             Homie.getLogger() << F("Error reading temperature!") << endl;
@@ -55,6 +56,7 @@ StatusLEDs::Status SensorAM2302::update()
 
         // Get humidity event and broadcast its value.
         am2302.humidity().getEvent(&event);
+        lastHumidity = event.relative_humidity;
         if (isnan(event.relative_humidity))
         {
             Homie.getLogger() << F("Error reading humidity!") << endl;
@@ -89,4 +91,14 @@ StatusLEDs::Status SensorAM2302::update()
     }
 
     return ledStatus;
+}
+
+float SensorAM2302::getLastTemperature()
+{
+    return lastTemperature;
+}
+
+float SensorAM2302::getLastHumidity()
+{
+    return lastHumidity;
 }

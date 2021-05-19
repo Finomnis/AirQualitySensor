@@ -139,6 +139,8 @@ StatusLEDs::Status SensorS8LP::update()
                 {
                     homieNode.setProperty("co2").send(String(value));
                 }
+
+                lastCO2 = data[3];
             }
         }
     }
@@ -488,4 +490,9 @@ void SensorS8LP::setCalibrationState(SensorS8LP::CalibrationState state)
 
     homieNode.setProperty("calibrate").send(calibrating ? "true" : "false");
     homieNode.setProperty("calibration").send(calibration_description);
+}
+
+uint16_t SensorS8LP::getLastCO2()
+{
+    return lastCO2;
 }

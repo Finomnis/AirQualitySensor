@@ -10,6 +10,7 @@ public:
     SensorS8LP(HardwareSerial *sender, HardwareSerial *receiver, const char *id, const char *name);
     void setup();
     StatusLEDs::Status update();
+    uint16_t getLastCO2();
 
 private:
     enum CalibrationState
@@ -43,6 +44,8 @@ private:
 
     CalibrationState calibration_state;
     unsigned long last_calibration;
+
+    uint16_t lastCO2{0};
 
     StatusLEDs::Status ledStatus;
 };
