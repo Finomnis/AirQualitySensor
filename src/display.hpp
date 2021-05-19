@@ -17,4 +17,6 @@ private:
     float displayedTemperature;
     float displayedHumidity;
     uint16_t displayedCO2;
+    StatusLEDs::Status displayedTempHumidityStatus;
+    StatusLEDs::Status displayedCO2Status;
 };
