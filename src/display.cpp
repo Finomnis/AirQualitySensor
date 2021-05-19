@@ -29,7 +29,11 @@ namespace
         H_CENTER,
         H_RIGHT
     };
-    void drawText(Adafruit_SSD1306 &display, const char *text, int pos_x, int pos_y, HorizontalAlign align_h, VerticalAlign align_v)
+    void drawText(Adafruit_SSD1306 &display,
+                  const char *text,
+                  int pos_x, int pos_y,
+                  HorizontalAlign align_h, VerticalAlign align_v,
+                  int *rendered_width = nullptr, int *rendered_height = nullptr)
     {
         int16_t start_x, start_y;
         uint16_t width, height;
@@ -68,6 +72,11 @@ namespace
 
         display.setCursor(cursor_x, cursor_y);
         display.print(stringBuffer);
+
+        if (rendered_height != nullptr)
+            *rendered_height = height;
+        if (rendered_width != nullptr)
+            *rendered_width = width;
     }
 }
 
@@ -122,7 +131,13 @@ void Display::update(float temperature, float humidity, uint16_t co2, StatusLEDs
             stringBuffer[3] = '\0';
         }
         display.setFont(&FreeSansOblique9pt7b);
-        drawText(display, stringBuffer, 0, 0, H_LEFT, V_TOP);
+        int temperature_width{0};
+        drawText(display, stringBuffer, 0, 0, H_LEFT, V_TOP, &temperature_width);
+        // Draw degree symbol. Sadly not part of the font.
+        display.drawFastHLine(temperature_width - 15, 0, 2, SSD1306_WHITE);
+        display.drawFastHLine(temperature_width - 15, 3, 2, SSD1306_WHITE);
+        display.drawFastVLine(temperature_width - 16, 1, 2, SSD1306_WHITE);
+        display.drawFastVLine(temperature_width - 13, 1, 2, SSD1306_WHITE);
 
         // Render Humidity
         if (displayedTempHumidityStatus == StatusLEDs::ERROR ||
