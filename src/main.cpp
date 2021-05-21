@@ -3,6 +3,7 @@
 #include "sensor_AM2302.hpp"
 #include "sensor_S8LP.hpp"
 #include "status_leds.hpp"
+#include "connection_state.hpp"
 #include "pinout.hpp"
 #include "display.hpp"
 
@@ -10,6 +11,7 @@ SensorAM2302 am2302{PINS::AM2302, "am2302", "AM2302"};
 SensorS8LP s8lp{PINS::S8LP_WRITE, PINS::S8LP_READ, "s8lp", "SenseAir S8 LP"};
 Display display{};
 StatusLEDs leds{3};
+ConnectionState connection_state{};
 
 void setup()
 {
@@ -32,6 +34,9 @@ void setup()
     // Setup Display
     display.setup();
 
+    // Setup connection state
+    connection_state.setup();
+
     // Setup Homie
     Homie.setup();
 }
@@ -49,7 +54,7 @@ void loop()
     leds.startUpdate();
     leds.addStatus(2, s8lp_status);
     leds.addStatus(1, am2302_status);
-    leds.addStatus(0, Homie.isConnected() ? StatusLEDs::OK : StatusLEDs::NONE);
+    leds.addStatus(0, connection_state.update());
     leds.finishUpdate();
 
     // Update displays
