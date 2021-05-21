@@ -1,7 +1,10 @@
 #pragma once
 
-namespace StatusLEDs
+#include <Adafruit_NeoPixel.h>
+
+class StatusLEDs
 {
+public:
     enum Status
     {
         EXCELLENT = 1,
@@ -9,10 +12,15 @@ namespace StatusLEDs
         WARNING_WEAK = 3,
         WARNING_STRONG = 4,
         ERROR = 5,
+        NONE = 6,
     };
 
+    StatusLEDs(uint16_t num_leds);
     void setup();
     void startUpdate();
-    void addStatus(Status status);
+    void addStatus(uint16_t led_id, Status status);
     void finishUpdate();
-}
+
+private:
+    Adafruit_NeoPixel leds;
+};

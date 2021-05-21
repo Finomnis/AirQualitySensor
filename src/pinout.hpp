@@ -7,6 +7,7 @@ namespace PINS
 #ifdef ESP8266
     constexpr uint8_t AM2302 = 12;
     constexpr uint8_t LED_HOMIE = 0;
+    constexpr uint8_t STATUS_LEDS = 14;
     constexpr HardwareSerial *S8LP_WRITE = &Serial1;
     constexpr HardwareSerial *S8LP_READ = &Serial;
 #endif
