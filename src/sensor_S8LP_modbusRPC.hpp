@@ -6,6 +6,7 @@ class SensorS8LP_ModbusRPC
 {
 public:
     static constexpr size_t MESSAGE_MAX_SIZE = 39;
+    static constexpr unsigned long RPC_TIMEOUT = 500;
 
 public:
     SensorS8LP_ModbusRPC(HardwareSerial *sender, HardwareSerial *receiver,
@@ -29,6 +30,7 @@ private: // Constant values determined at constructor time
     const size_t _response_payload_size;
     HardwareSerial *const _sender;
     HardwareSerial *const _receiver;
+    const unsigned long _timeout;
 
 private: // Values that reflect the result state
     bool _finished{false};

@@ -58,7 +58,8 @@ SensorS8LP_ModbusRPC::SensorS8LP_ModbusRPC(HardwareSerial *sender, HardwareSeria
       _response_size{response_size},
       _response_payload_size{response_size + 2},
       _sender{sender},
-      _receiver{receiver}
+      _receiver{receiver},
+      _timeout{millis() + RPC_TIMEOUT}
 {
     if (_response_payload_size + 2 > MESSAGE_MAX_SIZE)
     {
@@ -99,6 +100,13 @@ void SensorS8LP_ModbusRPC::update()
 {
     if (_finished)
     {
+        return;
+    }
+
+    if (millis() > _timeout)
+    {
+        finish_error();
+        Homie.getLogger().println("ERROR: RPC request timed out!");
         return;
     }
 
@@ -154,7 +162,7 @@ bool SensorS8LP_ModbusRPC::sendModbusRequest(uint8_t function_code, const uint8_
 
 void SensorS8LP_ModbusRPC::updateReceiveModbusResponse()
 {
-    bool new_data_received = false;
+    size_t previous_num_received = _response_num_received;
 
     while (_receiver->available() > 0)
     {
@@ -172,31 +180,51 @@ void SensorS8LP_ModbusRPC::updateReceiveModbusResponse()
         }
 
         _response[_response_num_received++] = data;
-        new_data_received = true;
     }
 
-    if (!new_data_received)
+    if (previous_num_received == _response_num_received)
     {
         return;
     }
 
-    if (_response_num_received < 5)
+    if (_response_num_received < 1)
         return;
 
-    uint8_t address = _response[0];
-    if (address != uint8_t('\xfe'))
+    if (previous_num_received < 1)
     {
-        Homie.getLogger().print(F("SensorS8LP: Error: Invalid message address: "));
-        Homie.getLogger().println(address, HEX);
-        finish_error();
-        return;
+        uint8_t address = _response[0];
+        if (address != uint8_t('\xfe'))
+        {
+            Homie.getLogger().print(F("SensorS8LP: Error: Invalid message address: "));
+            Homie.getLogger().println(address, HEX);
+            finish_error();
+            return;
+        }
     }
+
+    if (_response_num_received < 2)
+        return;
 
     uint8_t actual_function_code = _response[1];
+    if (previous_num_received < 2)
+    {
+        if (actual_function_code != _function_code && actual_function_code != (_function_code | uint8_t(0x80)))
+        {
+            Homie.getLogger().print(F("SensorS8LP: Error: Function code didn't match: "));
+            Homie.getLogger().print(actual_function_code, HEX);
+            Homie.getLogger().print(F(" != "));
+            Homie.getLogger().println(_function_code, HEX);
+            finish_error();
+            return;
+        }
+    }
 
     // Error
     if (actual_function_code == (_function_code | uint8_t(0x80)))
     {
+        if (_response_num_received < 5)
+            return;
+
         if (!validate_crc(_response, 5))
         {
             finish_error();
@@ -204,16 +232,6 @@ void SensorS8LP_ModbusRPC::updateReceiveModbusResponse()
         }
 
         finish_error(_response[2]);
-        return;
-    }
-
-    if (actual_function_code != _function_code)
-    {
-        Homie.getLogger().print(F("SensorS8LP: Error: Function code didn't match: "));
-        Homie.getLogger().print(actual_function_code, HEX);
-        Homie.getLogger().print(F(" != "));
-        Homie.getLogger().println(_function_code, HEX);
-        finish_error();
         return;
     }
 
@@ -229,72 +247,3 @@ void SensorS8LP_ModbusRPC::updateReceiveModbusResponse()
     finish_success();
     return;
 }
-
-// bool SensorS8LP::receiveModbusResponse(uint8_t function_code, uint8_t *data, size_t data_len)
-// {
-//     uint8_t address;
-//     if (1 != receiver->readBytes(&address, 1))
-//     {
-//         Homie.getLogger().println(F("SensorS8LP: Error: Sensor did not respond!"));
-//         return false;
-//     }
-//     if (address != uint8_t('\xfe'))
-//     {
-//         Homie.getLogger().print(F("SensorS8LP: Error: Invalid message address: "));
-//         Homie.getLogger().println(address, HEX);
-//         return false;
-//     }
-
-//     uint8_t actual_function_code;
-//     if (1 != receiver->readBytes(&actual_function_code, 1))
-//     {
-//         Homie.getLogger().println(F("SensorS8LP: Error: Unable to read function code!"));
-//         return false;
-//     }
-//     if (actual_function_code != function_code)
-//     {
-//         if (actual_function_code == (function_code | uint8_t(0x80)))
-//         {
-//             uint8_t dummy[3];
-//             // read three more to leave the bus in a clean state
-//             receiver->readBytes(dummy, 3);
-//             return false;
-//         }
-
-//         Homie.getLogger().print(F("SensorS8LP: Error: Function code didn't match: "));
-//         Homie.getLogger().print(actual_function_code, HEX);
-//         Homie.getLogger().print(F(" != "));
-//         Homie.getLogger().println(function_code, HEX);
-//         return false;
-//     }
-
-//     size_t bytes_read = receiver->readBytes(payload, payload_len);
-
-//     if (bytes_read != payload_len)
-//     {
-//         Homie.getLogger().println(F("SensorS8LP: Error: receiver->readBytes failed!"));
-//         return false;
-//     }
-
-//     uint16_t crc = initCRC();
-//     updateCRC(crc, address);
-//     updateCRC(crc, actual_function_code);
-//     for (size_t i = 0; i < payload_len - 2; i++)
-//     {
-//         updateCRC(crc, payload[i]);
-//     }
-
-//     uint16_t actual_crc = (uint16_t(payload[payload_len - 1]) << 8) + uint16_t(payload[payload_len - 2]);
-
-//     if (crc != actual_crc)
-//     {
-//         Homie.getLogger().print(F("SensorS8LP: Error: CRC didn't match: "));
-//         Homie.getLogger().print(actual_crc, HEX);
-//         Homie.getLogger().print(F(" != "));
-//         Homie.getLogger().println(crc, HEX);
-//         return false;
-//     }
-
-//     memcpy(data, payload, data_len);
-//     return true;
-// }
