@@ -42,7 +42,7 @@ uint32_t StatusLEDs::statusToColor(StatusLEDs::Status status)
     case StatusLEDs::Status::NONE:
         return leds.Color(0, 0, 0);
     case StatusLEDs::Status::EXCELLENT:
-        return blinkState ? leds.Color(5, 80, 0) : leds.Color(2, 20, 0);
+        return blinkState ? leds.Color(5, 80, 0) : leds.Color(0, 0, 0);
     case StatusLEDs::Status::OK:
         return leds.Color(5, 80, 0);
     case StatusLEDs::Status::WARNING_WEAK:
@@ -50,7 +50,7 @@ uint32_t StatusLEDs::statusToColor(StatusLEDs::Status status)
     case StatusLEDs::Status::WARNING_STRONG:
         return leds.Color(255, 0, 0);
     case StatusLEDs::Status::ERROR:
-        return blinkState ? leds.Color(255, 0, 0) : leds.Color(50, 0, 0);
+        return blinkState ? leds.Color(255, 0, 0) : leds.Color(0, 0, 0);
     default:
         return leds.Color(150, 150, 150);
     }
