@@ -1,7 +1,7 @@
 
 #include "sensor_S8LP.hpp"
 
-#include <Homie.h>
+#include <Homie.hpp>
 
 constexpr size_t MESSAGE_MAX_SIZE = 39;
 

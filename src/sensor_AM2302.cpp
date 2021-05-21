@@ -1,7 +1,7 @@
 
 #include "sensor_AM2302.hpp"
 
-#include <Homie.h>
+#include <Homie.hpp>
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 

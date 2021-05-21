@@ -1,4 +1,4 @@
-#include <Homie.h>
+#include <Homie.hpp>
 
 #include "sensor_AM2302.hpp"
 #include "sensor_S8LP.hpp"
