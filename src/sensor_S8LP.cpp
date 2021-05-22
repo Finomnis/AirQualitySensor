@@ -63,6 +63,7 @@ void SensorS8LP::setup()
 
     // Initialize homie
     homieNode.advertise("co2").setName("CO2").setDatatype("float").setUnit("ppm");
+#ifdef SENSOR_S8LP_CALIBRATE_OVER_MQTT
     homieNode.advertise("calibration").setName("CO2 Calibration State").setDatatype("string");
     homieNode.advertise("calibrate")
         .setName("Start CO2 Calibration")
@@ -83,6 +84,7 @@ void SensorS8LP::setup()
             setCalibrationState(CALIBRATION_REQUESTED);
             return true;
         });
+#endif
 
     Homie.getLogger().println("SenseAir S8 initialization finished.");
 }
