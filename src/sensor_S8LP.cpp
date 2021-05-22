@@ -4,6 +4,7 @@
 #include <Homie.hpp>
 
 constexpr size_t MESSAGE_MAX_SIZE = 39;
+constexpr unsigned long RPC_TIMEOUT = 100;
 
 SensorS8LP::SensorS8LP(HardwareSerial *sender, HardwareSerial *receiver, const char *id, const char *name)
     : homieNode{id, name, "airsensor"},
@@ -15,6 +16,7 @@ SensorS8LP::SensorS8LP(HardwareSerial *sender, HardwareSerial *receiver, const c
       last_calibration{0},
       ledStatus{StatusLEDs::ERROR}
 {
+    receiver->setTimeout(RPC_TIMEOUT);
 }
 
 void SensorS8LP::setup()
