@@ -9,9 +9,8 @@ public:
     static constexpr unsigned long RPC_TIMEOUT = 500;
 
 public:
-    SensorS8LP_ModbusRPC(HardwareSerial *sender, HardwareSerial *receiver,
-                         uint8_t function_code, uint8_t *request_data, size_t request_size,
-                         size_t response_size);
+    SensorS8LP_ModbusRPC(HardwareSerial *sender, HardwareSerial *receiver);
+    void start(uint8_t function_code, const uint8_t *request_data, size_t request_size, size_t response_size);
     void update();
     void wait_for_finished();
     bool finished() { return _finished; }
@@ -25,12 +24,13 @@ private:
     void finish_success();
 
 private: // Constant values determined at constructor time
-    const uint8_t _function_code;
-    const size_t _response_size;
-    const size_t _response_payload_size;
     HardwareSerial *const _sender;
     HardwareSerial *const _receiver;
-    const unsigned long _timeout;
+
+private: // Values specific to a RPC call
+    uint8_t _function_code{0};
+    size_t _response_size{0};
+    unsigned long _timeout{0};
 
 private: // Values that reflect the result state
     bool _finished{false};

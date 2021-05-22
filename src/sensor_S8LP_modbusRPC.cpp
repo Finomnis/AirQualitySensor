@@ -51,17 +51,26 @@ namespace
     }
 }
 
-SensorS8LP_ModbusRPC::SensorS8LP_ModbusRPC(HardwareSerial *sender, HardwareSerial *receiver,
-                                           uint8_t function_code, uint8_t *request_data, size_t request_size,
-                                           size_t response_size)
-    : _function_code{function_code},
-      _response_size{response_size},
-      _response_payload_size{response_size + 2},
-      _sender{sender},
-      _receiver{receiver},
-      _timeout{millis() + RPC_TIMEOUT}
+SensorS8LP_ModbusRPC::SensorS8LP_ModbusRPC(HardwareSerial *sender, HardwareSerial *receiver)
+    : _sender{sender},
+      _receiver{receiver}
 {
-    if (_response_payload_size + 2 > MESSAGE_MAX_SIZE)
+}
+
+void SensorS8LP_ModbusRPC::start(uint8_t function_code, const uint8_t *request_data, size_t request_size,
+                                 size_t response_size)
+{
+    _finished = false;
+    _success = false;
+    _error_code = false;
+
+    _function_code = function_code;
+    _response_size = response_size;
+    _timeout = millis() + RPC_TIMEOUT;
+
+    _response_num_received = 0;
+
+    if (_response_size + 4 > MESSAGE_MAX_SIZE)
     {
         Homie.getLogger().println(F("ERROR: expected response size is too large!"));
         finish_error();
@@ -235,10 +244,10 @@ void SensorS8LP_ModbusRPC::updateReceiveModbusResponse()
         return;
     }
 
-    if (_response_num_received < _response_payload_size + 2)
+    if (_response_num_received < _response_size + 4)
         return;
 
-    if (!validate_crc(_response, _response_payload_size + 2))
+    if (!validate_crc(_response, _response_size + 4))
     {
         finish_error();
         return;

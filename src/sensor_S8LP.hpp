@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Homie.hpp>
-
 #include "status_leds.hpp"
+#include "sensor_S8LP_modbusRPC.hpp"
 
+#include <Homie.hpp>
 #include <atomic>
 
 class SensorS8LP_ModbusRPC;
@@ -33,5 +33,6 @@ private:
 
     std::atomic<StatusLEDs::Status> ledStatus;
 
-    SensorS8LP_ModbusRPC *modbusRPC{nullptr};
+    SensorS8LP_ModbusRPC modbusRPC;
+    bool rpcRequestPending;
 };

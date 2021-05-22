@@ -13,7 +13,9 @@ SensorS8LP::SensorS8LP(HardwareSerial *sender, HardwareSerial *receiver, const c
       receiver{receiver},
       delayMS{4000},
       nextUpdate{0},
-      ledStatus{StatusLEDs::ERROR}
+      ledStatus{StatusLEDs::ERROR},
+      modbusRPC{sender, receiver},
+      rpcRequestPending{false}
 {
 }
 
@@ -34,53 +36,73 @@ StatusLEDs::Status SensorS8LP::update()
     {
         nextUpdate = millis() + delayMS;
 
-        uint16_t data[4];
-        if (!readIRegisters(0x0, 4, data))
+        if (!modbusRPC.finished() && rpcRequestPending)
         {
-            ledStatus = StatusLEDs::ERROR;
+            Homie.getLogger().println("WARNING: Another read was still pending!");
+        }
+
+        modbusRPC.start(4, (const uint8_t *)"\x00\x00\x00\x04", 4, 9);
+        rpcRequestPending = true;
+    }
+
+    if (rpcRequestPending)
+    {
+        if (!modbusRPC.finished())
+        {
+            modbusRPC.update();
         }
         else
         {
-            if (data[0] != 0)
+            rpcRequestPending = false;
+
+            if (!modbusRPC.success())
             {
                 ledStatus = StatusLEDs::ERROR;
-                Homie.getLogger().print("Sensair S8 is in an error state: 0x");
-                Homie.getLogger().print(data[0]);
-                Homie.getLogger().print(" 0x");
-                Homie.getLogger().print(data[1]);
-                Homie.getLogger().print(" 0x");
-                Homie.getLogger().println(data[2]);
             }
             else
             {
-                // Homie.getLogger().print("CO2: ");
-                // Homie.getLogger().print(data[3], DEC);
-                // Homie.getLogger().println(" ppm");
-                float value = data[3];
-
-                if (value > 1450.0f)
+                const uint16_t *data = reinterpret_cast<const uint16_t *>(modbusRPC.response_payload());
+                if (data[0] != 0)
                 {
-                    ledStatus = StatusLEDs::WARNING_STRONG;
-                }
-                else if (value > 1000.0f)
-                {
-                    ledStatus = StatusLEDs::WARNING_WEAK;
-                }
-                else if (value > 600.0f)
-                {
-                    ledStatus = StatusLEDs::OK;
+                    ledStatus = StatusLEDs::ERROR;
+                    Homie.getLogger().print("Sensair S8 is in an error state: 0x");
+                    Homie.getLogger().print(data[0]);
+                    Homie.getLogger().print(" 0x");
+                    Homie.getLogger().print(data[1]);
+                    Homie.getLogger().print(" 0x");
+                    Homie.getLogger().println(data[2]);
                 }
                 else
                 {
-                    ledStatus = StatusLEDs::EXCELLENT;
-                }
+                    // Homie.getLogger().print("CO2: ");
+                    // Homie.getLogger().print(data[3], DEC);
+                    // Homie.getLogger().println(" ppm");
+                    float value = data[3];
 
-                if (Homie.isConnected())
-                {
-                    homieNode.setProperty("co2").send(String(value));
-                }
+                    if (value > 1450.0f)
+                    {
+                        ledStatus = StatusLEDs::WARNING_STRONG;
+                    }
+                    else if (value > 1000.0f)
+                    {
+                        ledStatus = StatusLEDs::WARNING_WEAK;
+                    }
+                    else if (value > 600.0f)
+                    {
+                        ledStatus = StatusLEDs::OK;
+                    }
+                    else
+                    {
+                        ledStatus = StatusLEDs::EXCELLENT;
+                    }
 
-                lastCO2 = data[3];
+                    if (Homie.isConnected())
+                    {
+                        homieNode.setProperty("co2").send(String(value));
+                    }
+
+                    lastCO2 = data[3];
+                }
             }
         }
     }
@@ -100,7 +122,6 @@ bool SensorS8LP::readIRegisters(uint16_t start_addr, uint16_t num_registers, uin
 
 bool SensorS8LP::readRegisters(uint8_t function_code, uint16_t start_addr, uint16_t num_registers, uint16_t *output)
 {
-
     uint8_t request_data[4];
     request_data[0] = (start_addr >> 8) & 0xff;
     request_data[1] = start_addr & 0xff;
@@ -109,7 +130,8 @@ bool SensorS8LP::readRegisters(uint8_t function_code, uint16_t start_addr, uint1
 
     size_t response_size = 2 * num_registers + 1;
 
-    SensorS8LP_ModbusRPC readRegisterRPC(sender, receiver, function_code, request_data, 4, response_size);
+    SensorS8LP_ModbusRPC readRegisterRPC(sender, receiver);
+    readRegisterRPC.start(function_code, request_data, 4, response_size);
     readRegisterRPC.wait_for_finished();
     if (!readRegisterRPC.success())
     {
