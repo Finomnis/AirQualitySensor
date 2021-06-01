@@ -15,9 +15,9 @@ StatusLEDs::StatusLEDs(uint16_t num_leds)
 
 void StatusLEDs::setup()
 {
-    leds.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
-    leds.show();            // Turn OFF all pixels ASAP
-    leds.setBrightness(10); // Set brightness
+    leds.begin();          // INITIALIZE NeoPixel strip object (REQUIRED)
+    leds.show();           // Turn OFF all pixels ASAP
+    leds.setBrightness(3); // Set brightness
 }
 
 void StatusLEDs::startUpdate()
