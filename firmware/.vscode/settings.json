@@ -19,5 +19,6 @@
         ".micropy\\BradenM-micropy-stubs-0111b91\\stubs",
         ".micropy\\AirQualitySensor"
     ],
-    "python.linting.pylintEnabled": true
+    "python.linting.pylintEnabled": true,
+    "python.languageServer": "Microsoft"
 }
