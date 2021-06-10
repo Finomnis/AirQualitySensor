@@ -5,19 +5,22 @@
         ".micropy\\BradenM-micropy-stubs-0111b91\\frozen",
         ".micropy\\BradenM-micropy-stubs-7696565\\frozen",
         ".micropy\\BradenM-micropy-stubs-0111b91\\stubs",
-        ".micropy\\AirQualitySensor"
+        ".micropy\\AirQualitySensor",
+        "src\\lib"
     ],
     "python.autoComplete.typeshedPaths": [
         ".micropy\\BradenM-micropy-stubs-0111b91\\frozen",
         ".micropy\\BradenM-micropy-stubs-7696565\\frozen",
         ".micropy\\BradenM-micropy-stubs-0111b91\\stubs",
-        ".micropy\\AirQualitySensor"
+        ".micropy\\AirQualitySensor",
+        "src\\lib"
     ],
     "python.analysis.typeshedPaths": [
         ".micropy\\BradenM-micropy-stubs-0111b91\\frozen",
         ".micropy\\BradenM-micropy-stubs-7696565\\frozen",
         ".micropy\\BradenM-micropy-stubs-0111b91\\stubs",
-        ".micropy\\AirQualitySensor"
+        ".micropy\\AirQualitySensor",
+        "src\\lib"
     ],
     "python.linting.pylintEnabled": true,
     "python.languageServer": "Microsoft"
