@@ -1,11 +1,18 @@
-import uasyncio
+
+from homie.device import HomieDevice
+
+import uasyncio as asyncio
+
+import settings
 
 
 async def main():
-    while True:
-        print("Blub.")
-        await uasyncio.sleep(1.0)
+    # Initialize the Homie device
+    device = HomieDevice(settings)
+
+    # Run
+    await device.run()
 
 
 if __name__ == "__main__":
-    uasyncio.run(main())
+    asyncio.run(main())
