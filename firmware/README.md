@@ -3,6 +3,7 @@
 ## Software Versions of Development Process
 
 -   esp32-micropython 1.15.0
+-   microhomie 3.0.2
 
 ## Protocols
 
