@@ -40,8 +40,9 @@ class DHT22(HomieNode):
 
                 temperature: float = self.dht22.temperature()
                 humidity: float = self.dht22.humidity()
-                self.property_temperature.data = str(temperature)
-                self.property_humidity.data = str(humidity)
+                if self.device and self.device.mqtt.isconnected():
+                    self.property_temperature.data = str(temperature)
+                    self.property_humidity.data = str(humidity)
 
             except Exception as e:
                 print("Error in DHT22: ", e)
