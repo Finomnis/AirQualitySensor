@@ -1,8 +1,27 @@
-# Software versions of development process
+# General
+
+## Software Versions of Development Process
 
 -   esp32-micropython 1.15.0
 
-# MicroPython Setup
+## Protocols
+
+-   Sensair S8:
+    -   UART/Modbus
+    -   https://rmtplusstoragesenseair.blob.core.windows.net/docs/Dev/publicerat/TDE2067.pdf
+    -   Power Rail: 5V, but doesn't require level shifter
+    -   UART: 3.3V
+-   DHT22:
+    -   1-wire DHT bus
+    -   Power Rail: 3.3V / 5V (preferred 3.3V for ESP32)
+    -   Bus: must match power rail (preferred 3.3V ESP32)
+-   Display:
+    -   SPI
+    -   to be determined
+
+# Software Setup
+
+## MicroPython
 
 MicroPython is the base firmware on the ESP32. It has to be flashed to the ESP32 once.
 
@@ -19,7 +38,7 @@ To install MicroPython on the ESP32:
 
     - `esptool --chip esp32 --port <COM-Port> --baud 115200 write_flash -z 0x1000 esp32-20210418-v1.15.bin`
 
-# Install micropy and dependencies
+## micropy
 
 micropy-cli is a command line tool that assists with MicroPython script development.
 
