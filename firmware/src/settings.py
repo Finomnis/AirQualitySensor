@@ -1,3 +1,4 @@
+from homie.constants import EXT_FW, EXT_STATS
 import credentials
 
 ###
@@ -25,3 +26,8 @@ DEVICE_ID = "air-sensor-1"
 
 # Friendly name of the device as bytestring
 DEVICE_NAME = "Air Sensor 1"
+
+EXTENSIONS = [
+    EXT_FW,
+    EXT_STATS,
+]
