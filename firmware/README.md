@@ -5,6 +5,8 @@
 -   esp32-micropython 1.15.0
 -   microhomie 3.0.2
 
+Everything in the `lib` directory is imported from other libraries and not written by myself.
+
 ## Protocols
 
 -   Sensair S8:
