@@ -26,16 +26,16 @@ class Waveshare154:
         duration = time.time_ns() - t_start
         print("Init duration: {} ms".format(duration/1000000.0))
 
-        # async def demo(black, color):
-        #     print("setting to black({}) color({})".format(black, color))
-        #     await self.eink.display_frame(bytes([black])*5000, bytes([color])*5000)
-        #     print("FINISHED.")
-        #     await asyncio.sleep_ms(1000)
+        async def demo(black, color):
+            print("setting to black({}) color({})".format(black, color))
+            await self.eink.display_frame(bytes([black])*5000, bytes([color])*5000)
+            print("FINISHED.")
+            await asyncio.sleep_ms(1000)
 
-        # await demo(0x00, 0x00)
-        # await demo(0xff, 0xff)
-        # await demo(0xff, 0x00)
-        # await demo(0x00, 0xff)
+        await demo(0x00, 0x00)
+        await demo(0xff, 0xff)
+        await demo(0xff, 0x00)
+        await demo(0x00, 0xff)
 
     async def run(self):
         buf = bytearray(self.eink.width * self.eink.height // 8)
@@ -52,8 +52,10 @@ class Waveshare154:
             fb.vline(30, 50, 10, black)
             fb.line(30, 70, 40, 80, black)
             fb.rect(30, 90, 10, 10, black)
-            fb.fill_rect(30, 110, 10, 10, black)
-            await self.eink.display_frame(buf)
+            fb.fill_rect(30, 110, 30, 30, black)
+            await self.eink.display_frame('\x00'*5000, '\x00'*5000)
+            await self.eink.display_frame('\xff'*5000, '\x00'*5000)
+            await self.eink.display_frame(buf, '\x00'*5000)
 
         async def wait_for_interval():
             await asyncio.sleep(self.interval)

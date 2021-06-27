@@ -39,7 +39,7 @@ class EPaper:
 
     async def init(self):
         # Reset
-        self._reset()
+        await self._reset()
 
         # Basic init
         self._write_spi(
@@ -72,7 +72,7 @@ class EPaper:
         # Load operation LUT
         self._write_spi(
             CMD_DISPLAY_UPDATE_CONTROL_2,
-            bytes([0xb9])
+            bytes([0xb1])
         )
 
         # Execute operation
@@ -92,18 +92,19 @@ class EPaper:
             self.dc(0)
         self.cs(1)
 
-    def _reset(self):
+    async def _reset(self):
         # Panel reset
         self.rst(0)
-        utime.sleep_ms(10)
+        await asyncio.sleep_ms(10)
         self.rst(1)
-        utime.sleep_ms(10)
+        await asyncio.sleep_ms(10)
         # Software reset
         self._write_spi(CMD_SW_RESET)
 
     async def wait_until_idle(self):
         while self.busy():
             await asyncio.sleep_ms(1)
+        asyncio.sleep_ms(100)
 
     async def display_frame(self, data_bw, data_col=None):
         self._write_spi(
