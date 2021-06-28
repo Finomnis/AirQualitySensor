@@ -53,6 +53,8 @@ class LEDs:
         if self.led_state == LED_STATE_ERROR:
             if self.blink_state_on:
                 red = 1
+                yellow = 1
+                green = 1
         elif self.led_state == LED_STATE_WARN_STRONG:
             red = 1
         elif self.led_state == LED_STATE_WARN_WEAK:
