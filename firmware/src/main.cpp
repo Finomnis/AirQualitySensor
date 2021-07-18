@@ -5,16 +5,20 @@
 
 #include "utils/TextHelper/U8g2.hpp"
 
+#include "homie/HomieDevice.hpp"
+
 void setup()
 {
     PINS::setup();
 
     Display.begin();
+
+    HomieDevice.init();
 }
 
 void loop()
 {
-    Display.clearBuffer();
+    /*Display.clearBuffer();
 
     Display.setFont(u8g2_font_ncenB14_tr);
     TextHelper::drawText(Display, "Hello World!",
@@ -24,5 +28,7 @@ void loop()
                          TextHelper::V_CENTER);
 
     Display.sendBuffer();
-    delay(1000);
+    delay(1000);*/
+
+    HomieDevice.update();
 }
