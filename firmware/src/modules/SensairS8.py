@@ -25,6 +25,8 @@ class SensairS8(HomieNode):
         )
         self.add_property(self.property_co2)
 
+        self.co2_handlers = []
+
     @staticmethod
     def _crc(data: bytes):
         crc: int = 0xffff
@@ -62,9 +64,19 @@ class SensairS8(HomieNode):
 
             self.property_co2.data = str(co2_data)
 
+            await self.update_co2_handlers(co2_data)
+
         while True:
             try:
                 await asyncio.wait_for_ms(update(), 500)
             except Exception as e:
                 print("Error in S8LP: ", e)
+                await self.update_co2_handlers(None)
             await asyncio.sleep(self.interval)
+
+    def register_co2_handler(self, callback):
+        self.co2_handlers.append(callback)
+
+    async def update_co2_handlers(self, value):
+        coroutines = [handler(value) for handler in self.co2_handlers]
+        await asyncio.gather(*coroutines)
