@@ -1,15 +1,16 @@
 #include <Arduino.h>
 
 #include "pinout.hpp"
+
 #include "display/Display.hpp"
-
-#include "utils/TextHelper/U8g2.hpp"
-
 #include "homie/HomieDevice.hpp"
+#include "sensors/DHT22/DHT22.hpp"
 
 void setup()
 {
     PINS::setup();
+
+    SensorDHT22.init();
 
     Display.begin();
 
@@ -18,7 +19,10 @@ void setup()
 
 void loop()
 {
-    /*Display.clearBuffer();
+    /*
+    #include "utils/TextHelper/U8g2.hpp"
+
+    Display.clearBuffer();
 
     Display.setFont(u8g2_font_ncenB14_tr);
     TextHelper::drawText(Display, "Hello World!",
@@ -28,7 +32,10 @@ void loop()
                          TextHelper::V_CENTER);
 
     Display.sendBuffer();
-    delay(1000);*/
+    delay(1000);
+    */
+
+    SensorDHT22.update();
 
     HomieDevice.update();
 }

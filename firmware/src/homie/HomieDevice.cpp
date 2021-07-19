@@ -2,7 +2,15 @@
 
 #include "../wifi_credentials.hpp"
 #include "../utils/TimeHelpers.hpp"
+#include "../sensors/DHT22/DHT22.hpp"
+
 #include "DeviceId.hpp"
+
+HomieDevice_t::HomieDevice_t()
+    : temperature_value{&SensorDHT22.get_temperature_value()},
+      humidity_value{&SensorDHT22.get_humidity_value()}
+{
+}
 
 void HomieDevice_t::init()
 {
@@ -54,8 +62,55 @@ void HomieDevice_t::publish(const char *topic, const char *payload)
     client.publish(topic_buffer, payload, true, LWMQTT_QOS1);
 }
 
+void HomieDevice_t::publish_values(bool force)
+{
+    char value_buffer[64];
+
+    bool error = false;
+
+    if (temperature_value.new_value_available() || force)
+    {
+        if (temperature_value.is_valid())
+        {
+            snprintf(value_buffer, sizeof(value_buffer), "%.01f", temperature_value.get());
+            publish("dht22/temperature", value_buffer);
+        }
+        else
+        {
+            error = true;
+        }
+    }
+
+    if (humidity_value.new_value_available() || force)
+    {
+        if (humidity_value.is_valid())
+        {
+            snprintf(value_buffer, sizeof(value_buffer), "%.01f", humidity_value.get());
+            publish("dht22/humidity", value_buffer);
+        }
+        else
+        {
+            error = true;
+        }
+    }
+
+    if (error && !previous_errors)
+    {
+        publish("$state", "alert");
+    }
+
+    if (previous_errors && !error)
+    {
+        publish("$state", "ready");
+    }
+
+    previous_errors = error;
+}
+
 void HomieDevice_t::on_connected()
 {
+    previous_errors = false;
+
     // Initial values
     publish("$state", "init");
     publish("$homie", "4.0.0");
@@ -93,10 +148,11 @@ void HomieDevice_t::on_connected()
     publish("s8lp/co2/$format", "0:10000");
     publish("s8lp/co2/$unit", "ppm");
 
-    // TODO values
-
     // Finalize initialization
     publish("$state", "ready");
+
+    // Publish values
+    publish_values(true);
 }
 
 void HomieDevice_t::update()
@@ -104,9 +160,11 @@ void HomieDevice_t::update()
     client.loop();
     delay(10); // <- fixes some issues with WiFi stability
 
+    // Reconnect if necessary
     do_connection_maintenance();
 
-    // TODO values
+    // Update values
+    publish_values();
 }
 
 HomieDevice_t HomieDevice{};
