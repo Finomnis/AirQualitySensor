@@ -56,9 +56,6 @@ void HomieDevice_t::publish(const char *topic, const char *payload)
 
 void HomieDevice_t::on_connected()
 {
-    Serial.println("Connected!");
-    Serial.println(get_device_identifier());
-
     // Initial values
     publish("$state", "init");
     publish("$homie", "4.0.0");
