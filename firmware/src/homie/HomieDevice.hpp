@@ -29,6 +29,7 @@ private:
 
     ValueWatcher<float> temperature_value;
     ValueWatcher<float> humidity_value;
+    ValueWatcher<uint16_t> co2_value;
 
     bool previous_errors{false};
 };

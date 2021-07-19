@@ -3,12 +3,14 @@
 #include "../wifi_credentials.hpp"
 #include "../utils/TimeHelpers.hpp"
 #include "../sensors/DHT22/DHT22.hpp"
+#include "../sensors/S8LP/S8LP.hpp"
 
 #include "DeviceId.hpp"
 
 HomieDevice_t::HomieDevice_t()
     : temperature_value{&SensorDHT22.get_temperature_value()},
-      humidity_value{&SensorDHT22.get_humidity_value()}
+      humidity_value{&SensorDHT22.get_humidity_value()},
+      co2_value{&SensorS8LP.get_co2_value()}
 {
 }
 
@@ -64,34 +66,52 @@ void HomieDevice_t::publish(const char *topic, const char *payload)
 
 void HomieDevice_t::publish_values(bool force)
 {
+    if (!client.connected())
+    {
+        return;
+    }
+
     char value_buffer[64];
 
     bool error = false;
 
-    if (temperature_value.new_value_available() || force)
+    if (temperature_value.is_valid())
     {
-        if (temperature_value.is_valid())
+        if (temperature_value.new_value_available() || force)
         {
             snprintf(value_buffer, sizeof(value_buffer), "%.01f", temperature_value.get());
             publish("dht22/temperature", value_buffer);
         }
-        else
-        {
-            error = true;
-        }
+    }
+    else
+    {
+        error = true;
     }
 
-    if (humidity_value.new_value_available() || force)
+    if (humidity_value.is_valid())
     {
-        if (humidity_value.is_valid())
+        if (humidity_value.new_value_available() || force)
         {
             snprintf(value_buffer, sizeof(value_buffer), "%.01f", humidity_value.get());
             publish("dht22/humidity", value_buffer);
         }
-        else
+    }
+    else
+    {
+        error = true;
+    }
+
+    if (co2_value.is_valid())
+    {
+        if (co2_value.new_value_available() || force)
         {
-            error = true;
+            snprintf(value_buffer, sizeof(value_buffer), "%d", co2_value.get());
+            publish("s8lp/co2", value_buffer);
         }
+    }
+    else
+    {
+        error = true;
     }
 
     if (error && !previous_errors)

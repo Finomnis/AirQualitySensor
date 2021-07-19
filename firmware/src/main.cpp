@@ -5,12 +5,14 @@
 #include "display/Display.hpp"
 #include "homie/HomieDevice.hpp"
 #include "sensors/DHT22/DHT22.hpp"
+#include "sensors/S8LP/S8LP.hpp"
 
 void setup()
 {
     PINS::setup();
 
     SensorDHT22.init();
+    SensorS8LP.init();
 
     Display.begin();
 
@@ -36,6 +38,7 @@ void loop()
     */
 
     SensorDHT22.update();
+    SensorS8LP.update();
 
     HomieDevice.update();
 }
