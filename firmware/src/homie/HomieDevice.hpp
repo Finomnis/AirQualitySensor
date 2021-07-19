@@ -1,9 +1,11 @@
 #pragma once
 
+#include "../utils/NoMoveNoCopy.hpp"
+
 #include <WiFi.h>
 #include <MQTT.h>
 
-class HomieDevice_t
+class HomieDevice_t : NoMoveNoCopy
 {
 public:
     void init();
