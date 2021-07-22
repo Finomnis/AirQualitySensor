@@ -10,7 +10,7 @@ class SensorS8LP_t : NoMoveNoCopy
 private:
     static constexpr size_t MESSAGE_MAX_SIZE = 39;
     static constexpr uint32_t RPC_TIMEOUT = 100;
-    static constexpr uint32_t UPDATE_PERIOD = 5000;
+    static constexpr uint32_t UPDATE_PERIOD = 4000;
 
 public:
     SensorS8LP_t();

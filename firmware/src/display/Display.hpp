@@ -6,6 +6,8 @@
 
 class Display_t
 {
+    static constexpr uint32_t STARTUP_DISPLAY_TIME = 10000;
+
 public:
     Display_t();
 
@@ -14,9 +16,13 @@ public:
 
 private:
     void redraw();
+    void render_startup_screen();
 
 private:
     U8G2 &display;
+
+    bool startup_finished;
+    uint32_t startup_end;
 
     ValueWatcher<float> temperature_value;
     ValueWatcher<float> humidity_value;
