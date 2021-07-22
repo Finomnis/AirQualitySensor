@@ -3,6 +3,7 @@
 #include "peripherals/pinout.hpp"
 
 #include "display/Display.hpp"
+#include "leds/LEDs.hpp"
 #include "homie/HomieDevice.hpp"
 #include "sensors/Sensors.hpp"
 
@@ -10,6 +11,7 @@ void setup()
 {
     Peripherals::setup();
 
+    LEDs.init();
     Display.init();
 
     Sensors.init();
@@ -20,6 +22,8 @@ void setup()
 void loop()
 {
     Sensors.update();
+
+    LEDs.update();
 
     HomieDevice.update();
 }
