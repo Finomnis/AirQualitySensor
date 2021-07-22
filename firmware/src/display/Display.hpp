@@ -13,6 +13,9 @@ public:
     void update();
 
 private:
+    void redraw();
+
+private:
     U8G2 &display;
 
     ValueWatcher<float> temperature_value;
