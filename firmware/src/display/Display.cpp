@@ -8,8 +8,7 @@
 
 Display_t::Display_t()
     : display{Peripherals::display},
-      startup_finished{false},
-      startup_end{millis() + STARTUP_DISPLAY_TIME},
+      startup{STARTUP_DISPLAY_TIME},
       temperature_value{Sensors.get_temperature_value()},
       humidity_value{Sensors.get_humidity_value()},
       co2_value{Sensors.get_co2_value()}
@@ -24,16 +23,12 @@ void Display_t::init()
 
 void Display_t::update()
 {
-    if (!startup_finished && event_is_over(startup_end))
-    {
-        startup_finished = true;
-        redraw();
-        return;
-    }
+    startup.update();
 
     if (temperature_value.new_value_available() ||
         humidity_value.new_value_available() ||
-        co2_value.new_value_available())
+        co2_value.new_value_available() ||
+        startup.new_value_available())
     {
         redraw();
     }
@@ -58,17 +53,10 @@ void Display_t::redraw()
     humidity_value.clear();
     co2_value.clear();
 
-    if (!startup_finished)
+    if (startup.get())
     {
-        if (temperature_value.is_valid() && humidity_value.is_valid() && co2_value.is_valid())
-        {
-            startup_finished = true;
-        }
-        else
-        {
-            render_startup_screen();
-            return;
-        }
+        render_startup_screen();
+        return;
     }
 
     display.clearBuffer();

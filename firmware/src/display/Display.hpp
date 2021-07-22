@@ -2,6 +2,8 @@
 
 #include <U8g2lib.h>
 
+#include "Startup.hpp"
+
 #include "../utils/ValueWatcher.hpp"
 
 class Display_t
@@ -21,8 +23,7 @@ private:
 private:
     U8G2 &display;
 
-    bool startup_finished;
-    uint32_t startup_end;
+    Startup startup;
 
     ValueWatcher<float> temperature_value;
     ValueWatcher<float> humidity_value;

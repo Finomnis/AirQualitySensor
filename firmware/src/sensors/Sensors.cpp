@@ -2,6 +2,7 @@
 
 #include "DHT22/DHT22.hpp"
 #include "S8LP/S8LP.hpp"
+#include "SensorError.hpp"
 
 void Sensors_t::init()
 {
@@ -13,6 +14,7 @@ void Sensors_t::update()
 {
     SensorDHT22.update();
     SensorS8LP.update();
+    SensorError.update();
 }
 
 Value<float> const &Sensors_t::get_temperature_value()
