@@ -1,6 +1,6 @@
 #include "S8LP.hpp"
 
-#include "../../pinout.hpp"
+#include "../../peripherals/pinout.hpp"
 #include "../../utils/TimeHelpers.hpp"
 
 namespace

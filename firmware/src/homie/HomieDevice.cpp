@@ -2,15 +2,14 @@
 
 #include "../wifi_credentials.hpp"
 #include "../utils/TimeHelpers.hpp"
-#include "../sensors/DHT22/DHT22.hpp"
-#include "../sensors/S8LP/S8LP.hpp"
+#include "../sensors/Sensors.hpp"
 
 #include "DeviceId.hpp"
 
 HomieDevice_t::HomieDevice_t()
-    : temperature_value{&SensorDHT22.get_temperature_value()},
-      humidity_value{&SensorDHT22.get_humidity_value()},
-      co2_value{&SensorS8LP.get_co2_value()}
+    : temperature_value{Sensors.get_temperature_value()},
+      humidity_value{Sensors.get_humidity_value()},
+      co2_value{Sensors.get_co2_value()}
 {
 }
 

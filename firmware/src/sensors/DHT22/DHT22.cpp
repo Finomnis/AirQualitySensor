@@ -1,7 +1,6 @@
 #include "DHT22.hpp"
 
-#include "../../pinout.hpp"
-
+#include "../../peripherals/pinout.hpp"
 #include "../../utils/TimeHelpers.hpp"
 
 SensorDHT22_t::SensorDHT22_t()
