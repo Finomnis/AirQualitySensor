@@ -83,7 +83,7 @@ void Display_t::redraw()
     }
     else
     {
-        snprintf(textBuffer, sizeof(textBuffer), "--");
+        snprintf(textBuffer, sizeof(textBuffer), "---");
     }
     TextHelper::drawText(display, textBuffer,
                          display.getWidth() - 1,
