@@ -24,6 +24,7 @@ void loop()
     Sensors.update();
 
     LEDs.update();
+    Display.update();
 
     HomieDevice.update();
 }
