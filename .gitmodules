@@ -1,3 +1,0 @@
-[submodule "firmware/src/utils"]
-	path = firmware/src/utils
-	url = git@github.com:Finomnis/ArduinoUtilities.git
