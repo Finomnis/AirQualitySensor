@@ -1,3 +1,14 @@
 {
-    "cmake.useCMakePresets": "always"
+    "cmake.useCMakePresets": "always",
+    "terminal.integrated.profiles.windows": {
+        "PowerShell nRF Connect SDK 1.6.1": {
+            "path": "${env:windir}\\System32\\cmd.exe",
+            "args": [
+                "/K",
+                "(echo Loading nRF Connect SDK ...) && ${env:USERPROFILE}\\ncs\\v1.6.1\\toolchain\\cmd\\env.cmd && powershell"
+            ],
+            "icon": "terminal-cmd"
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "PowerShell nRF Connect SDK 1.6.1"
 }
