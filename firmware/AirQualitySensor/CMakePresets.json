@@ -8,7 +8,7 @@
             "cacheVariables": {
                 "BOARD": {
                     "type": "STRING",
-                    "value": "nrf52840dk_nrf52840"
+                    "value": "adafruit_feather_nrf52840"
                 }
             }
         }
