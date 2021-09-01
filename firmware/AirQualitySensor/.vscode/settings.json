@@ -10,5 +10,6 @@
             "icon": "terminal-cmd"
         }
     },
-    "terminal.integrated.defaultProfile.windows": "PowerShell nRF Connect SDK 1.6.1"
+    "terminal.integrated.defaultProfile.windows": "PowerShell nRF Connect SDK 1.6.1",
+    "cmake.cmakePath": "${env:USERPROFILE}/ncs/v1.6.1/toolchain/opt/bin/cmake.exe"
 }

@@ -10,6 +10,8 @@ find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
 project("Zigbee light bulb with Scenes")
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
+
 # NORDIC SDK APP START
 target_sources(app PRIVATE
   src/main.c
