@@ -9,7 +9,8 @@
             //     "${env:USERPROFILE}/ncs/v1.6.1/toolchain/opt/lib/gcc/arm-none-eabi/9.2.1/include",
             //     "${workspaceFolder}/build/zephyr/include/generated"
             // ],
-            "compileCommands": "${workspaceFolder}/build/compile_commands.json"
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "configurationProvider": "ms-vscode.cmake-tools"
         }
     ],
     "version": 4
