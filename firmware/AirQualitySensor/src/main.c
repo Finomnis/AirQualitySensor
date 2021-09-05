@@ -21,49 +21,13 @@
 #include <zigbee/zigbee_error_handler.h>
 #include <zb_nrf_platform.h>
 
+#include "zb_airquality_sensor/device.h"
+
 LOG_MODULE_REGISTER(main);
 
 #define ZIGBEE_NETWORK_STATE_LED DK_LED2
-/* Basic cluster attributes data */
-zb_uint8_t g_attr_basic_zcl_version = ZB_ZCL_BASIC_ZCL_VERSION_DEFAULT_VALUE;
-zb_uint8_t g_attr_basic_application_version = ZB_ZCL_BASIC_APPLICATION_VERSION_DEFAULT_VALUE;
-zb_uint8_t g_attr_basic_stack_version = ZB_ZCL_BASIC_STACK_VERSION_DEFAULT_VALUE;
-zb_uint8_t g_attr_basic_hw_version = ZB_ZCL_BASIC_HW_VERSION_DEFAULT_VALUE;
-zb_char_t g_attr_basic_manufacturer_name[] = "\016Titan Products";
-zb_char_t g_attr_basic_model_identifier[] = "\014TPZRCO2HT-Z3";
-zb_char_t g_attr_basic_date_code[] = ZB_ZCL_BASIC_DATE_CODE_DEFAULT_VALUE;
-zb_uint8_t g_attr_basic_power_source = ZB_ZCL_BASIC_POWER_SOURCE_DC_SOURCE;
-zb_char_t g_attr_basic_location_description[] = ZB_ZCL_BASIC_LOCATION_DESCRIPTION_DEFAULT_VALUE;
-zb_uint8_t g_attr_basic_physical_environment = ZB_ZCL_BASIC_PHYSICAL_ENVIRONMENT_DEFAULT_VALUE;
-zb_char_t g_attr_sw_build_id[] = ZB_ZCL_BASIC_SW_BUILD_ID_DEFAULT_VALUE;
 
-ZB_ZCL_DECLARE_BASIC_ATTRIB_LIST_EXT(basic_attr_list, &g_attr_basic_zcl_version, &g_attr_basic_application_version, &g_attr_basic_stack_version, &g_attr_basic_hw_version, &g_attr_basic_manufacturer_name, &g_attr_basic_model_identifier, &g_attr_basic_date_code, &g_attr_basic_power_source, &g_attr_basic_location_description, &g_attr_basic_physical_environment, &g_attr_sw_build_id);
-
-/*ZB_ZCL_START_DECLARE_ATTRIB_LIST(basic_attr_list)
-ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_BASIC_ZCL_VERSION_ID(&g_attr_basic_zcl_version),
-    ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_BASIC_POWER_SOURCE_ID(&g_attr_basic_power_source),
-    ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_BASIC_MODEL_IDENTIFIER_ID(&g_attr_basic_model_identifier),
-    ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_BASIC_MANUFACTURER_NAME_ID(&g_attr_basic_manufacturer_name),
-    ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST;
-*/
-/* Identify cluster attributes data */
-zb_uint16_t g_attr_identify_identify_time = ZB_ZCL_IDENTIFY_IDENTIFY_TIME_DEFAULT_VALUE;
-/* Temperature Measurement cluster attributes data */
-zb_int16_t g_attr_temp_measurement_value = ZB_ZCL_TEMP_MEASUREMENT_VALUE_DEFAULT_VALUE;
-zb_int16_t g_attr_temp_measurement_min_value = ZB_ZCL_TEMP_MEASUREMENT_MIN_VALUE_DEFAULT_VALUE;
-zb_int16_t g_attr_temp_measurement_max_value = ZB_ZCL_TEMP_MEASUREMENT_MAX_VALUE_DEFAULT_VALUE;
-zb_uint16_t g_attr_temp_measurement_tolerance = 0;
-
-ZB_ZCL_DECLARE_IDENTIFY_ATTRIB_LIST(identify_attr_list, &g_attr_identify_identify_time);
-ZB_ZCL_DECLARE_TEMP_MEASUREMENT_ATTRIB_LIST(temp_measurement_attr_list,
-                                            &g_attr_temp_measurement_value,
-                                            &g_attr_temp_measurement_min_value,
-                                            &g_attr_temp_measurement_max_value,
-                                            &g_attr_temp_measurement_tolerance);
 /********************* Declare device **************************/
-ZB_HA_DECLARE_TEMPERATURE_SENSOR_CLUSTER_LIST(temperature_sensor_clusters, basic_attr_list, identify_attr_list, temp_measurement_attr_list);
-ZB_HA_DECLARE_TEMPERATURE_SENSOR_EP(temperature_sensor_ep, 2, temperature_sensor_clusters);
-ZB_HA_DECLARE_TEMPERATURE_SENSOR_CTX(device_ctx, temperature_sensor_ep);
 
 void zboss_signal_handler(zb_bufid_t bufid)
 {
