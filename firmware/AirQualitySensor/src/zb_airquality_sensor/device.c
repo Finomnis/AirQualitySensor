@@ -2,6 +2,10 @@
 
 #include "airquality_sensor.h"
 
+#include <logging/log.h>
+
+LOG_MODULE_REGISTER(zb_airquality_sensor);
+
 /* Basic cluster attributes data */
 zb_uint8_t g_attr_basic_zcl_version = ZB_ZCL_BASIC_ZCL_VERSION_DEFAULT_VALUE;
 zb_uint8_t g_attr_basic_application_version = ZB_ZCL_BASIC_APPLICATION_VERSION_DEFAULT_VALUE;
@@ -64,3 +68,24 @@ ZB_HA_DECLARE_AIRQUALITY_SENSOR_CLUSTER_LIST(airquality_sensor_clusters,
 #define AIRQUALITY_SENSOR_ENDPOINT 1
 ZB_HA_DECLARE_AIRQUALITY_SENSOR_EP(airquality_sensor_ep, AIRQUALITY_SENSOR_ENDPOINT, airquality_sensor_clusters);
 ZB_HA_DECLARE_AIRQUALITY_SENSOR_CTX(device_ctx, airquality_sensor_ep);
+
+void update_zb_airquality_sensor()
+{
+    LOG_INF("Value: %d", g_attr_temp_measurement_value);
+    zb_int16_t new_value = 12345;
+    zb_zcl_status_t result = zb_zcl_set_attr_val(
+        AIRQUALITY_SENSOR_ENDPOINT,
+        ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
+        ZB_ZCL_CLUSTER_SERVER_ROLE,
+        ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID,
+        (zb_uint8_t *)&new_value,
+        false);
+    LOG_INF("Result: %d", result);
+
+    zb_bool_t reported = zcl_is_attr_reported(
+        AIRQUALITY_SENSOR_ENDPOINT,
+        ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
+        ZB_ZCL_CLUSTER_SERVER_ROLE,
+        ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID);
+    LOG_INF("Reported: %d", reported);
+}

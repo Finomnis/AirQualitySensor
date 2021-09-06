@@ -76,7 +76,7 @@
 
 #define ZB_HA_AIRQUALITY_SENSOR_IN_CLUSTER_NUM 4
 #define ZB_HA_AIRQUALITY_SENSOR_OUT_CLUSTER_NUM 1
-#define ZB_HA_AIRQUALITY_SENSOR_REPORT_ATTR_COUNT 1
+#define ZB_HA_AIRQUALITY_SENSOR_REPORT_ATTR_COUNT 2
 
 /** @brief Declare endpoint for Airquality Sensor device
     @param ep_name - endpoint variable name

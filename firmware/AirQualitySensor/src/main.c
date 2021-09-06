@@ -151,6 +151,8 @@ void main(void)
 
     while (1)
     {
+        LOG_INF("Updating sensor values ...");
+        update_zb_airquality_sensor();
         dk_set_led_on(DK_LED1);
         k_sleep(K_MSEC(3000));
         LOG_INF("Ping.");
