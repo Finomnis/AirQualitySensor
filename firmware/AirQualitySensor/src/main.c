@@ -149,10 +149,11 @@ void main(void)
     /* Start Zigbee default thread. */
     zigbee_enable();
 
+    zb_int16_t temp = 12345;
     while (1)
     {
         LOG_INF("Updating sensor values ...");
-        update_zb_airquality_sensor();
+        publish_temperature(temp++);
         dk_set_led_on(DK_LED1);
         k_sleep(K_MSEC(3000));
         LOG_INF("Ping.");

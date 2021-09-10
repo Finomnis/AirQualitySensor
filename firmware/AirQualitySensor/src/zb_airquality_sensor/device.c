@@ -1,6 +1,7 @@
 #include "device.h"
 
 #include "airquality_sensor.h"
+#include "zigbee_helpers.h"
 
 #include <logging/log.h>
 
@@ -69,23 +70,17 @@ ZB_HA_DECLARE_AIRQUALITY_SENSOR_CLUSTER_LIST(airquality_sensor_clusters,
 ZB_HA_DECLARE_AIRQUALITY_SENSOR_EP(airquality_sensor_ep, AIRQUALITY_SENSOR_ENDPOINT, airquality_sensor_clusters);
 ZB_HA_DECLARE_AIRQUALITY_SENSOR_CTX(device_ctx, airquality_sensor_ep);
 
-void update_zb_airquality_sensor()
+void publish_temperature(zb_int16_t value)
 {
-    LOG_INF("Value: %d", g_attr_temp_measurement_value);
-    zb_int16_t new_value = 12345;
-    zb_zcl_status_t result = zb_zcl_set_attr_val(
+    zb_zcl_status_t result = publish_zigbee_attribute(
         AIRQUALITY_SENSOR_ENDPOINT,
         ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
         ZB_ZCL_CLUSTER_SERVER_ROLE,
         ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID,
-        (zb_uint8_t *)&new_value,
-        false);
-    LOG_INF("Result: %d", result);
+        &value);
 
-    zb_bool_t reported = zcl_is_attr_reported(
-        AIRQUALITY_SENSOR_ENDPOINT,
-        ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
-        ZB_ZCL_CLUSTER_SERVER_ROLE,
-        ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID);
-    LOG_INF("Reported: %d", reported);
+    if (ZB_ZCL_STATUS_SUCCESS != result)
+    {
+        LOG_WRN("Unable to publish temperature! Error: %d", result);
+    }
 }
