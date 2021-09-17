@@ -1,5 +1,7 @@
 #pragma once
 
+#include "co2_cluster.h"
+
 #include <zboss_api.h>
 
 /** @brief Declare attribute list for Basic cluster (AirQuality Sensor version)
@@ -29,13 +31,15 @@
     @param identify_attr_list - attribute list for Identify cluster
     @param temperature_sensor_attr_list - attribute list for Temperature Measurement cluster
     @param humidity_sensor_attr_list - attribute list for Humidity Measurement cluster
+    @param co2_sensor_attr_list - attribute list for CO2 Measurement cluster
 */
 #define ZB_HA_DECLARE_AIRQUALITY_SENSOR_CLUSTER_LIST(                           \
     cluster_list_name,                                                          \
     basic_attr_list,                                                            \
     identify_attr_list,                                                         \
     temperature_sensor_attr_list,                                               \
-    humidity_sensor_attr_list)                                                  \
+    humidity_sensor_attr_list,                                                  \
+    co2_sensor_attr_list)                                                       \
     zb_zcl_cluster_desc_t cluster_list_name[] =                                 \
         {                                                                       \
             ZB_ZCL_CLUSTER_DESC(                                                \
@@ -60,6 +64,12 @@
                 ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,                     \
                 ZB_ZCL_ARRAY_SIZE(humidity_sensor_attr_list, zb_zcl_attr_t),    \
                 (humidity_sensor_attr_list),                                    \
+                ZB_ZCL_CLUSTER_SERVER_ROLE,                                     \
+                ZB_ZCL_MANUF_CODE_INVALID),                                     \
+            ZB_ZCL_CLUSTER_DESC(                                                \
+                ZB_ZCL_CLUSTER_ID_CO2_MEASUREMENT,                              \
+                ZB_ZCL_ARRAY_SIZE(co2_sensor_attr_list, zb_zcl_attr_t),         \
+                (co2_sensor_attr_list),                                         \
                 ZB_ZCL_CLUSTER_SERVER_ROLE,                                     \
                 ZB_ZCL_MANUF_CODE_INVALID),                                     \
             ZB_ZCL_CLUSTER_DESC(                                                \
@@ -92,12 +102,13 @@
                 ZB_ZCL_CLUSTER_ID_IDENTIFY,                                                \
                 ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,                                        \
                 ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,                                \
+                ZB_ZCL_CLUSTER_ID_CO2_MEASUREMENT,                                         \
                 ZB_ZCL_CLUSTER_ID_IDENTIFY,                                                \
             }}
 
-#define ZB_HA_AIRQUALITY_SENSOR_IN_CLUSTER_NUM 4
+#define ZB_HA_AIRQUALITY_SENSOR_IN_CLUSTER_NUM 5
 #define ZB_HA_AIRQUALITY_SENSOR_OUT_CLUSTER_NUM 1
-#define ZB_HA_AIRQUALITY_SENSOR_REPORT_ATTR_COUNT 2
+#define ZB_HA_AIRQUALITY_SENSOR_REPORT_ATTR_COUNT 3
 
 /** @brief Declare endpoint for Airquality Sensor device
     @param ep_name - endpoint variable name
