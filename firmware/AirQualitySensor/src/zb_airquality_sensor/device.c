@@ -9,29 +9,15 @@ LOG_MODULE_REGISTER(zb_airquality_sensor);
 
 /* Basic cluster attributes data */
 zb_uint8_t g_attr_basic_zcl_version = ZB_ZCL_BASIC_ZCL_VERSION_DEFAULT_VALUE;
-zb_uint8_t g_attr_basic_application_version = ZB_ZCL_BASIC_APPLICATION_VERSION_DEFAULT_VALUE;
-zb_uint8_t g_attr_basic_stack_version = ZB_ZCL_BASIC_STACK_VERSION_DEFAULT_VALUE;
-zb_uint8_t g_attr_basic_hw_version = ZB_ZCL_BASIC_HW_VERSION_DEFAULT_VALUE;
-zb_char_t g_attr_basic_manufacturer_name[] = "\016Titan Products";
-zb_char_t g_attr_basic_model_identifier[] = "\014TPZRCO2HT-Z3";
-zb_char_t g_attr_basic_date_code[] = ZB_ZCL_BASIC_DATE_CODE_DEFAULT_VALUE;
 zb_uint8_t g_attr_basic_power_source = ZB_ZCL_BASIC_POWER_SOURCE_DC_SOURCE;
-zb_char_t g_attr_basic_location_description[] = ZB_ZCL_BASIC_LOCATION_DESCRIPTION_DEFAULT_VALUE;
-zb_uint8_t g_attr_basic_physical_environment = ZB_ZCL_BASIC_PHYSICAL_ENVIRONMENT_DEFAULT_VALUE;
-zb_char_t g_attr_sw_build_id[] = ZB_ZCL_BASIC_SW_BUILD_ID_DEFAULT_VALUE;
+zb_char_t g_attr_basic_manufacturer_name[] = "\010Finomnis";
+zb_char_t g_attr_basic_model_identifier[] = "\022AirQualitySensor-1";
 
-ZB_ZCL_DECLARE_BASIC_ATTRIB_LIST_EXT(basic_attr_list,
-                                     &g_attr_basic_zcl_version,
-                                     &g_attr_basic_application_version,
-                                     &g_attr_basic_stack_version,
-                                     &g_attr_basic_hw_version,
-                                     &g_attr_basic_manufacturer_name,
-                                     &g_attr_basic_model_identifier,
-                                     &g_attr_basic_date_code,
-                                     &g_attr_basic_power_source,
-                                     &g_attr_basic_location_description,
-                                     &g_attr_basic_physical_environment,
-                                     &g_attr_sw_build_id);
+ZB_ZCL_DECLARE_BASIC_ATTRIB_LIST_AIRQUALITY_SENSOR(basic_attr_list,
+                                                   &g_attr_basic_zcl_version,
+                                                   &g_attr_basic_power_source,
+                                                   &g_attr_basic_manufacturer_name,
+                                                   &g_attr_basic_model_identifier);
 
 /* Identify cluster attributes data */
 zb_uint16_t g_attr_identify_identify_time = ZB_ZCL_IDENTIFY_IDENTIFY_TIME_DEFAULT_VALUE;

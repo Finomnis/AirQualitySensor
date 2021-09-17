@@ -2,6 +2,27 @@
 
 #include <zboss_api.h>
 
+/** @brief Declare attribute list for Basic cluster (AirQuality Sensor version)
+ *  @param attr_list [IN] - attribute list name.
+ *  @param zcl_version [IN] - pointer to variable storing ZCL version  attribute value.
+ *  @param power_source [IN] - pointer to variable storing power source attribute value.
+ *  @param manufacturer_name [IN] - pointer to the variable storing manufacturer name.
+ *  @param model_id [IN] - pointer to the variable storing model identifier.
+ *  @param product_url [IN] - pointer to the variable storing product url.
+*/
+#define ZB_ZCL_DECLARE_BASIC_ATTRIB_LIST_AIRQUALITY_SENSOR(                           \
+    attr_list,                                                                        \
+    zcl_version,                                                                      \
+    power_source,                                                                     \
+    manufacturer_name,                                                                \
+    model_id)                                                                         \
+    ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                       \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_ZCL_VERSION_ID, (zcl_version))             \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_POWER_SOURCE_ID, (power_source))           \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_MANUFACTURER_NAME_ID, (manufacturer_name)) \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_MODEL_IDENTIFIER_ID, (model_id))           \
+    ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
+
 /** @brief Declare cluster list for Airquality Sensor device.
     @param cluster_list_name - cluster list variable name
     @param basic_attr_list - attribute list for Basic cluster
