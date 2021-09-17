@@ -68,29 +68,6 @@ void zboss_signal_handler(zb_bufid_t bufid)
     }
 }
 
-zb_uint8_t zcl_specific_cluster_cmd_handler(zb_uint8_t param)
-{
-    zb_zcl_parsed_hdr_t cmd_info;
-    zb_uint8_t lqi = ZB_MAC_LQI_UNDEFINED;
-    zb_int8_t rssi = ZB_MAC_RSSI_UNDEFINED;
-    TRACE_MSG(TRACE_APP1, "> zcl_specific_cluster_cmd_handler", (FMT__0));
-    ZB_ZCL_COPY_PARSED_HEADER(param, &cmd_info);
-    zb_uint16_t g_dst_addr = ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).source.u.short_addr;
-    ZB_ZCL_DEBUG_DUMP_HEADER(&cmd_info);
-    TRACE_MSG(TRACE_APP3, "payload size: %i", (FMT__D, zb_buf_len(param)));
-    zb_zdo_get_diag_data(g_dst_addr, &lqi, &rssi);
-    TRACE_MSG(TRACE_APP3, "lqi %hd rssi %d", (FMT__H_H, lqi, rssi));
-    if (cmd_info.cmd_direction == ZB_ZCL_FRAME_DIRECTION_TO_CLI)
-    {
-        TRACE_MSG(
-            TRACE_ERROR,
-            "Unsupported \"from server\" command direction",
-            (FMT__0));
-    }
-    TRACE_MSG(TRACE_APP1, "< zcl_specific_cluster_cmd_handler", (FMT__0));
-    return ZB_FALSE;
-}
-
 void test_device_interface_cb(zb_uint8_t param)
 {
     zb_zcl_device_callback_param_t *device_cb_param =
@@ -143,7 +120,6 @@ void main(void)
 
     /* Register Zigbee contexts */
     ZB_AF_REGISTER_DEVICE_CTX(&device_ctx);
-    //ZB_AF_SET_ENDPOINT_HANDLER(ZB_OUTPUT_ENDPOINT, zcl_specific_cluster_cmd_handler);
     ZB_ZCL_REGISTER_DEVICE_CB(test_device_interface_cb);
 
     /* Start Zigbee default thread. */
