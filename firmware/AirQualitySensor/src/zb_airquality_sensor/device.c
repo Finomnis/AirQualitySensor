@@ -96,3 +96,18 @@ void publish_humidity(zb_uint16_t value)
         LOG_WRN("Unable to publish humidity! Error: %d", result);
     }
 }
+
+void publish_co2(zb_uint16_t value)
+{
+    zb_zcl_status_t result = publish_zigbee_attribute(
+        AIRQUALITY_SENSOR_ENDPOINT,
+        ZB_ZCL_CLUSTER_ID_CO2_MEASUREMENT,
+        ZB_ZCL_CLUSTER_SERVER_ROLE,
+        ZB_ZCL_ATTR_CO2_MEASUREMENT_VALUE_ID,
+        &value);
+
+    if (ZB_ZCL_STATUS_SUCCESS != result)
+    {
+        LOG_WRN("Unable to publish co2! Error: %d", result);
+    }
+}

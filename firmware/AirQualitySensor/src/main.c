@@ -151,11 +151,13 @@ void main(void)
 
     zb_int16_t temp = 12345;
     zb_int16_t humid = 123;
+    zb_int16_t co2 = 1000;
     while (1)
     {
         LOG_INF("Updating sensor values ...");
         publish_temperature(temp++);
         publish_humidity(humid++);
+        publish_co2(co2++);
         dk_set_led_on(DK_LED1);
         k_sleep(K_MSEC(3000));
         LOG_INF("Ping.");
