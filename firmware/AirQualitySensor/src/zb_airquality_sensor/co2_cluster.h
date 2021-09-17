@@ -14,43 +14,31 @@ enum zb_zcl_co2_measurement_attr_e
     ZB_ZCL_ATTR_CO2_MEASUREMENT_MIN_VALUE_ID = 0x0001,
     /*! @brief MaxMeasuredValue, ZCL spec 4.4.2.2.1.3 */
     ZB_ZCL_ATTR_CO2_MEASUREMENT_MAX_VALUE_ID = 0x0002,
-#ifndef ZB_DISABLE_CO2_MEASUREMENT_TOLERANCE_ID
-    /*! @brief Tolerance, ZCL spec 4.4.2.2.1.4 */
-    ZB_ZCL_ATTR_CO2_MEASUREMENT_TOLERANCE_ID = 0x0003,
-#else
-    ZB_ZCL_ATTR_CO2_MEASUREMENT_TOLERANCE_ID = 0xF003,
-#endif
 };
 
 /** @brief MeasuredValue attribute unknown value */
-#define ZB_ZCL_ATTR_CO2_MEASUREMENT_VALUE_UNKNOWN ((zb_uint16_t)0xFFFF)
+#define ZB_ZCL_ATTR_CO2_MEASUREMENT_VALUE_UNKNOWN ((float)-1.0f)
 
 /** @brief MinMeasuredValue attribute minimum value */
 #define ZB_ZCL_ATTR_CO2_MEASUREMENT_MIN_VALUE_MIN_VALUE 0
 
-/** @brief MinMeasuredValue attribute maximum value */
-#define ZB_ZCL_ATTR_CO2_MEASUREMENT_MIN_VALUE_MAX_VALUE ((zb_uint16_t)0xffef)
-
 /** @brief MinMeasuredValue attribute undefined value */
-#define ZB_ZCL_ATTR_CO2_MEASUREMENT_MIN_VALUE_UNDEFINED ((zb_uint16_t)0xFFFF)
+#define ZB_ZCL_ATTR_CO2_MEASUREMENT_MIN_VALUE_UNDEFINED ((float)-1.0f)
 
 /** @brief MaxMeasuredValue attribute minimum value */
-#define ZB_ZCL_ATTR_CO2_MEASUREMENT_MAX_VALUE_MIN_VALUE ((zb_uint16_t)0x0001)
-
-/** @brief MaxMeasuredValue attribute maximum value */
-#define ZB_ZCL_ATTR_CO2_MEASUREMENT_MAX_VALUE_MAX_VALUE ((zb_uint16_t)0xfff0)
+#define ZB_ZCL_ATTR_CO2_MEASUREMENT_MAX_VALUE_MIN_VALUE 0
 
 /** @brief MaxMeasuredValue attribute value not defined */
-#define ZB_ZCL_ATTR_CO2_MEASUREMENT_MAX_VALUE_UNDEFINED ((zb_uint16_t)0xFFFF)
+#define ZB_ZCL_ATTR_CO2_MEASUREMENT_MAX_VALUE_UNDEFINED ((float)-1.0f)
 
 /** @brief Default value for MeasurementValue attribute */
-#define ZB_ZCL_CO2_MEASUREMENT_VALUE_DEFAULT_VALUE ((zb_uint16_t)0xFFFF)
+#define ZB_ZCL_CO2_MEASUREMENT_VALUE_DEFAULT_VALUE ((float)-1.0f)
 
 /** @brief Default value for MeasurementMinValue attribute */
-#define ZB_ZCL_CO2_MEASUREMENT_MIN_VALUE_DEFAULT_VALUE ((zb_uint16_t)0xFFFF)
+#define ZB_ZCL_CO2_MEASUREMENT_MIN_VALUE_DEFAULT_VALUE ((float)-1.0f)
 
 /** @brief Default value for MeasurementMaxValue attribute */
-#define ZB_ZCL_CO2_MEASUREMENT_MAX_VALUE_DEFAULT_VALUE ((zb_uint16_t)0xFFFF)
+#define ZB_ZCL_CO2_MEASUREMENT_MAX_VALUE_DEFAULT_VALUE ((float)-1.0f)
 
 /** @brief Declare attribute list for CO2 Measurement cluster - server side
     @param attr_list - attribute list name
@@ -69,7 +57,7 @@ enum zb_zcl_co2_measurement_attr_e
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CO2_MEASUREMENT_VALUE_ID(data_ptr) \
     {                                                                         \
         ZB_ZCL_ATTR_CO2_MEASUREMENT_VALUE_ID,                                 \
-            ZB_ZCL_ATTR_TYPE_U16,                                             \
+            ZB_ZCL_ATTR_TYPE_SINGLE,                                          \
             ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,      \
             (void *)data_ptr                                                  \
     }
@@ -77,7 +65,7 @@ enum zb_zcl_co2_measurement_attr_e
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CO2_MEASUREMENT_MIN_VALUE_ID(data_ptr) \
     {                                                                             \
         ZB_ZCL_ATTR_CO2_MEASUREMENT_MIN_VALUE_ID,                                 \
-            ZB_ZCL_ATTR_TYPE_U16,                                                 \
+            ZB_ZCL_ATTR_TYPE_SINGLE,                                              \
             ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                         \
             (void *)data_ptr                                                      \
     }
@@ -85,7 +73,7 @@ enum zb_zcl_co2_measurement_attr_e
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CO2_MEASUREMENT_MAX_VALUE_ID(data_ptr) \
     {                                                                             \
         ZB_ZCL_ATTR_CO2_MEASUREMENT_MAX_VALUE_ID,                                 \
-            ZB_ZCL_ATTR_TYPE_U16,                                                 \
+            ZB_ZCL_ATTR_TYPE_SINGLE,                                              \
             ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                         \
             (void *)data_ptr                                                      \
     }

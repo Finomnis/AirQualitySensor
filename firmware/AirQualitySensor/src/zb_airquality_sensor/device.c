@@ -34,9 +34,9 @@ zb_uint16_t g_attr_rel_humid_measurement_min_value = ZB_ZCL_REL_HUMIDITY_MEASURE
 zb_uint16_t g_attr_rel_humid_measurement_max_value = ZB_ZCL_REL_HUMIDITY_MEASUREMENT_MAX_VALUE_DEFAULT_VALUE;
 
 /* CO2 Measurement cluster attributes data */
-zb_uint16_t g_attr_co2_measurement_value = ZB_ZCL_CO2_MEASUREMENT_VALUE_DEFAULT_VALUE;
-zb_uint16_t g_attr_co2_measurement_min_value = ZB_ZCL_CO2_MEASUREMENT_MIN_VALUE_DEFAULT_VALUE;
-zb_uint16_t g_attr_co2_measurement_max_value = ZB_ZCL_CO2_MEASUREMENT_MAX_VALUE_DEFAULT_VALUE;
+float g_attr_co2_measurement_value = ZB_ZCL_CO2_MEASUREMENT_VALUE_DEFAULT_VALUE;
+float g_attr_co2_measurement_min_value = ZB_ZCL_CO2_MEASUREMENT_MIN_VALUE_DEFAULT_VALUE;
+float g_attr_co2_measurement_max_value = ZB_ZCL_CO2_MEASUREMENT_MAX_VALUE_DEFAULT_VALUE;
 
 ZB_ZCL_DECLARE_IDENTIFY_ATTRIB_LIST(identify_attr_list, &g_attr_identify_identify_time);
 
@@ -97,7 +97,7 @@ void publish_humidity(zb_uint16_t value)
     }
 }
 
-void publish_co2(zb_uint16_t value)
+void publish_co2(float value)
 {
     zb_zcl_status_t result = publish_zigbee_attribute(
         AIRQUALITY_SENSOR_ENDPOINT,
