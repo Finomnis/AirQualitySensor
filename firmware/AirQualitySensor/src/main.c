@@ -118,9 +118,11 @@ void main(void)
     zb_set_ed_timeout(ED_AGING_TIMEOUT_64MIN);
     zb_set_keepalive_timeout(ZB_MILLISECONDS_TO_BEACON_INTERVAL(3000));
 
+    /* Register Zigbee event callback */
+    ZB_ZCL_REGISTER_DEVICE_CB(test_device_interface_cb);
+
     /* Register Zigbee contexts */
     ZB_AF_REGISTER_DEVICE_CTX(&device_ctx);
-    ZB_ZCL_REGISTER_DEVICE_CB(test_device_interface_cb);
 
     /* Start Zigbee default thread. */
     zigbee_enable();
