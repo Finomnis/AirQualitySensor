@@ -22,6 +22,23 @@ LOG_MODULE_REGISTER(main);
 
 /********************* Declare device **************************/
 
+void handle_temperature_value(struct sensor_value value)
+{
+    LOG_INF("Temperature: %d.%d Celsius", value.val1, value.val2);
+    if (value.val2 < 0)
+    {
+        LOG_WRN("Temperature failed.");
+    }
+}
+void handle_humidity_value(struct sensor_value value)
+{
+    LOG_INF("Humidity: %d.%d %%", value.val1, value.val2);
+    if (value.val2 < 0)
+    {
+        LOG_WRN("Humidity failed.");
+    }
+}
+
 void main(void)
 {
     LOG_INF("Example!");
@@ -34,6 +51,10 @@ void main(void)
 
     // Start zigbee device
     initialize_zigbee_device();
+
+    // Register sensor value handlers
+    dht22_register_temperature_handler(handle_temperature_value);
+    dht22_register_humidity_handler(handle_humidity_value);
 
     zb_int16_t temp = 12345;
     zb_int16_t humid = 123;

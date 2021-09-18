@@ -28,3 +28,17 @@ config DHT22_SAMPLING_RATE_MS
     help
       The sampling rate of the sensor in milliseconds. Needs to be at least
       2000, as the sensor cannot sample faster.
+
+config DHT22_CALLBACK_MAX_COUNT_TEMPERATURE
+    int "DHT22 max callbacks for temperature"
+    depends on DHT22
+    default 10
+    help
+      Maximum number of temperature callbacks registered to the DHT22 device
+
+config DHT22_CALLBACK_MAX_COUNT_HUMIDITY
+    int "DHT22 max callbacks for humidity"
+    depends on DHT22
+    default 10
+    help
+      Maximum number of humidity callbacks registered to the DHT22 device
