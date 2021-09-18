@@ -2,7 +2,6 @@
 
 #include <zephyr.h>
 #include <logging/log.h>
-#include <drivers/sensor.h>
 
 LOG_MODULE_REGISTER(dht22);
 
