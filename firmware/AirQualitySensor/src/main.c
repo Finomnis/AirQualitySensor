@@ -16,6 +16,7 @@
 #include <zboss_api.h>
 
 #include "zigbee_device.h"
+#include "dht22.h"
 
 LOG_MODULE_REGISTER(main);
 
@@ -31,7 +32,11 @@ void main(void)
         LOG_ERR("Cannot init LEDs (err: %d)", err);
     }
 
+    // Start zigbee device
     initialize_zigbee_device();
+
+    // Start DHT22 sensor sampling
+    start_dht22_sampling();
 
     zb_int16_t temp = 12345;
     zb_int16_t humid = 123;

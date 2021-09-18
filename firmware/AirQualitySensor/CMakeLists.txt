@@ -14,10 +14,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
 # NORDIC SDK APP START
 target_sources(app PRIVATE
-  src/main.c
-  src/zb_airquality_sensor/device.c
-  src/zb_airquality_sensor/zigbee_helpers.c
-  src/zb_airquality_sensor/co2_cluster.c
-  src/zigbee_device.c
+    src/main.c
+    src/dht22.c
+    src/zb_airquality_sensor/device.c
+    src/zb_airquality_sensor/zigbee_helpers.c
+    src/zb_airquality_sensor/co2_cluster.c
+    src/zigbee_device.c
 )
 # NORDIC SDK APP END
