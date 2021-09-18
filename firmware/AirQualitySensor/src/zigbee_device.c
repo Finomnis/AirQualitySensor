@@ -1,5 +1,7 @@
 #include "zigbee_device.h"
 
+#include "zb_airquality_sensor/device.h"
+
 #include <zboss_api.h>
 #include <zboss_api_addons.h>
 #include <zb_mem_config_med.h>
@@ -100,4 +102,42 @@ void initialize_zigbee_device()
 
     /* Start Zigbee default thread. */
     zigbee_enable();
+}
+
+void publish_temperature(struct sensor_value value)
+{
+    if (value.val2 < 0)
+    {
+        zb_airquality_sensor_publish_temperature(ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_UNKNOWN);
+        return;
+    }
+
+    int64_t converted_value = ((int64_t)value.val1) * 100 + value.val2 / 10000;
+    if (converted_value > ZB_ZCL_ATTR_TEMP_MEASUREMENT_MAX_VALUE_MAX_VALUE ||
+        converted_value < ZB_ZCL_ATTR_TEMP_MEASUREMENT_MIN_VALUE_MIN_VALUE)
+    {
+        zb_airquality_sensor_publish_temperature(ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_UNKNOWN);
+        return;
+    }
+
+    zb_airquality_sensor_publish_temperature((zb_int16_t)converted_value);
+}
+
+void publish_humidity(struct sensor_value value)
+{
+    if (value.val2 < 0)
+    {
+        zb_airquality_sensor_publish_humidity(ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_UNKNOWN);
+        return;
+    }
+
+    int64_t converted_value = ((int64_t)value.val1) * 100 + value.val2 / 10000;
+    if (converted_value > ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_MAX_VALUE_MAX_VALUE ||
+        converted_value < ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_MIN_VALUE_MIN_VALUE)
+    {
+        zb_airquality_sensor_publish_humidity(ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_UNKNOWN);
+        return;
+    }
+
+    zb_airquality_sensor_publish_humidity((zb_uint16_t)converted_value);
 }

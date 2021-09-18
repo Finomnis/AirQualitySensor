@@ -67,7 +67,7 @@ ZB_HA_DECLARE_AIRQUALITY_SENSOR_CLUSTER_LIST(airquality_sensor_clusters,
 ZB_HA_DECLARE_AIRQUALITY_SENSOR_EP(airquality_sensor_ep, AIRQUALITY_SENSOR_ENDPOINT, airquality_sensor_clusters);
 ZB_HA_DECLARE_AIRQUALITY_SENSOR_CTX(airquality_sensor_device_ctx, airquality_sensor_ep);
 
-void publish_temperature(zb_int16_t value)
+void zb_airquality_sensor_publish_temperature(zb_int16_t value)
 {
     zb_zcl_status_t result = publish_zigbee_attribute(
         AIRQUALITY_SENSOR_ENDPOINT,
@@ -82,7 +82,7 @@ void publish_temperature(zb_int16_t value)
     }
 }
 
-void publish_humidity(zb_uint16_t value)
+void zb_airquality_sensor_publish_humidity(zb_uint16_t value)
 {
     zb_zcl_status_t result = publish_zigbee_attribute(
         AIRQUALITY_SENSOR_ENDPOINT,
@@ -97,7 +97,7 @@ void publish_humidity(zb_uint16_t value)
     }
 }
 
-void publish_co2(float value)
+void zb_airquality_sensor_publish_co2(float value)
 {
     zb_zcl_status_t result = publish_zigbee_attribute(
         AIRQUALITY_SENSOR_ENDPOINT,
