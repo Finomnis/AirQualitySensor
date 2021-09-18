@@ -16,7 +16,7 @@
 #include <zboss_api.h>
 
 #include "zigbee_device.h"
-#include "dht22.h"
+#include <dht22.h>
 
 LOG_MODULE_REGISTER(main);
 

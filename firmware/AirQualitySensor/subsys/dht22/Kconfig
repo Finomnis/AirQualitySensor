@@ -1,0 +1,30 @@
+
+config DHT22
+    bool "DHT22 sensor sampling support"
+    depends on DHT
+    help
+      Enable DHT22 thread that continuously samples DHT22 values.
+
+config DHT22_STACK_SIZE
+    int "DHT22 thread stack size"
+    depends on DHT22
+    default 500
+    help
+      Size of DHT22 thread stack
+
+config DHT22_THREAD_PRIORITY
+    int "DHT22 thread priority"
+    depends on DHT22
+    default -3
+    help
+      Priority of the DHT22 thread. Should be negative,
+      as sensor reads might fail if preempted.
+
+config DHT22_SAMPLING_RATE_MS
+    int "DHT22 sampling rate (ms)"
+    depends on DHT22
+    default 2000
+    range 2000 1000000000
+    help
+      The sampling rate of the sensor in milliseconds. Needs to be at least
+      2000, as the sensor cannot sample faster.

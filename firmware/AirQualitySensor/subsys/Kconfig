@@ -1,0 +1,5 @@
+menu "Sub Systems"
+
+rsource "dht22/Kconfig"
+
+endmenu

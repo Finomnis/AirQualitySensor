@@ -4,18 +4,11 @@
 #include <logging/log.h>
 #include <drivers/sensor.h>
 
-#include <autoconf.h>
-
 LOG_MODULE_REGISTER(dht22);
-
-// TODO: move configuration to KConfig file
-#define DHT22_STACK_SIZE 500
-#define DHT22_PRIORITY -3
-#define DHT22_SAMPLING_RATE_MS 2000
 
 static void dht22_entry_point(void *, void *, void *);
 
-K_THREAD_STACK_DEFINE(dht22_stack_area, DHT22_STACK_SIZE);
+K_THREAD_STACK_DEFINE(dht22_stack_area, CONFIG_DHT22_STACK_SIZE);
 static struct k_thread dht22_thread_data;
 
 void start_dht22_sampling()
@@ -24,7 +17,7 @@ void start_dht22_sampling()
                                         K_THREAD_STACK_SIZEOF(dht22_stack_area),
                                         dht22_entry_point,
                                         NULL, NULL, NULL,
-                                        DHT22_PRIORITY, 0, K_FOREVER);
+                                        CONFIG_DHT22_THREAD_PRIORITY, 0, K_FOREVER);
     k_thread_name_set(dht22_tid, "dht22");
     k_thread_start(dht22_tid);
 }
@@ -45,7 +38,7 @@ static void dht22_entry_point(void *u1, void *u2, void *u3)
 
     while (1)
     {
-        k_sleep(K_MSEC(DHT22_SAMPLING_RATE_MS));
+        k_sleep(K_MSEC(CONFIG_DHT22_SAMPLING_RATE_MS));
 
         int rc = sensor_sample_fetch(dht22);
 

@@ -12,10 +12,11 @@ project("Zigbee light bulb with Scenes")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
+add_subdirectory(subsys)
+
 # NORDIC SDK APP START
 target_sources(app PRIVATE
     src/main.c
-    src/dht22.c
     src/zb_airquality_sensor/device.c
     src/zb_airquality_sensor/zigbee_helpers.c
     src/zb_airquality_sensor/co2_cluster.c
