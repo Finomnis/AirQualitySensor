@@ -35,9 +35,6 @@ void main(void)
     // Start zigbee device
     initialize_zigbee_device();
 
-    // Start DHT22 sensor sampling
-    start_dht22_sampling();
-
     zb_int16_t temp = 12345;
     zb_int16_t humid = 123;
     float co2 = 0.00001;

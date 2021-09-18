@@ -8,19 +8,9 @@ LOG_MODULE_REGISTER(dht22);
 
 static void dht22_entry_point(void *, void *, void *);
 
-K_THREAD_STACK_DEFINE(dht22_stack_area, CONFIG_DHT22_STACK_SIZE);
-static struct k_thread dht22_thread_data;
-
-void start_dht22_sampling()
-{
-    k_tid_t dht22_tid = k_thread_create(&dht22_thread_data, dht22_stack_area,
-                                        K_THREAD_STACK_SIZEOF(dht22_stack_area),
-                                        dht22_entry_point,
-                                        NULL, NULL, NULL,
-                                        CONFIG_DHT22_THREAD_PRIORITY, 0, K_FOREVER);
-    k_thread_name_set(dht22_tid, "dht22");
-    k_thread_start(dht22_tid);
-}
+K_THREAD_DEFINE(sensor_dht22, CONFIG_DHT22_STACK_SIZE,
+                dht22_entry_point, NULL, NULL, NULL,
+                CONFIG_DHT22_THREAD_PRIORITY, 0, 0);
 
 static void dht22_entry_point(void *u1, void *u2, void *u3)
 {
