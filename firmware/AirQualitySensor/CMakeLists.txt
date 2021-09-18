@@ -18,5 +18,6 @@ target_sources(app PRIVATE
   src/zb_airquality_sensor/device.c
   src/zb_airquality_sensor/zigbee_helpers.c
   src/zb_airquality_sensor/co2_cluster.c
+  src/zigbee_device.c
 )
 # NORDIC SDK APP END

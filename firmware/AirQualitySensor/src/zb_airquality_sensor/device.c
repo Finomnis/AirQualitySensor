@@ -65,7 +65,7 @@ ZB_HA_DECLARE_AIRQUALITY_SENSOR_CLUSTER_LIST(airquality_sensor_clusters,
 
 #define AIRQUALITY_SENSOR_ENDPOINT 1
 ZB_HA_DECLARE_AIRQUALITY_SENSOR_EP(airquality_sensor_ep, AIRQUALITY_SENSOR_ENDPOINT, airquality_sensor_clusters);
-ZB_HA_DECLARE_AIRQUALITY_SENSOR_CTX(device_ctx, airquality_sensor_ep);
+ZB_HA_DECLARE_AIRQUALITY_SENSOR_CTX(airquality_sensor_device_ctx, airquality_sensor_ep);
 
 void publish_temperature(zb_int16_t value)
 {
