@@ -18,8 +18,8 @@ add_subdirectory(subsys)
 target_sources(app PRIVATE
     src/main.c
     src/zigbee_device/zb_airquality_sensor/device.c
-    src/zigbee_device/zb_airquality_sensor/zigbee_helpers.c
     src/zigbee_device/zb_airquality_sensor/co2_cluster.c
     src/zigbee_device/zigbee_device.c
+    src/zigbee_device/publish_values.c
 )
 # NORDIC SDK APP END

@@ -1,7 +1,6 @@
 #include "device.h"
 
 #include "airquality_sensor.h"
-#include "zigbee_helpers.h"
 
 #include <logging/log.h>
 
@@ -63,51 +62,5 @@ ZB_HA_DECLARE_AIRQUALITY_SENSOR_CLUSTER_LIST(airquality_sensor_clusters,
                                              humidity_sensor_attr_list,
                                              co2_sensor_attr_list);
 
-#define AIRQUALITY_SENSOR_ENDPOINT 1
 ZB_HA_DECLARE_AIRQUALITY_SENSOR_EP(airquality_sensor_ep, AIRQUALITY_SENSOR_ENDPOINT, airquality_sensor_clusters);
 ZB_HA_DECLARE_AIRQUALITY_SENSOR_CTX(airquality_sensor_device_ctx, airquality_sensor_ep);
-
-void zb_airquality_sensor_publish_temperature(zb_int16_t value)
-{
-    zb_zcl_status_t result = publish_zigbee_attribute(
-        AIRQUALITY_SENSOR_ENDPOINT,
-        ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
-        ZB_ZCL_CLUSTER_SERVER_ROLE,
-        ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID,
-        &value);
-
-    if (ZB_ZCL_STATUS_SUCCESS != result)
-    {
-        LOG_WRN("Unable to publish temperature! Error: %d", result);
-    }
-}
-
-void zb_airquality_sensor_publish_humidity(zb_uint16_t value)
-{
-    zb_zcl_status_t result = publish_zigbee_attribute(
-        AIRQUALITY_SENSOR_ENDPOINT,
-        ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,
-        ZB_ZCL_CLUSTER_SERVER_ROLE,
-        ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_ID,
-        &value);
-
-    if (ZB_ZCL_STATUS_SUCCESS != result)
-    {
-        LOG_WRN("Unable to publish humidity! Error: %d", result);
-    }
-}
-
-void zb_airquality_sensor_publish_co2(float value)
-{
-    zb_zcl_status_t result = publish_zigbee_attribute(
-        AIRQUALITY_SENSOR_ENDPOINT,
-        ZB_ZCL_CLUSTER_ID_CO2_MEASUREMENT,
-        ZB_ZCL_CLUSTER_SERVER_ROLE,
-        ZB_ZCL_ATTR_CO2_MEASUREMENT_VALUE_ID,
-        &value);
-
-    if (ZB_ZCL_STATUS_SUCCESS != result)
-    {
-        LOG_WRN("Unable to publish co2! Error: %d", result);
-    }
-}

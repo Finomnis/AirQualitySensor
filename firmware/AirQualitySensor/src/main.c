@@ -55,8 +55,8 @@ void main(void)
     // Register sensor value handlers
     dht22_register_temperature_handler(handle_temperature_value);
     dht22_register_humidity_handler(handle_humidity_value);
-    //dht22_register_temperature_handler(publish_temperature);
-    //dht22_register_humidity_handler(publish_humidity);
+    dht22_register_temperature_handler(publish_temperature);
+    dht22_register_humidity_handler(publish_humidity);
 
     float co2 = 0.00001f;
     while (1)
