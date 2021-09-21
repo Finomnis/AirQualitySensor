@@ -7,12 +7,19 @@
 
 LOG_MODULE_DECLARE(zigbee_device);
 
-typedef union zigbee_attribute_value_t
+typedef struct zigbee_attribute_update_t
 {
-    float val_co2;
-    zb_int32_t val_temperature;
-    zb_uint32_t val_humidity;
-} zigbee_attribute_value;
+    zb_uint8_t ep;
+    zb_uint16_t cluster_id;
+    zb_uint8_t cluster_role;
+    zb_uint16_t attr_id;
+    union
+    {
+        float co2;
+        zb_int32_t temperature;
+        zb_uint32_t humidity;
+    } value;
+} zigbee_attribute_update;
 
 /**
  * @brief Sets and publishes a zigbee attribute value
@@ -25,41 +32,45 @@ typedef union zigbee_attribute_value_t
  *
  * @note given endpoint with given cluster ID should exist
  */
-void publish_zigbee_attribute(zb_uint8_t ep, zb_uint16_t cluster_id,
-                              zb_uint8_t cluster_role, zb_uint16_t attr_id,
-                              zigbee_attribute_value value)
+void publish_zigbee_attribute(zigbee_attribute_update data)
 {
-    LOG_INF("Publishing %d!", cluster_id);
+    LOG_INF("Publishing %d!", data.cluster_id);
 }
 
 void zb_airquality_sensor_publish_temperature(zb_int16_t value)
 {
-    zigbee_attribute_value attribute_value = {.val_temperature = value};
-    publish_zigbee_attribute(AIRQUALITY_SENSOR_ENDPOINT,
-                             ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
-                             ZB_ZCL_CLUSTER_SERVER_ROLE,
-                             ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID,
-                             attribute_value);
+    zigbee_attribute_update data = {
+        .ep = AIRQUALITY_SENSOR_ENDPOINT,
+        .cluster_id = ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
+        .cluster_role = ZB_ZCL_CLUSTER_SERVER_ROLE,
+        .attr_id = ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID,
+        .value.temperature = value};
+
+    publish_zigbee_attribute(data);
 }
 
 void zb_airquality_sensor_publish_humidity(zb_uint16_t value)
 {
-    zigbee_attribute_value attribute_value = {.val_humidity = value};
-    publish_zigbee_attribute(AIRQUALITY_SENSOR_ENDPOINT,
-                             ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,
-                             ZB_ZCL_CLUSTER_SERVER_ROLE,
-                             ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_ID,
-                             attribute_value);
+    zigbee_attribute_update data = {
+        .ep = AIRQUALITY_SENSOR_ENDPOINT,
+        .cluster_id = ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,
+        .cluster_role = ZB_ZCL_CLUSTER_SERVER_ROLE,
+        .attr_id = ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_ID,
+        .value.humidity = value};
+
+    publish_zigbee_attribute(data);
 }
 
 void zb_airquality_sensor_publish_co2(float value)
 {
-    zigbee_attribute_value attribute_value = {.val_co2 = value};
-    publish_zigbee_attribute(AIRQUALITY_SENSOR_ENDPOINT,
-                             ZB_ZCL_CLUSTER_ID_CO2_MEASUREMENT,
-                             ZB_ZCL_CLUSTER_SERVER_ROLE,
-                             ZB_ZCL_ATTR_CO2_MEASUREMENT_VALUE_ID,
-                             attribute_value);
+    zigbee_attribute_update data = {
+        .ep = AIRQUALITY_SENSOR_ENDPOINT,
+        .cluster_id = ZB_ZCL_CLUSTER_ID_CO2_MEASUREMENT,
+        .cluster_role = ZB_ZCL_CLUSTER_SERVER_ROLE,
+        .attr_id = ZB_ZCL_ATTR_CO2_MEASUREMENT_VALUE_ID,
+        .value.co2 = value};
+
+    publish_zigbee_attribute(data);
 }
 
 void publish_temperature(struct sensor_value value)
