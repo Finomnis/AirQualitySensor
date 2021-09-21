@@ -8,7 +8,7 @@ config DHT22
 config DHT22_STACK_SIZE
     int "DHT22 thread stack size"
     depends on DHT22
-    default 500
+    default 512
     help
       Size of DHT22 thread stack
 
