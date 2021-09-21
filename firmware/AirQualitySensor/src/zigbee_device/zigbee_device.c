@@ -14,7 +14,16 @@
 
 #define ZIGBEE_NETWORK_STATE_LED DK_LED2
 
+#define ZIGBEE_DEVICE_STACK_SIZE 2048
+#define ZIGBEE_DEVICE_THREAD_PRIORITY 3
+
 LOG_MODULE_REGISTER(zigbee_device);
+
+static void zigbee_device_main_loop(void *, void *, void *);
+
+K_THREAD_DEFINE(zigbee_device, ZIGBEE_DEVICE_STACK_SIZE,
+                zigbee_device_main_loop, NULL, NULL, NULL,
+                ZIGBEE_DEVICE_THREAD_PRIORITY, 0, -1);
 
 // Signal handler
 void zboss_signal_handler(zb_bufid_t bufid)
@@ -87,7 +96,7 @@ void airquality_sensor_device_interface_cb(zb_uint8_t param)
     }
 }
 
-void initialize_zigbee_device()
+static void zigbee_device_main_loop(void *unused1, void *unused2, void *unused3)
 {
     /* Configure Zigbee */
     zigbee_erase_persistent_storage(false);
@@ -100,8 +109,22 @@ void initialize_zigbee_device()
     /* Register Zigbee contexts */
     ZB_AF_REGISTER_DEVICE_CTX(&airquality_sensor_device_ctx);
 
-    /* Start Zigbee default thread. */
-    zigbee_enable();
+    /* Initialize zigbee context */
+    if (RET_OK != zboss_start())
+    {
+        LOG_ERR("Error when starting zboss stack!");
+        return;
+    }
+
+    while (1)
+    {
+        zboss_main_loop_iteration();
+    }
+}
+
+void initialize_zigbee_device()
+{
+    k_thread_start(zigbee_device);
 }
 
 void publish_temperature(struct sensor_value value)

@@ -15,10 +15,8 @@
 #include <dk_buttons_and_leds.h>
 #include <zboss_api.h>
 
-#include "zigbee_device.h"
+#include "zigbee_device/zigbee_device.h"
 #include "dht22.h"
-
-#include "zb_airquality_sensor/device.h"
 
 LOG_MODULE_REGISTER(main);
 
@@ -57,19 +55,19 @@ void main(void)
     // Register sensor value handlers
     dht22_register_temperature_handler(handle_temperature_value);
     dht22_register_humidity_handler(handle_humidity_value);
-    dht22_register_temperature_handler(publish_temperature);
-    dht22_register_humidity_handler(publish_humidity);
+    //dht22_register_temperature_handler(publish_temperature);
+    //dht22_register_humidity_handler(publish_humidity);
 
     float co2 = 0.00001f;
     while (1)
     {
         co2 += 0.00001f;
-        zb_airquality_sensor_publish_co2(co2);
+        //zb_airquality_sensor_publish_co2(co2);
         dk_set_led_on(DK_LED1);
-        k_sleep(K_MSEC(3000));
-        LOG_INF("Ping.");
+        k_sleep(K_MSEC(10));
+        //LOG_INF("Ping.");
         dk_set_led_off(DK_LED1);
-        k_sleep(K_MSEC(3000));
-        LOG_INF("Pong.");
+        k_sleep(K_MSEC(10));
+        //LOG_INF("Pong.");
     }
 }
