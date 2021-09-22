@@ -36,7 +36,6 @@ K_MSGQ_DEFINE(aql_attribute_report_queue, sizeof(zigbee_attribute_update), 10, 4
  */
 static void publish_zigbee_attribute(zigbee_attribute_update data)
 {
-    LOG_INF("Publishing %d!", data.cluster_id);
     if (0 != k_msgq_put(&aql_attribute_report_queue, &data, K_NO_WAIT))
     {
         k_msgq_purge(&aql_attribute_report_queue);
