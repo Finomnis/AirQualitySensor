@@ -64,10 +64,10 @@ void main(void)
         co2 += 0.00001f;
         //zb_airquality_sensor_publish_co2(co2);
         dk_set_led_on(DK_LED1);
-        k_sleep(K_MSEC(10));
+        k_sleep(K_MSEC(1000));
         //LOG_INF("Ping.");
         dk_set_led_off(DK_LED1);
-        k_sleep(K_MSEC(10));
+        k_sleep(K_MSEC(1000));
         //LOG_INF("Pong.");
     }
 }
