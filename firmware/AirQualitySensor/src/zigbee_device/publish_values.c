@@ -34,7 +34,7 @@ K_MSGQ_DEFINE(aql_attribute_report_queue, sizeof(zigbee_attribute_update), 10, 4
  *
  * @note given endpoint with given cluster ID should exist
  */
-void publish_zigbee_attribute(zigbee_attribute_update data)
+static void publish_zigbee_attribute(zigbee_attribute_update data)
 {
     LOG_INF("Publishing %d!", data.cluster_id);
     if (0 != k_msgq_put(&aql_attribute_report_queue, &data, K_NO_WAIT))
@@ -67,7 +67,7 @@ void publish_pending_attributes()
     }
 }
 
-void zb_airquality_sensor_publish_temperature(zb_int16_t value)
+static void zb_airquality_sensor_publish_temperature(zb_int16_t value)
 {
     zigbee_attribute_update data = {
         .ep = AIRQUALITY_SENSOR_ENDPOINT,
@@ -79,7 +79,7 @@ void zb_airquality_sensor_publish_temperature(zb_int16_t value)
     publish_zigbee_attribute(data);
 }
 
-void zb_airquality_sensor_publish_humidity(zb_uint16_t value)
+static void zb_airquality_sensor_publish_humidity(zb_uint16_t value)
 {
     zigbee_attribute_update data = {
         .ep = AIRQUALITY_SENSOR_ENDPOINT,
@@ -91,7 +91,7 @@ void zb_airquality_sensor_publish_humidity(zb_uint16_t value)
     publish_zigbee_attribute(data);
 }
 
-void zb_airquality_sensor_publish_co2(float value)
+static void zb_airquality_sensor_publish_co2(float value)
 {
     zigbee_attribute_update data = {
         .ep = AIRQUALITY_SENSOR_ENDPOINT,

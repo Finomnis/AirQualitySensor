@@ -65,7 +65,7 @@ void zboss_signal_handler(zb_bufid_t bufid)
     }
 }
 
-void airquality_sensor_device_interface_cb(zb_uint8_t param)
+static void airquality_sensor_device_interface_cb(zb_uint8_t param)
 {
     zb_zcl_device_callback_param_t *device_cb_param =
         ZB_BUF_GET_PARAM(param, zb_zcl_device_callback_param_t);
