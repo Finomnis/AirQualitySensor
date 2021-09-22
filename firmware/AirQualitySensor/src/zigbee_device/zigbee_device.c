@@ -119,6 +119,8 @@ static void zigbee_device_main_loop(void *unused1, void *unused2, void *unused3)
     while (1)
     {
         zboss_main_loop_iteration();
+
+        publish_pending_attributes();
     }
 }
 

@@ -21,6 +21,8 @@ typedef struct zigbee_attribute_update_t
     } value;
 } zigbee_attribute_update;
 
+K_MSGQ_DEFINE(aql_attribute_report_queue, sizeof(zigbee_attribute_update), 10, 4);
+
 /**
  * @brief Sets and publishes a zigbee attribute value
  *
@@ -35,6 +37,34 @@ typedef struct zigbee_attribute_update_t
 void publish_zigbee_attribute(zigbee_attribute_update data)
 {
     LOG_INF("Publishing %d!", data.cluster_id);
+    if (0 != k_msgq_put(&aql_attribute_report_queue, &data, K_NO_WAIT))
+    {
+        k_msgq_purge(&aql_attribute_report_queue);
+    }
+}
+
+void publish_pending_attributes()
+{
+    zigbee_attribute_update data;
+
+    while (1)
+    {
+        /* get a data item */
+        if (0 != k_msgq_get(&aql_attribute_report_queue, &data, K_NO_WAIT))
+            return;
+
+        /* process data item */
+        zb_zcl_status_t result = zb_zcl_set_attr_val(data.ep,
+                                                     data.cluster_id,
+                                                     data.cluster_role,
+                                                     data.attr_id,
+                                                     (zb_uint8_t *)&data.value,
+                                                     false);
+        if (ZB_ZCL_STATUS_SUCCESS != result)
+        {
+            LOG_WRN("Unable to publish attribute %d! Error: %d", data.cluster_id, result);
+        }
+    }
 }
 
 void zb_airquality_sensor_publish_temperature(zb_int16_t value)
