@@ -1,4 +1,4 @@
-#include "zigbee_device.h"
+#include "include/zigbee_device.h"
 
 #include "zb_airquality_sensor/device.h"
 
@@ -12,18 +12,13 @@
 #include <dk_buttons_and_leds.h>
 #include <logging/log.h>
 
-#define ZIGBEE_NETWORK_STATE_LED DK_LED2
-
-#define ZIGBEE_DEVICE_STACK_SIZE 2048
-#define ZIGBEE_DEVICE_THREAD_PRIORITY 3
-
 LOG_MODULE_REGISTER(zigbee_device);
 
 static void zigbee_device_main_loop(void *, void *, void *);
 
-K_THREAD_DEFINE(zigbee_device, ZIGBEE_DEVICE_STACK_SIZE,
+K_THREAD_DEFINE(zigbee_device, CONFIG_SUBSYS_ZIGBEE_DEVICE_STACK_SIZE,
                 zigbee_device_main_loop, NULL, NULL, NULL,
-                ZIGBEE_DEVICE_THREAD_PRIORITY, 0, -1);
+                CONFIG_SUBSYS_ZIGBEE_DEVICE_THREAD_PRIORITY, 0, -1);
 
 // Signal handler
 void zboss_signal_handler(zb_bufid_t bufid)
@@ -33,7 +28,7 @@ void zboss_signal_handler(zb_bufid_t bufid)
     zb_ret_t status = ZB_GET_APP_SIGNAL_STATUS(bufid);
 
     /* Update network status LED. */
-    zigbee_led_status_update(bufid, ZIGBEE_NETWORK_STATE_LED);
+    zigbee_led_status_update(bufid, CONFIG_SUBSYS_ZIGBEE_DEVICE_NETWORK_STATE_LED);
 
     switch (sig)
     {
@@ -124,7 +119,7 @@ static void zigbee_device_main_loop(void *unused1, void *unused2, void *unused3)
     }
 }
 
-void initialize_zigbee_device()
+void start_zigbee_device()
 {
     k_thread_start(zigbee_device);
 }

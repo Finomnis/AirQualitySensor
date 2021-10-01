@@ -1,2 +1,3 @@
 
 add_subdirectory_ifdef(CONFIG_SUBSYS_DHT22 dht22)
+add_subdirectory_ifdef(CONFIG_SUBSYS_ZIGBEE_DEVICE zigbee_device)

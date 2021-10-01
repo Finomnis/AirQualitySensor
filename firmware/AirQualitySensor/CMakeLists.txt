@@ -15,9 +15,5 @@ project("AirQualitySensor")
 # NORDIC SDK APP START
 target_sources(app PRIVATE
     src/main.c
-    src/zigbee_device/zb_airquality_sensor/device.c
-    src/zigbee_device/zb_airquality_sensor/co2_cluster.c
-    src/zigbee_device/zigbee_device.c
-    src/zigbee_device/publish_values.c
 )
 # NORDIC SDK APP END

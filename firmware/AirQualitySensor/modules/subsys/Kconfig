@@ -1,5 +1,6 @@
 menu "Sub Systems"
 
 rsource "dht22/Kconfig"
+rsource "zigbee_device/Kconfig"
 
 endmenu

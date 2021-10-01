@@ -13,16 +13,20 @@
 #include <zephyr.h>
 #include <logging/log.h>
 #include <dk_buttons_and_leds.h>
-#include <zboss_api.h>
+#include <drivers/sensor.h>
 
-#include "zigbee_device/zigbee_device.h"
+#if CONFIG_SUBSYS_ZIGBEE_DEVICE
+#include "zigbee_device.h"
+#endif
+
+#if CONFIG_SUBSYS_DHT22
 #include "dht22.h"
+#endif
 
 LOG_MODULE_REGISTER(main);
 
-/********************* Declare device **************************/
-
-void handle_temperature_value(struct sensor_value value)
+#if CONFIG_SUBSYS_DHT22
+static void handle_temperature_value(struct sensor_value value)
 {
     LOG_INF("Temperature: %d.%d Celsius", value.val1, value.val2);
     if (value.val2 < 0)
@@ -30,7 +34,7 @@ void handle_temperature_value(struct sensor_value value)
         LOG_WRN("Temperature failed.");
     }
 }
-void handle_humidity_value(struct sensor_value value)
+static void handle_humidity_value(struct sensor_value value)
 {
     LOG_INF("Humidity: %d.%d %%", value.val1, value.val2);
     if (value.val2 < 0)
@@ -38,6 +42,7 @@ void handle_humidity_value(struct sensor_value value)
         LOG_WRN("Humidity failed.");
     }
 }
+#endif
 
 void main(void)
 {
@@ -49,14 +54,23 @@ void main(void)
         LOG_ERR("Cannot init LEDs (err: %d)", err);
     }
 
+#if CONFIG_SUBSYS_ZIGBEE_DEVICE
     // Start zigbee device
-    initialize_zigbee_device();
+    start_zigbee_device();
 
+#if CONFIG_SUBSYS_DHT22
+    // Forward dht22 measurements to zigbee
+    dht22_register_temperature_handler(publish_temperature);
+    dht22_register_humidity_handler(publish_humidity);
+#endif
+
+#endif
+
+#if CONFIG_SUBSYS_DHT22
     // Register sensor value handlers
     dht22_register_temperature_handler(handle_temperature_value);
     dht22_register_humidity_handler(handle_humidity_value);
-    dht22_register_temperature_handler(publish_temperature);
-    dht22_register_humidity_handler(publish_humidity);
+#endif
 
     float co2 = 0.00001f;
     while (1)
