@@ -1,18 +1,16 @@
 #
-# Copyright (c) 2020 Nordic Semiconductor ASA
+# Copyright (c) 2021 Finomnis
 #
-# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+# SPDX-License-Identifier: MIT
 #
 
-cmake_minimum_required(VERSION 3.13.1)
-
-find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
-
-project("Zigbee light bulb with Scenes")
+cmake_minimum_required(VERSION 3.20.0)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
+set(ZEPHYR_EXTRA_MODULES "${CMAKE_SOURCE_DIR}/modules")
+find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
-add_subdirectory(subsys)
+project("AirQualitySensor")
 
 # NORDIC SDK APP START
 target_sources(app PRIVATE

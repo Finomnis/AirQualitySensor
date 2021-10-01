@@ -3,5 +3,3 @@ menu "Air Quality Sensor"
 rsource "subsys/Kconfig"
 
 endmenu
-
-source "Kconfig.zephyr"
