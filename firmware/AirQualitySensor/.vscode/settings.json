@@ -1,15 +1,22 @@
 {
     "cmake.useCMakePresets": "always",
     "terminal.integrated.profiles.windows": {
-        "PowerShell nRF Connect SDK 1.6.1": {
+        "PowerShell nRF Connect SDK 1.7.0": {
             "path": "${env:windir}\\System32\\cmd.exe",
             "args": [
                 "/K",
-                "(echo Loading nRF Connect SDK ...) && ${env:USERPROFILE}\\ncs\\v1.6.1\\toolchain\\cmd\\env.cmd && powershell"
+                "(echo Loading nRF Connect SDK ...) && ${env:USERPROFILE}\\ncs\\v1.7.0\\toolchain\\cmd\\env.cmd && powershell"
             ],
             "icon": "terminal-cmd"
         }
     },
-    "terminal.integrated.defaultProfile.windows": "PowerShell nRF Connect SDK 1.6.1",
-    "cmake.cmakePath": "${env:USERPROFILE}/ncs/v1.6.1/toolchain/opt/bin/cmake.exe"
+    "terminal.integrated.defaultProfile.windows": "PowerShell nRF Connect SDK 1.7.0",
+    "cmake.cmakePath": "${env:USERPROFILE}/ncs/v1.7.0/toolchain/opt/bin/cmake.exe",
+    "kconfig.zephyr.west": "${env:USERPROFILE}\\ncs\\v1.7.0\\toolchain\\opt\\bin\\Scripts\\west.exe",
+    "kconfig.zephyr.base": "${env:USERPROFILE}\\ncs\\v1.7.0\\zephyr",
+    "kconfig.zephyr.board": {
+        "board": "adafruit_feather_nrf52840",
+        "arch": "arm",
+        "dir": "${env:USERPROFILE}\\ncs\\v1.6.1\\zephyr\\boards\\arm\\adafruit_feather_nrf52840"
+    },
 }

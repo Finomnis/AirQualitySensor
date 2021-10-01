@@ -1,14 +1,8 @@
 {
     "configurations": [
         {
-            "compilerPath": "${env:USERPROFILE}/ncs/v1.6.1/toolchain/opt/bin/arm-none-eabi-gcc.exe",
+            "compilerPath": "${env:USERPROFILE}/ncs/v1.7.0/toolchain/opt/bin/arm-none-eabi-gcc.exe",
             "name": "Win32",
-            // "includePath": [
-            //     "${env:USERPROFILE}/ncs/v1.6.1/zephyr/include",
-            //     "${env:USERPROFILE}/ncs/v1.6.1/nrf/include",
-            //     "${env:USERPROFILE}/ncs/v1.6.1/toolchain/opt/lib/gcc/arm-none-eabi/9.2.1/include",
-            //     "${workspaceFolder}/build/zephyr/include/generated"
-            // ],
             "compileCommands": "${workspaceFolder}/build/compile_commands.json",
             "configurationProvider": "ms-vscode.cmake-tools"
         }
