@@ -1,0 +1,7 @@
+# Sensair S8 Nano Power Real time Clock configuration options
+
+menuconfig SENSAIR_S8
+    bool "Sensair S8 CO2 Sensor"
+    #depends on (I2C && HAS_DTS_I2C)
+    help
+      Enable Sensair S8 CO2 Sensor driver

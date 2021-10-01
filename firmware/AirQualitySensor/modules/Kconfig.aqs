@@ -1,5 +1,6 @@
 menu "Air Quality Sensor"
 
 rsource "subsys/Kconfig"
+rsource "drivers/Kconfig"
 
 endmenu

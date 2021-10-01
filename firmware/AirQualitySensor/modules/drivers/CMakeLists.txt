@@ -1,0 +1,2 @@
+
+add_subdirectory_ifdef(CONFIG_SENSAIR_S8 sensair_s8)

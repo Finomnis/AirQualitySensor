@@ -1,0 +1,3 @@
+zephyr_library_named(sensair_s8)
+
+zephyr_library_sources_ifdef(CONFIG_SENSAIR_S8 sensair_s8.c)

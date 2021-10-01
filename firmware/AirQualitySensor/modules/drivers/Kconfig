@@ -1,0 +1,3 @@
+comment "Device Drivers"
+
+rsource "sensair_s8/Kconfig"
