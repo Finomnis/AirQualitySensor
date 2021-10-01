@@ -1,2 +1,2 @@
 
-add_subdirectory_ifdef(CONFIG_DHT22 dht22)
+add_subdirectory_ifdef(CONFIG_SUBSYS_DHT22 dht22)

@@ -7,9 +7,9 @@ LOG_MODULE_REGISTER(dht22);
 
 static void dht22_entry_point(void *, void *, void *);
 
-K_THREAD_DEFINE(sensor_dht22, CONFIG_DHT22_STACK_SIZE,
+K_THREAD_DEFINE(sensor_dht22, CONFIG_SUBSYS_DHT22_STACK_SIZE,
                 dht22_entry_point, NULL, NULL, NULL,
-                CONFIG_DHT22_THREAD_PRIORITY, 0, 0);
+                CONFIG_SUBSYS_DHT22_THREAD_PRIORITY, 0, 0);
 
 #define REGISTER_PUBLISHABLE_SENSOR_VALUE(name, max_count)               \
     static dht22_value_cb name##_callbacks[max_count];                   \
@@ -50,8 +50,8 @@ K_THREAD_DEFINE(sensor_dht22, CONFIG_DHT22_STACK_SIZE,
         k_mutex_unlock(&dht22_##name##_callback_mutex);                  \
     }
 
-REGISTER_PUBLISHABLE_SENSOR_VALUE(temperature, CONFIG_DHT22_CALLBACK_MAX_COUNT_TEMPERATURE);
-REGISTER_PUBLISHABLE_SENSOR_VALUE(humidity, CONFIG_DHT22_CALLBACK_MAX_COUNT_HUMIDITY);
+REGISTER_PUBLISHABLE_SENSOR_VALUE(temperature, CONFIG_SUBSYS_DHT22_CALLBACK_MAX_COUNT_TEMPERATURE);
+REGISTER_PUBLISHABLE_SENSOR_VALUE(humidity, CONFIG_SUBSYS_DHT22_CALLBACK_MAX_COUNT_HUMIDITY);
 
 static void dht22_entry_point(void *u1, void *u2, void *u3)
 {
@@ -69,7 +69,7 @@ static void dht22_entry_point(void *u1, void *u2, void *u3)
 
     while (1)
     {
-        k_sleep(K_MSEC(CONFIG_DHT22_SAMPLING_RATE_MS));
+        k_sleep(K_MSEC(CONFIG_SUBSYS_DHT22_SAMPLING_RATE_MS));
 
         int success;
 
