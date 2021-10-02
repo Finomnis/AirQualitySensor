@@ -1,5 +1,5 @@
 
-config SUBSYS_ZIGBEE_DEVICE
+menuconfig SUBSYS_ZIGBEE_DEVICE
     bool "ZigBee device subsystem"
     depends on ZIGBEE
     depends on ZIGBEE_APP_UTILS

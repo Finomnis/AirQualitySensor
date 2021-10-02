@@ -1,5 +1,5 @@
 
-config SUBSYS_DHT22
+menuconfig SUBSYS_DHT22
     bool "DHT22 sensor sampling subsystem"
     depends on DHT
     help
