@@ -72,19 +72,7 @@ void main(void)
     dht22_register_humidity_handler(handle_humidity_value);
 #endif
 
-    /*float co2 = 0.00001f;
-    while (1)
-    {
-        co2 += 0.00001f;
-        //zb_airquality_sensor_publish_co2(co2);
-        dk_set_led_on(DK_LED1);
-        k_sleep(K_MSEC(1000));
-        //LOG_INF("Ping.");
-        dk_set_led_off(DK_LED1);
-        k_sleep(K_MSEC(1000));
-        //LOG_INF("Pong.");
-    }*/
-
+#if CONFIG_SENSAIR_S8
     const char *const label = DT_LABEL(DT_PATH(co2sensor));
     const struct device *co2_sensor = device_get_binding(label);
     if (!co2_sensor)
@@ -118,5 +106,19 @@ void main(void)
         {
             LOG_INF("got CO2: %d.%d", co2_val.val1, co2_val.val2);
         }
+    }
+#endif
+
+    float co2 = 0.00001f;
+    while (1)
+    {
+        co2 += 0.00001f;
+        //zb_airquality_sensor_publish_co2(co2);
+        dk_set_led_on(DK_LED1);
+        k_sleep(K_MSEC(1000));
+        //LOG_INF("Ping.");
+        dk_set_led_off(DK_LED1);
+        k_sleep(K_MSEC(1000));
+        //LOG_INF("Pong.");
     }
 }

@@ -20,21 +20,42 @@ const static struct modbus_iface_param modbus_params = {
     },
 };
 
+#define INPUT_REGISTER_SENSOR_ID 29
+#define INPUT_REGISTER_SENSOR_ID_LEN 2
+
 static int sensair_s8_init(const struct device *dev)
 {
     struct sensair_s8_data *drv_data = dev->data;
     int ret = 0;
 
-    *drv_data = (struct sensair_s8_data){0};
+    *drv_data = (struct sensair_s8_data){
+        .modbus_iface = modbus_iface_get_by_name(CONFIG_SENSAIR_S8_MODBUS_DEV_NAME),
+        .modbus_sensor_address = 0xFE,
+        .sample = {0},
+    };
 
     // Initialize modbus
-    drv_data->modbus_iface = modbus_iface_get_by_name(CONFIG_SENSAIR_S8_MODBUS_DEV_NAME);
     ret = modbus_init_client(drv_data->modbus_iface, modbus_params);
     if (ret)
     {
         LOG_ERR("Unable to initialize modbus!");
         return ret;
     }
+
+    uint16_t sensor_id_raw[INPUT_REGISTER_SENSOR_ID_LEN];
+    ret = modbus_read_input_regs(
+        drv_data->modbus_iface,
+        drv_data->modbus_sensor_address,
+        INPUT_REGISTER_SENSOR_ID,
+        sensor_id_raw,
+        INPUT_REGISTER_SENSOR_ID_LEN);
+    if (ret)
+    {
+        LOG_ERR("Unable to read sensor id!");
+        return ret;
+    }
+
+    LOG_INF("Sensor found! (ID: 0x%04x%04x)", sensor_id_raw[0], sensor_id_raw[1]);
 
     //     drv_data->i2c = device_get_binding(DT_INST_BUS_LABEL(0));
     //     if (drv_data->i2c == NULL)
