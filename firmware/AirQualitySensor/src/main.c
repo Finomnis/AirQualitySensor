@@ -28,7 +28,7 @@ LOG_MODULE_REGISTER(main);
 #if CONFIG_SUBSYS_DHT22
 static void handle_temperature_value(struct sensor_value value)
 {
-    LOG_INF("Temperature: %d.%d Celsius", value.val1, value.val2);
+    LOG_INF("Temperature: %d.%06d Celsius", value.val1, value.val2);
     if (value.val2 < 0)
     {
         LOG_WRN("Temperature failed.");
@@ -36,7 +36,7 @@ static void handle_temperature_value(struct sensor_value value)
 }
 static void handle_humidity_value(struct sensor_value value)
 {
-    LOG_INF("Humidity: %d.%d %%", value.val1, value.val2);
+    LOG_INF("Humidity: %d.%06d %%", value.val1, value.val2);
     if (value.val2 < 0)
     {
         LOG_WRN("Humidity failed.");
@@ -104,7 +104,7 @@ void main(void)
         }
         else
         {
-            LOG_INF("got CO2: %d.%d", co2_val.val1, co2_val.val2);
+            LOG_INF("got CO2: %d.%06d", co2_val.val1, co2_val.val2);
         }
     }
 #endif
