@@ -5,16 +5,38 @@
  */
 
 / {
-	chosen {
-		zephyr,entropy = &rng;
-	};
+    chosen {
+        zephyr,entropy = &rng;
+        sensair,s8-bus = &s8modbus;
+    };
 
 
-	dht22 {
-		compatible = "aosong,dht";
-		status = "okay";
-		label = "DHT22";
-		dio-gpios = <&gpio0 7 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-		dht22;
-	};
+    dht22 {
+        compatible = "aosong,dht";
+        status = "okay";
+        label = "DHT22";
+        dio-gpios = <&gpio0 7 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+        dht22;
+    };
+
+
+    co2sensor {
+        compatible = "sensair,s8";
+        status = "okay";
+        label = "SENSAIR_S8";
+    };
+};
+
+
+&uart1 {
+    compatible = "nordic,nrf-uart";
+    status = "okay";
+    tx-pin = <26>;
+    rx-pin = <27>;
+
+    s8modbus: modbus0 {
+        compatible = "zephyr,modbus-serial";
+        status = "okay";
+        label = "MODBUS0";
+    };
 };
