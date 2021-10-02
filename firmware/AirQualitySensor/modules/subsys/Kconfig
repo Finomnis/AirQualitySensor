@@ -1,4 +1,5 @@
 comment "Subsystems"
 
 rsource "dht22/Kconfig"
+rsource "senseair_s8/Kconfig"
 rsource "zigbee_device/Kconfig"

@@ -1,0 +1,36 @@
+
+menuconfig SUBSYS_SENSEAIR_S8
+    bool "Senseair S8 sensor sampling subsystem"
+    depends on SENSAIR_S8
+    help
+      Enable Senseair S8 thread that continuously samples CO2 values.
+
+config SUBSYS_SENSEAIR_S8_STACK_SIZE
+    int "Senseair S8 thread stack size"
+    depends on SUBSYS_SENSEAIR_S8
+    default 512
+    help
+      Size of Senseair S8 thread stack
+
+config SUBSYS_SENSEAIR_S8_THREAD_PRIORITY
+    int "Senseair S8 thread priority"
+    depends on SUBSYS_SENSEAIR_S8
+    default -3
+    help
+      Priority of the Senseair S8 thread.
+
+config SUBSYS_SENSEAIR_S8_SAMPLING_RATE_MS
+    int "Senseair S8 sampling rate (ms)"
+    depends on SUBSYS_SENSEAIR_S8
+    default 4000
+    range 4000 1000000000
+    help
+      The sampling rate of the sensor in milliseconds. Needs to be at least
+      4000, as the sensor cannot sample faster.
+
+config SUBSYS_SENSEAIR_S8_CALLBACK_MAX_COUNT_CO2
+    int "Senseair S8 max callbacks for CO2"
+    depends on SUBSYS_SENSEAIR_S8
+    default 10
+    help
+      Maximum number of co2 callbacks registered to the Senseair S8 device

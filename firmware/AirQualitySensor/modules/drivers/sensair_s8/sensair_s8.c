@@ -64,7 +64,7 @@ static int sensair_s8_init(const struct device *dev)
     *drv_data = (struct sensair_s8_data){
         .modbus_iface = modbus_iface_get_by_name(CONFIG_SENSAIR_S8_MODBUS_DEV_NAME),
         .modbus_sensor_address = 0xFE,
-        .sample = {0},
+        .sample = 0,
     };
 
     // Initialize modbus

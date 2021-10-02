@@ -23,6 +23,10 @@
 #include "dht22.h"
 #endif
 
+#if CONFIG_SUBSYS_SENSEAIR_S8
+#include "senseair_s8.h"
+#endif
+
 LOG_MODULE_REGISTER(main);
 
 #if CONFIG_SUBSYS_DHT22
@@ -40,6 +44,17 @@ static void handle_humidity_value(struct sensor_value value)
     if (value.val2 < 0)
     {
         LOG_WRN("Humidity failed.");
+    }
+}
+#endif
+
+#if CONFIG_SUBSYS_SENSEAIR_S8
+static void handle_co2_value(struct sensor_value value)
+{
+    LOG_INF("CO2: %d.%06d", value.val1, value.val2);
+    if (value.val2 < 0)
+    {
+        LOG_WRN("CO2 failed.");
     }
 }
 #endif
@@ -72,41 +87,9 @@ void main(void)
     dht22_register_humidity_handler(handle_humidity_value);
 #endif
 
-#if CONFIG_SENSAIR_S8
-    const char *const label = DT_LABEL(DT_PATH(co2sensor));
-    const struct device *co2_sensor = device_get_binding(label);
-    if (!co2_sensor)
-    {
-        LOG_ERR("Failed to find sensor %s!", label);
-        return;
-    }
-
-    struct sensor_value co2_val;
-
-    while (1)
-    {
-        k_sleep(K_MSEC(4000));
-
-        int success;
-
-        success = sensor_sample_fetch(co2_sensor);
-        if (success != 0)
-        {
-            LOG_WRN("Sensor fetch failed: %d", success);
-            continue;
-        }
-
-        success = sensor_channel_get(co2_sensor, SENSOR_CHAN_CO2,
-                                     &co2_val);
-        if (success != 0)
-        {
-            LOG_WRN("get failed: %d", success);
-        }
-        else
-        {
-            LOG_INF("got CO2: %d.%06d", co2_val.val1, co2_val.val2);
-        }
-    }
+#if CONFIG_SUBSYS_SENSEAIR_S8
+    // Register sensor value handlers
+    senseair_s8_register_co2_handler(handle_co2_value);
 #endif
 
     float co2 = 0.00001f;

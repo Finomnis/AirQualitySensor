@@ -20,10 +20,10 @@
     };
 
 
-    co2sensor {
+    senseair_s8 {
         compatible = "sensair,s8";
         status = "okay";
-        label = "SENSAIR_S8";
+        label = "SENSEAIR_S8";
     };
 };
 
