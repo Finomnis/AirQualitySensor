@@ -23,4 +23,5 @@ struct sensair_s8_sample_type
 struct sensair_s8_data
 {
     struct sensair_s8_sample_type sample;
+    int modbus_iface;
 };

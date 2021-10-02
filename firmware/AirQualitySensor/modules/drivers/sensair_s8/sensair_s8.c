@@ -3,6 +3,7 @@
 #include <device.h>
 #include <zephyr.h>
 #include <drivers/sensor.h>
+#include <modbus/modbus.h>
 
 #include <logging/log.h>
 
@@ -10,16 +11,31 @@
 
 LOG_MODULE_REGISTER(sensair_s8, CONFIG_SENSOR_LOG_LEVEL);
 
+const static struct modbus_iface_param modbus_params = {
+    .mode = MODBUS_MODE_RTU,
+    .rx_timeout = 50000,
+    .serial = {
+        .baud = 9600,
+        .parity = UART_CFG_PARITY_NONE,
+    },
+};
+
 static int sensair_s8_init(const struct device *dev)
 {
     struct sensair_s8_data *drv_data = dev->data;
     int ret = 0;
-    int status;
-    uint16_t fw_ver;
-    uint8_t cmd;
-    uint8_t hw_id;
 
     *drv_data = (struct sensair_s8_data){0};
+
+    // Initialize modbus
+    drv_data->modbus_iface = modbus_iface_get_by_name(CONFIG_SENSAIR_S8_MODBUS_DEV_NAME);
+    ret = modbus_init_client(drv_data->modbus_iface, modbus_params);
+    if (ret)
+    {
+        LOG_ERR("Unable to initialize modbus!");
+        return ret;
+    }
+
     //     drv_data->i2c = device_get_binding(DT_INST_BUS_LABEL(0));
     //     if (drv_data->i2c == NULL)
     //     {

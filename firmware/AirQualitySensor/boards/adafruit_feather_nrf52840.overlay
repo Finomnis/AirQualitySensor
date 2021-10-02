@@ -29,10 +29,10 @@
 
 
 &uart1 {
-    compatible = "nordic,nrf-uart";
     status = "okay";
     tx-pin = <26>;
     rx-pin = <27>;
+    current-speed = <9600>;
 
     s8modbus: modbus0 {
         compatible = "zephyr,modbus-serial";
