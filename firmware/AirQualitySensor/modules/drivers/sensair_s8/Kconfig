@@ -2,7 +2,7 @@
 
 menuconfig SENSAIR_S8
     bool "Sensair S8 CO2 Sensor"
-    depends on MODBUS
+    depends on (MODBUS && MODBUS_ROLE_CLIENT)
     help
       Enable Sensair S8 CO2 Sensor driver
 
