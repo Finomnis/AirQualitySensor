@@ -1,7 +1,7 @@
 
 menuconfig SUBSYS_SENSEAIR_S8
     bool "Senseair S8 sensor sampling subsystem"
-    depends on SENSAIR_S8
+    depends on SENSEAIR_S8
     help
       Enable Senseair S8 thread that continuously samples CO2 values.
 

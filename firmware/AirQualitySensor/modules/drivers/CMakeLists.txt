@@ -1,2 +1,2 @@
 
-add_subdirectory_ifdef(CONFIG_SENSAIR_S8 sensair_s8)
+add_subdirectory_ifdef(CONFIG_SENSEAIR_S8 senseair_s8)

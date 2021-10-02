@@ -7,7 +7,7 @@
 / {
     chosen {
         zephyr,entropy = &rng;
-        sensair,s8-bus = &s8modbus;
+        senseair,s8-bus = &s8modbus;
     };
 
 
@@ -21,7 +21,7 @@
 
 
     senseair_s8 {
-        compatible = "sensair,s8";
+        compatible = "senseair,s8";
         status = "okay";
         label = "SENSEAIR_S8";
     };

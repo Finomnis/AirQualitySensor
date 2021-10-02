@@ -1,4 +1,4 @@
-#define DT_DRV_COMPAT sensair_s8
+#define DT_DRV_COMPAT senseair_s8
 
 #include <device.h>
 #include <zephyr.h>
@@ -7,9 +7,9 @@
 
 #include <logging/log.h>
 
-#include "sensair_s8.h"
+#include "senseair_s8.h"
 
-LOG_MODULE_REGISTER(sensair_s8, CONFIG_SENSOR_LOG_LEVEL);
+LOG_MODULE_REGISTER(senseair_s8_driver, CONFIG_SENSOR_LOG_LEVEL);
 
 const static struct modbus_iface_param modbus_params = {
     .mode = MODBUS_MODE_RTU,
@@ -20,7 +20,7 @@ const static struct modbus_iface_param modbus_params = {
     },
 };
 
-#define SENSOR_TYPE_SENSAIR_S8_LP 0x10e
+#define SENSOR_TYPE_SENSEAIR_S8_LP 0x10e
 #define INPUT_REGISTER_DeviceStatus 0
 #define INPUT_REGISTER_DeviceStatus_LEN 4
 #define INPUT_REGISTER_DeviceStatus_Error 0
@@ -34,9 +34,9 @@ const static struct modbus_iface_param modbus_params = {
 #define INPUT_REGISTER_SensorInfo_SensorID_hi 4
 #define INPUT_REGISTER_SensorInfo_SensorID_lo 5
 
-static int sensair_s8_read_sample(struct sensair_s8_data *drv_data,
-                                  uint16_t *error,
-                                  uint16_t *co2_value)
+static int senseair_s8_read_sample(struct senseair_s8_data *drv_data,
+                                   uint16_t *error,
+                                   uint16_t *co2_value)
 {
     uint16_t device_status[INPUT_REGISTER_DeviceStatus_LEN];
 
@@ -56,13 +56,13 @@ static int sensair_s8_read_sample(struct sensair_s8_data *drv_data,
     return ret;
 }
 
-static int sensair_s8_init(const struct device *dev)
+static int senseair_s8_init(const struct device *dev)
 {
-    struct sensair_s8_data *drv_data = dev->data;
+    struct senseair_s8_data *drv_data = dev->data;
     int ret = 0;
 
-    *drv_data = (struct sensair_s8_data){
-        .modbus_iface = modbus_iface_get_by_name(CONFIG_SENSAIR_S8_MODBUS_DEV_NAME),
+    *drv_data = (struct senseair_s8_data){
+        .modbus_iface = modbus_iface_get_by_name(CONFIG_SENSEAIR_S8_MODBUS_DEV_NAME),
         .modbus_sensor_address = 0xFE,
         .sample = 0,
     };
@@ -107,23 +107,23 @@ static int sensair_s8_init(const struct device *dev)
     // Check for correct sensor type.
     // Extend this, if other sensors shall be supported.
     // (If they have the same register layout, of course)
-    if (sensor_type != SENSOR_TYPE_SENSAIR_S8_LP)
+    if (sensor_type != SENSOR_TYPE_SENSEAIR_S8_LP)
     {
-        LOG_ERR("Sensor is not a Sensair S8 LP!");
+        LOG_ERR("Sensor is not a Senseair S8 LP!");
         return -EINVAL;
     }
 
     return ret;
 }
 
-static int sensair_s8_sample_fetch(const struct device *dev,
-                                   enum sensor_channel chan)
+static int senseair_s8_sample_fetch(const struct device *dev,
+                                    enum sensor_channel chan)
 {
-    struct sensair_s8_data *drv_data = dev->data;
+    struct senseair_s8_data *drv_data = dev->data;
 
     uint16_t error;
     uint16_t co2_value;
-    int ret = sensair_s8_read_sample(drv_data, &error, &co2_value);
+    int ret = senseair_s8_read_sample(drv_data, &error, &co2_value);
     if (ret)
     {
         return -EIO;
@@ -140,11 +140,11 @@ static int sensair_s8_sample_fetch(const struct device *dev,
     return 0;
 }
 
-static int sensair_s8_channel_get(const struct device *dev,
-                                  enum sensor_channel chan,
-                                  struct sensor_value *val)
+static int senseair_s8_channel_get(const struct device *dev,
+                                   enum sensor_channel chan,
+                                   struct sensor_value *val)
 {
-    struct sensair_s8_data *drv_data = dev->data;
+    struct senseair_s8_data *drv_data = dev->data;
 
     switch (chan)
     {
@@ -159,14 +159,14 @@ static int sensair_s8_channel_get(const struct device *dev,
     return 0;
 }
 
-static const struct sensor_driver_api sensair_s8_driver_api = {
-    .sample_fetch = sensair_s8_sample_fetch,
-    .channel_get = sensair_s8_channel_get,
+static const struct sensor_driver_api senseair_s8_driver_api = {
+    .sample_fetch = senseair_s8_sample_fetch,
+    .channel_get = senseair_s8_channel_get,
 };
 
-static struct sensair_s8_data sensair_s8_data;
+static struct senseair_s8_data senseair_s8_data;
 
-DEVICE_DT_INST_DEFINE(0, sensair_s8_init, NULL,
-                      &sensair_s8_data, NULL,
+DEVICE_DT_INST_DEFINE(0, senseair_s8_init, NULL,
+                      &senseair_s8_data, NULL,
                       POST_KERNEL, CONFIG_SENSOR_INIT_PRIORITY,
-                      &sensair_s8_driver_api);
+                      &senseair_s8_driver_api);
