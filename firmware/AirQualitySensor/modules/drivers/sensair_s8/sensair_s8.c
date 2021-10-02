@@ -20,8 +20,41 @@ const static struct modbus_iface_param modbus_params = {
     },
 };
 
-#define INPUT_REGISTER_SENSOR_ID 29
-#define INPUT_REGISTER_SENSOR_ID_LEN 2
+#define SENSOR_TYPE_SENSAIR_S8_LP 0x10e
+#define INPUT_REGISTER_DeviceStatus 0
+#define INPUT_REGISTER_DeviceStatus_LEN 4
+#define INPUT_REGISTER_DeviceStatus_Error 0
+#define INPUT_REGISTER_DeviceStatus_CO2 3
+#define INPUT_REGISTER_SensorInfo 25
+#define INPUT_REGISTER_SensorInfo_LEN 6
+#define INPUT_REGISTER_SensorInfo_SensorTypeID_hi 0
+#define INPUT_REGISTER_SensorInfo_SensorTypeID_lo 1
+#define INPUT_REGISTER_SensorInfo_MemoryMapVersion 2
+#define INPUT_REGISTER_SensorInfo_FirmwareVersion 3
+#define INPUT_REGISTER_SensorInfo_SensorID_hi 4
+#define INPUT_REGISTER_SensorInfo_SensorID_lo 5
+
+static int sensair_s8_read_sample(struct sensair_s8_data *drv_data,
+                                  uint16_t *error,
+                                  uint16_t *co2_value)
+{
+    uint16_t device_status[INPUT_REGISTER_DeviceStatus_LEN];
+
+    int ret = modbus_read_input_regs(
+        drv_data->modbus_iface,
+        drv_data->modbus_sensor_address,
+        INPUT_REGISTER_DeviceStatus,
+        device_status,
+        INPUT_REGISTER_DeviceStatus_LEN);
+
+    if (!ret)
+    {
+        *error = device_status[INPUT_REGISTER_DeviceStatus_Error];
+        *co2_value = device_status[INPUT_REGISTER_DeviceStatus_CO2];
+    }
+
+    return ret;
+}
 
 static int sensair_s8_init(const struct device *dev)
 {
@@ -42,185 +75,44 @@ static int sensair_s8_init(const struct device *dev)
         return ret;
     }
 
-    uint16_t sensor_id_raw[INPUT_REGISTER_SENSOR_ID_LEN];
+    // Query sensor version information, to make sure
+    uint16_t sensor_info[INPUT_REGISTER_SensorInfo_LEN];
     ret = modbus_read_input_regs(
         drv_data->modbus_iface,
         drv_data->modbus_sensor_address,
-        INPUT_REGISTER_SENSOR_ID,
-        sensor_id_raw,
-        INPUT_REGISTER_SENSOR_ID_LEN);
+        INPUT_REGISTER_SensorInfo,
+        sensor_info,
+        INPUT_REGISTER_SensorInfo_LEN);
     if (ret)
     {
-        LOG_ERR("Unable to read sensor id!");
+        LOG_ERR("Unable to read sensor info!");
         return ret;
     }
 
-    LOG_INF("Sensor found! (ID: 0x%04x%04x)", sensor_id_raw[0], sensor_id_raw[1]);
+    uint32_t sensor_type =
+        (((uint32_t)sensor_info[INPUT_REGISTER_SensorInfo_SensorTypeID_hi]) << 2) +
+        ((uint32_t)sensor_info[INPUT_REGISTER_SensorInfo_SensorTypeID_lo]);
 
-    //     drv_data->i2c = device_get_binding(DT_INST_BUS_LABEL(0));
-    //     if (drv_data->i2c == NULL)
-    //     {
-    //         LOG_ERR("Failed to get pointer to %s device!",
-    //                 DT_INST_BUS_LABEL(0));
-    //         return -EINVAL;
-    //     }
+    LOG_INF("Sensor connection established!");
+    LOG_INF("    Type ID: 0x%x", sensor_type);
+    LOG_INF("    Memory Map Version: 0x%x",
+            sensor_info[INPUT_REGISTER_SensorInfo_MemoryMapVersion]);
+    LOG_INF("    Firmware Version: %d.%d",
+            (sensor_info[INPUT_REGISTER_SensorInfo_FirmwareVersion] >> 1) & 0xff,
+            sensor_info[INPUT_REGISTER_SensorInfo_FirmwareVersion] & 0xff);
+    LOG_INF("    ID: 0x%04x%04x",
+            sensor_info[INPUT_REGISTER_SensorInfo_SensorID_hi],
+            sensor_info[INPUT_REGISTER_SensorInfo_SensorID_lo]);
 
-    // #if DT_INST_NODE_HAS_PROP(0, wake_gpios)
-    //     drv_data->wake_gpio = device_get_binding(DT_INST_GPIO_LABEL(0, wake_gpios));
-    //     if (drv_data->wake_gpio == NULL)
-    //     {
-    //         LOG_ERR("Failed to get pointer to WAKE device: %s",
-    //                 DT_INST_GPIO_LABEL(0, wake_gpios));
-    //         return -EINVAL;
-    //     }
+    // Check for correct sensor type.
+    // Extend this, if other sensors shall be supported.
+    // (If they have the same register layout, of course)
+    if (sensor_type != SENSOR_TYPE_SENSAIR_S8_LP)
+    {
+        LOG_ERR("Sensor is not a Sensair S8 LP!");
+        return -EINVAL;
+    }
 
-    //     /*
-    // 	 * Wakeup pin should be pulled low before initiating
-    // 	 * any I2C transfer.  If it has been tied to GND by
-    // 	 * default, skip this part.
-    // 	 */
-    //     gpio_pin_configure(drv_data->wake_gpio, WAKE_PIN,
-    //                        GPIO_OUTPUT_INACTIVE | DT_INST_GPIO_FLAGS(0, wake_gpios));
-
-    //     set_wake(drv_data, true);
-    //     k_msleep(1);
-    // #endif
-    // #if DT_INST_NODE_HAS_PROP(0, reset_gpios)
-    //     drv_data->reset_gpio = device_get_binding(DT_INST_GPIO_LABEL(0, reset_gpios));
-    //     if (drv_data->reset_gpio == NULL)
-    //     {
-    //         LOG_ERR("Failed to get pointer to RESET device: %s",
-    //                 DT_INST_GPIO_LABEL(0, reset_gpios));
-    //         return -EINVAL;
-    //     }
-    //     gpio_pin_configure(drv_data->reset_gpio, RESET_PIN,
-    //                        GPIO_OUTPUT_ACTIVE | DT_INST_GPIO_FLAGS(0, reset_gpios));
-
-    //     k_msleep(1);
-    // #endif
-
-    // #if DT_INST_NODE_HAS_PROP(0, irq_gpios)
-    //     drv_data->irq_gpio = device_get_binding(DT_INST_GPIO_LABEL(0, irq_gpios));
-    //     if (drv_data->irq_gpio == NULL)
-    //     {
-    //         LOG_ERR("Failed to get pointer to INT device: %s",
-    //                 DT_INST_GPIO_LABEL(0, irq_gpios));
-    //         return -EINVAL;
-    //     }
-    // #endif
-
-    //     k_msleep(20); /* t_START assuming recent power-on */
-
-    //     /* Reset the device.  This saves having to deal with detecting
-    // 	 * and validating any errors or configuration inconsistencies
-    // 	 * after a reset that left the device running.
-    // 	 */
-    // #if DT_INST_NODE_HAS_PROP(0, reset_gpios)
-    //     gpio_pin_set(drv_data->reset_gpio, RESET_PIN, 1);
-    //     k_busy_wait(15); /* t_RESET */
-    //     gpio_pin_set(drv_data->reset_gpio, RESET_PIN, 0);
-    // #else
-    //     {
-    //         static uint8_t const reset_seq[] = {
-    //             0xFF,
-    //             0x11,
-    //             0xE5,
-    //             0x72,
-    //             0x8A,
-    //         };
-
-    //         if (i2c_write(drv_data->i2c, reset_seq, sizeof(reset_seq),
-    //                       DT_INST_REG_ADDR(0)) < 0)
-    //         {
-    //             LOG_ERR("Failed to issue SW reset");
-    //             ret = -EIO;
-    //             goto out;
-    //         }
-    //     }
-    // #endif
-    //     k_msleep(2); /* t_START after reset */
-
-    //     /* Switch device to application mode */
-    //     ret = switch_to_app_mode(drv_data->i2c);
-    //     if (ret)
-    //     {
-    //         goto out;
-    //     }
-
-    //     /* Check Hardware ID */
-    //     if (i2c_reg_read_byte(drv_data->i2c, DT_INST_REG_ADDR(0),
-    //                           CCS811_REG_HW_ID, &hw_id) < 0)
-    //     {
-    //         LOG_ERR("Failed to read Hardware ID register");
-    //         ret = -EIO;
-    //         goto out;
-    //     }
-
-    //     if (hw_id != CCS881_HW_ID)
-    //     {
-    //         LOG_ERR("Hardware ID mismatch!");
-    //         ret = -EINVAL;
-    //         goto out;
-    //     }
-
-    //     /* Check application firmware version (first byte) */
-    //     cmd = CCS811_REG_FW_APP_VERSION;
-    //     if (i2c_write_read(drv_data->i2c, DT_INST_REG_ADDR(0),
-    //                        &cmd, sizeof(cmd),
-    //                        &fw_ver, sizeof(fw_ver)) < 0)
-    //     {
-    //         LOG_ERR("Failed to read App Firmware Version register");
-    //         ret = -EIO;
-    //         goto out;
-    //     }
-    //     fw_ver = sys_be16_to_cpu(fw_ver);
-    //     LOG_INF("App FW %04x", fw_ver);
-    //     drv_data->app_fw_ver = fw_ver >> 8U;
-
-    //     /* Configure measurement mode */
-    //     uint8_t meas_mode = CCS811_MODE_IDLE;
-    // #ifdef CONFIG_CCS811_DRIVE_MODE_1
-    //     meas_mode = CCS811_MODE_IAQ_1SEC;
-    // #elif defined(CONFIG_CCS811_DRIVE_MODE_2)
-    //     meas_mode = CCS811_MODE_IAQ_10SEC;
-    // #elif defined(CONFIG_CCS811_DRIVE_MODE_3)
-    //     meas_mode = CCS811_MODE_IAQ_60SEC;
-    // #elif defined(CONFIG_CCS811_DRIVE_MODE_4)
-    //     meas_mode = CCS811_MODE_IAQ_250MSEC;
-    // #endif
-    //     if (i2c_reg_write_byte(drv_data->i2c, DT_INST_REG_ADDR(0),
-    //                            CCS811_REG_MEAS_MODE,
-    //                            meas_mode) < 0)
-    //     {
-    //         LOG_ERR("Failed to set Measurement mode");
-    //         ret = -EIO;
-    //         goto out;
-    //     }
-    //     drv_data->mode = meas_mode;
-
-    //     /* Check for error */
-    //     status = fetch_status(drv_data->i2c);
-    //     if (status < 0)
-    //     {
-    //         ret = -EIO;
-    //         goto out;
-    //     }
-
-    //     if (status & CCS811_STATUS_ERROR)
-    //     {
-    //         LOG_ERR("CCS811 Error %02x during sensor configuration",
-    //                 error_from_status(status));
-    //         ret = -EINVAL;
-    //         goto out;
-    //     }
-
-    // #ifdef CONFIG_CCS811_TRIGGER
-    //     ret = ccs811_init_interrupt(dev);
-    //     LOG_DBG("CCS811 interrupt init got %d", ret);
-    // #endif
-
-    // out:
-    //     set_wake(drv_data, false);
     return ret;
 }
 
