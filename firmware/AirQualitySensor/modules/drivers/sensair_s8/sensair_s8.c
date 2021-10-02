@@ -120,39 +120,23 @@ static int sensair_s8_sample_fetch(const struct device *dev,
                                    enum sensor_channel chan)
 {
     struct sensair_s8_data *drv_data = dev->data;
-    struct sensair_s8_sample_type *sample = &drv_data->sample;
-    // const uint8_t cmd = CCS811_REG_ALG_RESULT_DATA;
-    // int rc;
-    // uint16_t buf[4] = {0};
-    // unsigned int status;
 
-    // set_wake(drv_data, true);
-    // rc = i2c_write_read(drv_data->i2c, DT_INST_REG_ADDR(0),
-    //                     &cmd, sizeof(cmd),
-    //                     (uint8_t *)buf, sizeof(buf));
-    // set_wake(drv_data, false);
-    // if (rc < 0)
-    // {
-    //     return -EIO;
-    // }
+    uint16_t error;
+    uint16_t co2_value;
+    int ret = sensair_s8_read_sample(drv_data, &error, &co2_value);
+    if (ret)
+    {
+        return -EIO;
+    }
 
-    // rp->co2 = sys_be16_to_cpu(buf[0]);
-    // rp->voc = sys_be16_to_cpu(buf[1]);
-    // status = sys_le16_to_cpu(buf[2]); /* sic */
-    // rp->status = status;
-    // rp->error = error_from_status(status);
-    // rp->raw = sys_be16_to_cpu(buf[3]);
+    if (error)
+    {
+        LOG_ERR("Sensor is in an error state: 0x%04x", error);
+        return -EIO;
+    }
 
-    // /* APP FW 1.1 does not set DATA_READY, but it does set CO2 to
-    //  * zero while it's starting up.  Assume a non-zero CO2 with
-    //  * old firmware is valid for the purposes of claiming the
-    //  * fetch was fresh.
-    //  */
-    // if ((drv_data->app_fw_ver <= 0x11) && (rp->co2 != 0))
-    // {
-    //     status |= CCS811_STATUS_DATA_READY;
-    // }
-    //return (status & CCS811_STATUS_DATA_READY) ? 0 : -EAGAIN;
+    drv_data->sample = co2_value;
+
     return 0;
 }
 
@@ -161,15 +145,12 @@ static int sensair_s8_channel_get(const struct device *dev,
                                   struct sensor_value *val)
 {
     struct sensair_s8_data *drv_data = dev->data;
-    const struct sensair_s8_sample_type *sample = &drv_data->sample;
-    uint32_t uval;
 
     switch (chan)
     {
     case SENSOR_CHAN_CO2:
-        val->val1 = 123;
-        val->val2 = 45;
-
+        val->val1 = 0;
+        val->val2 = drv_data->sample;
         break;
     default:
         return -ENOTSUP;
