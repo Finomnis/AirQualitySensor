@@ -56,7 +56,7 @@ REGISTER_PUBLISHABLE_SENSOR_VALUE(humidity, CONFIG_SUBSYS_DHT22_CALLBACK_MAX_COU
 static void dht22_entry_point(void *u1, void *u2, void *u3)
 {
     // Initialize DHT22 Temp+Humidity sensor
-    const char *const label = DT_LABEL(DT_INST(0, aosong_dht));
+    const char *const label = DT_LABEL(DT_PATH(dht22));
     const struct device *dht22 = device_get_binding(label);
     if (!dht22)
     {
