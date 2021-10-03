@@ -27,6 +27,10 @@
 #include "senseair_s8.h"
 #endif
 
+#if CONFIG_SUBSYS_CO2_LEDS
+#include "co2_leds.h"
+#endif
+
 LOG_MODULE_REGISTER(main);
 
 #if CONFIG_SUBSYS_DHT22
@@ -91,6 +95,10 @@ void main(void)
 #if CONFIG_SUBSYS_ZIGBEE_DEVICE
     // Forward measurements to zigbee
     senseair_s8_register_co2_handler(publish_co2);
+#endif
+#if CONFIG_SUBSYS_CO2_LEDS
+    // Forward co2 measurements to CO2 status LEDs
+    senseair_s8_register_co2_handler(co2_leds_set_co2_level);
 #endif
 #endif
 

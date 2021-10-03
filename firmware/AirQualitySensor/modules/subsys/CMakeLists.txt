@@ -2,3 +2,4 @@
 add_subdirectory_ifdef(CONFIG_SUBSYS_DHT22 dht22)
 add_subdirectory_ifdef(CONFIG_SUBSYS_SENSEAIR_S8 senseair_s8)
 add_subdirectory_ifdef(CONFIG_SUBSYS_ZIGBEE_DEVICE zigbee_device)
+add_subdirectory_ifdef(CONFIG_SUBSYS_CO2_LEDS co2_leds)

@@ -1,0 +1,43 @@
+
+menuconfig SUBSYS_CO2_LEDS
+    bool "CO2 level status LEDs"
+    help
+      Enable status LEDs that visualize the room CO2 level
+
+config SUBSYS_CO2_LEDS_STACK_SIZE
+    int "CO2 LEDs thread stack size"
+    depends on SUBSYS_CO2_LEDS
+    default 512
+    help
+      Size of CO2 LEDs thread stack
+
+config SUBSYS_CO2_LEDS_THREAD_PRIORITY
+    int "CO2 LEDs thread priority"
+    depends on SUBSYS_CO2_LEDS
+    default 3
+    help
+      Priority of the CO2 LEDs thread.
+
+config SUBSYS_CO2_LEDS_LEVEL_WARN_WEAK
+    int "CO2 weak warning level"
+    depends on SUBSYS_CO2_LEDS
+    default 1000
+    help
+      The CO2 concentration above which a weak warning is shown, to indicate that
+      it would be benefitial to open windows
+
+config SUBSYS_CO2_LEDS_LEVEL_WARN_STRONG
+    int "CO2 strong warning level"
+    depends on SUBSYS_CO2_LEDS
+    default 1500
+    help
+      The CO2 concentration above which a strong warning is shown, to indicate that
+      windows should be opened if possible
+
+config SUBSYS_CO2_LEDS_LEVEL_EXCELLENT
+    int "CO2 excellent level"
+    depends on SUBSYS_CO2_LEDS
+    default 600
+    help
+      The CO2 concentration below which a an additional 'excellent' state is shown,
+      to indicate that windows can be closed again
