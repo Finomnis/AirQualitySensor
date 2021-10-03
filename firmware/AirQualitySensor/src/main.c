@@ -61,7 +61,7 @@ static void handle_co2_value(struct sensor_value value)
 
 void main(void)
 {
-    LOG_INF("Example!");
+    LOG_INF("Finomnis's Air Quality Sensor");
 
     int err = dk_leds_init();
     if (err)
@@ -72,36 +72,33 @@ void main(void)
 #if CONFIG_SUBSYS_ZIGBEE_DEVICE
     // Start zigbee device
     start_zigbee_device();
-
-#if CONFIG_SUBSYS_DHT22
-    // Forward dht22 measurements to zigbee
-    dht22_register_temperature_handler(publish_temperature);
-    dht22_register_humidity_handler(publish_humidity);
-#endif
-
 #endif
 
 #if CONFIG_SUBSYS_DHT22
     // Register sensor value handlers
     dht22_register_temperature_handler(handle_temperature_value);
     dht22_register_humidity_handler(handle_humidity_value);
+#if CONFIG_SUBSYS_ZIGBEE_DEVICE
+    // Forward dht22 measurements to zigbee
+    dht22_register_temperature_handler(publish_temperature);
+    dht22_register_humidity_handler(publish_humidity);
+#endif
 #endif
 
 #if CONFIG_SUBSYS_SENSEAIR_S8
     // Register sensor value handlers
     senseair_s8_register_co2_handler(handle_co2_value);
+#if CONFIG_SUBSYS_ZIGBEE_DEVICE
+    // Forward measurements to zigbee
+    senseair_s8_register_co2_handler(publish_co2);
+#endif
 #endif
 
-    float co2 = 0.00001f;
     while (1)
     {
-        co2 += 0.00001f;
-        //zb_airquality_sensor_publish_co2(co2);
         dk_set_led_on(DK_LED1);
         k_sleep(K_MSEC(1000));
-        //LOG_INF("Ping.");
         dk_set_led_off(DK_LED1);
         k_sleep(K_MSEC(1000));
-        //LOG_INF("Pong.");
     }
 }

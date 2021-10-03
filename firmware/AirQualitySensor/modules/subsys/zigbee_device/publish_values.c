@@ -139,3 +139,21 @@ void publish_humidity(struct sensor_value value)
 
     zb_airquality_sensor_publish_humidity((zb_uint16_t)converted_value);
 }
+
+void publish_co2(struct sensor_value value)
+{
+    if (value.val2 < 0)
+    {
+        zb_airquality_sensor_publish_co2(ZB_ZCL_ATTR_CO2_MEASUREMENT_VALUE_UNKNOWN);
+        return;
+    }
+
+    int64_t converted_value = ((int64_t)value.val1) * 100 + value.val2 / 10000;
+    if (converted_value < ZB_ZCL_ATTR_CO2_MEASUREMENT_MIN_VALUE_MIN_VALUE)
+    {
+        zb_airquality_sensor_publish_co2(ZB_ZCL_ATTR_CO2_MEASUREMENT_VALUE_UNKNOWN);
+        return;
+    }
+
+    zb_airquality_sensor_publish_co2(((float)value.val1) + ((float)value.val2) * 0.000001f);
+}
