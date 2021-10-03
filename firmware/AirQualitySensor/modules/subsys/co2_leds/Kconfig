@@ -41,3 +41,10 @@ config SUBSYS_CO2_LEDS_LEVEL_EXCELLENT
     help
       The CO2 concentration below which a an additional 'excellent' state is shown,
       to indicate that windows can be closed again
+
+config SUBSYS_CO2_LEDS_BLINK_PERIOD_MS
+    int "CO2 LEDs blink period (in ms)"
+    depends on SUBSYS_CO2_LEDS
+    default 600
+    help
+      The half-period of the LED blinking animation, in milliseconds
