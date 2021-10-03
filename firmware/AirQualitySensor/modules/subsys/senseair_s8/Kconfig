@@ -15,7 +15,7 @@ config SUBSYS_SENSEAIR_S8_STACK_SIZE
 config SUBSYS_SENSEAIR_S8_THREAD_PRIORITY
     int "Senseair S8 thread priority"
     depends on SUBSYS_SENSEAIR_S8
-    default -3
+    default 2
     help
       Priority of the Senseair S8 thread.
 
