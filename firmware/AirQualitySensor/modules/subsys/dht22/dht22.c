@@ -53,6 +53,8 @@ K_THREAD_DEFINE(sensor_dht22, CONFIG_SUBSYS_DHT22_STACK_SIZE,
 REGISTER_PUBLISHABLE_SENSOR_VALUE(temperature, CONFIG_SUBSYS_DHT22_CALLBACK_MAX_COUNT_TEMPERATURE);
 REGISTER_PUBLISHABLE_SENSOR_VALUE(humidity, CONFIG_SUBSYS_DHT22_CALLBACK_MAX_COUNT_HUMIDITY);
 
+int fail_counter = 0;
+
 static void dht22_entry_point(void *u1, void *u2, void *u3)
 {
     // Initialize DHT22 Temp+Humidity sensor
@@ -71,19 +73,28 @@ static void dht22_entry_point(void *u1, void *u2, void *u3)
     {
         k_sleep(K_MSEC(CONFIG_SUBSYS_DHT22_SAMPLING_RATE_MS));
 
-        int success = -EIO;
+        int success;
 
-        for (int i = 0; i < CONFIG_SUBSYS_DHT22_MAX_FETCH_ATTEMPTS && success != 0; i++)
-        {
-            success = sensor_sample_fetch(dht22);
-        }
+        success = sensor_sample_fetch(dht22);
+
         if (success != 0)
         {
             LOG_WRN("Sensor fetch failed: %d", success);
-            publish_temperature_value(DHT22_ERROR_VALUE);
-            publish_humidity_value(DHT22_ERROR_VALUE);
+
+            // If we fail too many times in a row, publish that we are
+            // now in an error state.
+            // Don't publish it right away, because sporadic fails seem to happen
+            // regularly.
+            fail_counter += 1;
+            if (fail_counter >= CONFIG_SUBSYS_DHT22_MAX_FETCH_ATTEMPTS)
+            {
+                publish_temperature_value(DHT22_ERROR_VALUE);
+                publish_humidity_value(DHT22_ERROR_VALUE);
+            }
+
             continue;
         }
+        fail_counter = 0;
 
         success = sensor_channel_get(dht22, SENSOR_CHAN_AMBIENT_TEMP,
                                      &temperature);
