@@ -2,6 +2,7 @@
 
 #include <zephyr.h>
 #include <logging/log.h>
+#include <drivers/gpio.h>
 
 LOG_MODULE_REGISTER(co2_leds);
 
@@ -11,6 +12,7 @@ K_THREAD_DEFINE(co2_leds, CONFIG_SUBSYS_CO2_LEDS_STACK_SIZE,
                 co2_leds_entry_point, NULL, NULL, NULL,
                 CONFIG_SUBSYS_CO2_LEDS_THREAD_PRIORITY, 0, 0);
 
+// Current state of the CO2 leds
 static enum LED_STATE { LED_STATE_INIT,
                         LED_STATE_ERROR,
                         LED_STATE_EXCELLENT,
@@ -22,6 +24,50 @@ static enum LED_STATE { LED_STATE_INIT,
 static bool blink_state = false;
 
 K_MUTEX_DEFINE(co2_leds_mutex);
+
+// Pin configurations
+#define LED_RED 0
+#define LED_YELLOW 1
+#define LED_GREEN 2
+
+static const char *const led_ports[] = {
+    DT_GPIO_LABEL(DT_NODELABEL(led_co2_red), gpios),
+    DT_GPIO_LABEL(DT_NODELABEL(led_co2_yellow), gpios),
+    DT_GPIO_LABEL(DT_NODELABEL(led_co2_green), gpios),
+};
+static const uint8_t led_pins[] = {
+    DT_GPIO_PIN(DT_NODELABEL(led_co2_red), gpios),
+    DT_GPIO_PIN(DT_NODELABEL(led_co2_yellow), gpios),
+    DT_GPIO_PIN(DT_NODELABEL(led_co2_green), gpios),
+};
+static const struct device *led_devices[] = {
+    NULL,
+    NULL,
+    NULL,
+};
+
+static int init_leds()
+{
+    for (int i = 0; i < ARRAY_SIZE(led_devices); i++)
+    {
+        led_devices[i] = device_get_binding(led_ports[i]);
+        if (!led_devices[i])
+        {
+            LOG_ERR("Cannot bind gpio device");
+            return -ENODEV;
+        }
+
+        int err = gpio_pin_configure(led_devices[i], led_pins[i],
+                                     GPIO_OUTPUT);
+        if (err)
+        {
+            LOG_ERR("Cannot configure LED gpio");
+            return err;
+        }
+    }
+
+    return 0;
+}
 
 static void update_leds()
 {
@@ -54,7 +100,18 @@ static void update_leds()
         break;
     }
 
-    LOG_INF("LEDs: %s %s %s", red_on ? "R" : " ", yellow_on ? "Y" : " ", green_on ? "G" : " ");
+    if (gpio_pin_set_raw(led_devices[LED_RED], led_pins[LED_RED], red_on))
+    {
+        LOG_ERR("Cannot write to red LED gpio");
+    }
+    if (gpio_pin_set_raw(led_devices[LED_YELLOW], led_pins[LED_YELLOW], yellow_on))
+    {
+        LOG_ERR("Cannot write to yellow LED gpio");
+    }
+    if (gpio_pin_set_raw(led_devices[LED_GREEN], led_pins[LED_GREEN], green_on))
+    {
+        LOG_ERR("Cannot write to green LED gpio");
+    }
 }
 
 void co2_leds_set_co2_level(struct sensor_value value)
@@ -95,6 +152,15 @@ void co2_leds_set_co2_level(struct sensor_value value)
 
 static void co2_leds_entry_point(void *u1, void *u2, void *u3)
 {
+    int err;
+
+    err = init_leds();
+    if (err)
+    {
+        LOG_ERR("Unable to initialize LEDs!");
+        return;
+    }
+
     while (1)
     {
         k_sleep(K_MSEC(CONFIG_SUBSYS_CO2_LEDS_BLINK_PERIOD_MS));
