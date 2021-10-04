@@ -29,6 +29,14 @@ config SUBSYS_DHT22_SAMPLING_RATE_MS
       The sampling rate of the sensor in milliseconds. Needs to be at least
       2000, as the sensor cannot sample faster.
 
+config SUBSYS_DHT22_MAX_FETCH_ATTEMPTS
+    int "DHT22 number of attempts to fetch new sample"
+    depends on SUBSYS_DHT22
+    default 5
+    range 1 20
+    help
+      Maximum number of times a sample is requested until an error is raised
+
 config SUBSYS_DHT22_CALLBACK_MAX_COUNT_TEMPERATURE
     int "DHT22 max callbacks for temperature"
     depends on SUBSYS_DHT22

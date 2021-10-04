@@ -71,9 +71,12 @@ static void dht22_entry_point(void *u1, void *u2, void *u3)
     {
         k_sleep(K_MSEC(CONFIG_SUBSYS_DHT22_SAMPLING_RATE_MS));
 
-        int success;
+        int success = -EIO;
 
-        success = sensor_sample_fetch(dht22);
+        for (int i = 0; i < CONFIG_SUBSYS_DHT22_MAX_FETCH_ATTEMPTS && success != 0; i++)
+        {
+            success = sensor_sample_fetch(dht22);
+        }
         if (success != 0)
         {
             LOG_WRN("Sensor fetch failed: %d", success);
