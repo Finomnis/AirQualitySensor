@@ -16,7 +16,7 @@ config SUBSYS_ZIGBEE_DEVICE_STACK_SIZE
 config SUBSYS_ZIGBEE_DEVICE_THREAD_PRIORITY
     int "ZigBee device thread priority"
     depends on SUBSYS_ZIGBEE_DEVICE
-    default 6
+    default 7
     help
       Priority of the ZigBee device thread
 
