@@ -104,9 +104,9 @@ void main(void)
 
     while (1)
     {
-        dk_set_led_on(DK_LED1);
-        k_sleep(K_MSEC(1000));
         dk_set_led_off(DK_LED1);
         k_sleep(K_MSEC(1000));
+        dk_set_led_on(DK_LED1);
+        k_sleep(K_FOREVER);
     }
 }
