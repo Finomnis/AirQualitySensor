@@ -31,15 +31,15 @@
         label = "UI LEDs";
         status = "okay";
 
-        led_ui_0: led_co2_red {
+        led_co2_red: led_ui_0 {
             gpios = <&gpio0 6 0>;
             label = "Red CO2 LED";
         };
-        led_ui_1: led_co2_yellow {
+        led_co2_yellow: led_ui_1 {
             gpios = <&gpio0 8 0>;
             label = "Yellow CO2 LED";
         };
-        led_ui_2: led_co2_green {
+        led_co2_green: led_ui_2 {
             gpios = <&gpio1 9 0>;
             label = "Green CO2 LED";
         };
