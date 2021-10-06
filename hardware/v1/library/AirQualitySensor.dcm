@@ -1,5 +1,9 @@
 EESchema-DOCLIB  Version 2.0
 #
+$CMP EA_DOGM132W-5
+D LCD Graphic Display Modules & Accessories DOGM Grapic 132x32 White Background
+$ENDCMP
+#
 $CMP Waveshare_Core52840
 F https://infocenter.nordicsemi.com/pdf/nRF52840_PS_v1.1.pdf
 $ENDCMP
