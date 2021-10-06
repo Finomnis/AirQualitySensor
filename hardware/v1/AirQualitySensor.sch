@@ -107,4 +107,43 @@ NoConn ~ 5000 2350
 NoConn ~ 5000 2250
 NoConn ~ 5000 2150
 NoConn ~ 5000 2050
+$Comp
+L AirQualitySensor:EA_DOGM132W-5 DS1
+U 1 1 615E0422
+P 7350 2150
+F 0 "DS1" H 7950 2415 50  0000 C CNN
+F 1 "EA_DOGM132W-5" H 7950 2324 50  0000 C CNN
+F 2 "AirQualitySensor:EA_DOGM132W-5" H 8400 2250 50  0001 L CNN
+F 3 "" H 8400 2150 50  0001 L CNN
+F 4 "LCD Graphic Display Modules & Accessories DOGM Grapic 132x32 White Background" H 8400 2050 50  0001 L CNN "Description"
+F 5 "2" H 8400 1950 50  0001 L CNN "Height"
+F 6 "790-EADOGM132W5" H 8400 1850 50  0001 L CNN "Mouser Part Number"
+F 7 "https://www.mouser.co.uk/ProductDetail/ELECTRONIC-ASSEMBLY/EA-DOGM132W-5?qs=s9z6UkyjM7o689ToJkW0yA%3D%3D" H 8400 1750 50  0001 L CNN "Mouser Price/Stock"
+F 8 "ELECTRONIC ASSEMBLY" H 8400 1650 50  0001 L CNN "Manufacturer_Name"
+F 9 "EA DOGM132W-5" H 8400 1550 50  0001 L CNN "Manufacturer_Part_Number"
+	1    7350 2150
+	1    0    0    -1  
+$EndComp
+$Comp
+L AirQualitySensor:004-0-0053 U1
+U 1 1 615E61D2
+P 3950 5000
+F 0 "U1" H 3950 5581 50  0000 C CNN
+F 1 "004-0-0053" H 3950 5490 50  0000 C CNN
+F 2 "AirQualitySensor:Senseair_S8_Up" H 3950 5000 50  0001 C CNN
+F 3 "https://rmtplusstoragesenseair.blob.core.windows.net/docs/publicerat/PSP126.pdf" H 3950 5000 50  0001 C CNN
+	1    3950 5000
+	1    0    0    -1  
+$EndComp
+$Comp
+L AirQualitySensor:DHT22 U2
+U 1 1 615E6A6B
+P 5750 4550
+F 0 "U2" H 6278 4446 50  0000 L CNN
+F 1 "DHT22" H 6278 4355 50  0000 L CNN
+F 2 "AirQualitySensor:DHT22" H 6500 4050 50  0001 C CNN
+F 3 "https://www.sparkfun.com/datasheets/Sensors/Temperature/DHT22.pdf" H 6500 4050 50  0001 C CNN
+	1    5750 4550
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
