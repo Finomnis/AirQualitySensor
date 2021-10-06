@@ -36,11 +36,18 @@ K Senseair co2 gas sensor pwm modbus
 F https://rmtplusstoragesenseair.blob.core.windows.net/docs/publicerat/PSP103.pdf
 $ENDCMP
 #
+$CMP DHT22
+D Temperature/Humidity Sensor
+K Sensor
+F https://www.sparkfun.com/datasheets/Sensors/Temperature/DHT22.pdf
+$ENDCMP
+#
 $CMP EA_DOGM132W-5
 D LCD Graphic Display Modules & Accessories DOGM Grapic 132x32 White Background
 $ENDCMP
 #
 $CMP Waveshare_Core52840
+D nRF52840 Module
 F https://infocenter.nordicsemi.com/pdf/nRF52840_PS_v1.1.pdf
 $ENDCMP
 #

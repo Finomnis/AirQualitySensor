@@ -1,2 +1,5 @@
 fp-info-cache
 *.sch-bak
+*.bck
+*.kicad_pcb-bak
+_autosave-*
