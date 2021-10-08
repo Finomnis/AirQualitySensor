@@ -27,12 +27,12 @@ $EndComp
 $Comp
 L power:GND #PWR0102
 U 1 1 615D7DF8
-P 4750 3700
-F 0 "#PWR0102" H 4750 3450 50  0001 C CNN
-F 1 "GND" V 4650 3700 50  0000 R CNN
-F 2 "" H 4750 3700 50  0001 C CNN
-F 3 "" H 4750 3700 50  0001 C CNN
-	1    4750 3700
+P 4100 3700
+F 0 "#PWR0102" H 4100 3450 50  0001 C CNN
+F 1 "GND" V 4000 3700 50  0000 R CNN
+F 2 "" H 4100 3700 50  0001 C CNN
+F 3 "" H 4100 3700 50  0001 C CNN
+	1    4100 3700
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -46,24 +46,12 @@ F 3 "" H 6950 4900 50  0001 C CNN
 	1    6950 4900
 	1    0    0    -1  
 $EndComp
-NoConn ~ 4850 3800
-NoConn ~ 4850 3900
 NoConn ~ 4850 4000
 NoConn ~ 4850 4100
 NoConn ~ 4850 4200
 NoConn ~ 4850 4300
-NoConn ~ 4850 4400
-NoConn ~ 4850 4500
-NoConn ~ 4850 4600
-NoConn ~ 4850 4700
-NoConn ~ 4850 4800
 NoConn ~ 4850 4900
 NoConn ~ 5450 5200
-NoConn ~ 5550 5200
-NoConn ~ 5650 5200
-NoConn ~ 5750 5200
-NoConn ~ 5850 5200
-NoConn ~ 5950 5200
 $Comp
 L power:+3V3 #PWR0105
 U 1 1 615E0AF7
@@ -80,7 +68,6 @@ NoConn ~ 6850 4600
 NoConn ~ 6850 4500
 NoConn ~ 6850 4400
 NoConn ~ 6850 4100
-NoConn ~ 6850 4000
 NoConn ~ 6850 3900
 NoConn ~ 6850 3800
 $Comp
@@ -780,7 +767,7 @@ F 1 "100u" H 5442 5405 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 5350 5450 50  0001 C CNN
 F 3 "~" H 5350 5450 50  0001 C CNN
 	1    5350 5450
-	1    0    0    1   
+	-1   0    0    1   
 $EndComp
 $Comp
 L power:GND #PWR0124
@@ -796,7 +783,7 @@ $EndComp
 Wire Wire Line
 	6950 3700 6850 3700
 Wire Wire Line
-	4750 3700 4850 3700
+	4100 3700 4850 3700
 Wire Wire Line
 	6850 4900 6950 4900
 Wire Wire Line
@@ -928,14 +915,14 @@ Wire Wire Line
 	10200 5700 10100 5700
 Wire Wire Line
 	10100 5700 10100 5450
-Text GLabel 10000 5800 0    50   Input ~ 0
+Text GLabel 9650 5800 0    50   Input ~ 0
 UART_RXD
 Wire Wire Line
-	10000 5800 10200 5800
-Text GLabel 10000 5900 0    50   Input ~ 0
+	9650 5800 9750 5800
+Text GLabel 9650 5900 0    50   Input ~ 0
 UART_TXD
 Wire Wire Line
-	10000 5900 10200 5900
+	9650 5900 9850 5900
 NoConn ~ 10200 5600
 NoConn ~ 10200 6000
 Wire Notes Line
@@ -1178,4 +1165,108 @@ Connection ~ 9500 1750
 Wire Wire Line
 	9500 1750 9750 1750
 Connection ~ 5350 5350
+Text GLabel 7050 4000 2    50   Input ~ 0
+DHT22
+Wire Wire Line
+	7050 4000 6850 4000
+Text GLabel 5950 5450 3    50   Input ~ 0
+DISP_SI
+Text GLabel 5850 5450 3    50   Input ~ 0
+DISP_SCL
+Text GLabel 5750 5450 3    50   Input ~ 0
+DISP_A0
+Text GLabel 5650 5450 3    50   Input ~ 0
+DISP_RST
+Wire Wire Line
+	5550 5450 5550 5200
+Wire Wire Line
+	5650 5450 5650 5200
+Wire Wire Line
+	5750 5450 5750 5200
+Wire Wire Line
+	5850 5450 5850 5200
+Wire Wire Line
+	5950 5450 5950 5200
+Text GLabel 5550 5450 3    50   Input ~ 0
+DISP_CS
+$Comp
+L Device:R_Small R9
+U 1 1 619F8BB8
+P 9750 5550
+F 0 "R9" H 9700 5500 50  0000 R CNN
+F 1 "10k" H 9700 5600 50  0000 R CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" H 9750 5550 50  0001 C CNN
+F 3 "~" H 9750 5550 50  0001 C CNN
+	1    9750 5550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R10
+U 1 1 619F8BC2
+P 9850 5550
+F 0 "R10" H 9800 5500 50  0000 R CNN
+F 1 "10k" H 9800 5600 50  0000 R CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" H 9850 5550 50  0001 C CNN
+F 3 "~" H 9850 5550 50  0001 C CNN
+	1    9850 5550
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	9750 5800 9750 5650
+Wire Wire Line
+	9850 5900 9850 5650
+Wire Wire Line
+	9750 5450 9750 5400
+Wire Wire Line
+	9750 5400 9800 5400
+Wire Wire Line
+	9850 5400 9850 5450
+$Comp
+L power:+3V3 #PWR0134
+U 1 1 619F8BD1
+P 9800 5400
+F 0 "#PWR0134" H 9800 5250 50  0001 C CNN
+F 1 "+3V3" H 9815 5573 50  0000 C CNN
+F 2 "" H 9800 5400 50  0001 C CNN
+F 3 "" H 9800 5400 50  0001 C CNN
+	1    9800 5400
+	1    0    0    -1  
+$EndComp
+Connection ~ 9800 5400
+Wire Wire Line
+	9800 5400 9850 5400
+Connection ~ 9750 5800
+Wire Wire Line
+	9750 5800 10200 5800
+Connection ~ 9850 5900
+Wire Wire Line
+	9850 5900 10200 5900
+Text GLabel 4700 3900 0    50   Input ~ 0
+UART_RXD
+Wire Wire Line
+	4700 3800 4850 3800
+Text GLabel 4700 3800 0    50   Input ~ 0
+UART_TXD
+Wire Wire Line
+	4700 3900 4850 3900
+Text GLabel 4700 4400 0    50   Input ~ 0
+S8_RXD
+Text GLabel 4700 4500 0    50   Input ~ 0
+S8_TXD
+Wire Wire Line
+	4700 4500 4850 4500
+Wire Wire Line
+	4850 4400 4700 4400
+Text GLabel 4700 4800 0    50   Input ~ 0
+LED_RED
+Text GLabel 4700 4700 0    50   Input ~ 0
+LED_YELLOW
+Text GLabel 4700 4600 0    50   Input ~ 0
+LED_GREEN
+Wire Wire Line
+	4850 4600 4700 4600
+Wire Wire Line
+	4700 4700 4850 4700
+Wire Wire Line
+	4850 4800 4700 4800
 $EndSCHEMATC
