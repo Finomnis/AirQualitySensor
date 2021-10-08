@@ -52,6 +52,12 @@ K SWD, J-Link
 F https://www.tag-connect.com/wp-content/uploads/bsk-pdf-manager/TC2030-CTX_1.pdf
 $ENDCMP
 #
+$CMP UART_ftdi
+D For FTDI cable TTL-232R-3V3
+K UART, FTDI
+F https://ftdichip.com/wp-content/uploads/2021/02/DS_TTL-232R_CABLES.pdf
+$ENDCMP
+#
 $CMP Waveshare_Core52840
 D nRF52840 Module
 F https://infocenter.nordicsemi.com/pdf/nRF52840_PS_v1.1.pdf
