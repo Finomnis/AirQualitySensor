@@ -126,12 +126,12 @@ $Comp
 L Device:R_Small R2
 U 1 1 616037F6
 P 2100 1350
-F 0 "R2" H 2150 1450 50  0000 L CNN
-F 1 "5.1k" V 2200 1200 50  0000 L CNN
+F 0 "R2" H 2150 1250 50  0000 L CNN
+F 1 "5.1k" V 2200 1500 50  0000 R CNN
 F 2 "Resistor_SMD:R_0402_1005Metric" H 2100 1350 50  0001 C CNN
 F 3 "~" H 2100 1350 50  0001 C CNN
 	1    2100 1350
-	0    1    1    0   
+	0    -1   1    0   
 $EndComp
 $Comp
 L Device:R_Small R1
@@ -417,7 +417,7 @@ F 1 "1u" H 8858 2845 50  0000 R CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 8950 2800 50  0001 C CNN
 F 3 "~" H 8950 2800 50  0001 C CNN
 	1    8950 2800
-	-1   0    0    1   
+	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:C_Small C6
@@ -428,7 +428,7 @@ F 1 "1u" H 8608 2745 50  0000 R CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 8700 2700 50  0001 C CNN
 F 3 "~" H 8700 2700 50  0001 C CNN
 	1    8700 2700
-	-1   0    0    1   
+	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:C_Small C10
@@ -439,7 +439,7 @@ F 1 "1u" H 9108 2945 50  0000 R CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 9200 2900 50  0001 C CNN
 F 3 "~" H 9200 2900 50  0001 C CNN
 	1    9200 2900
-	-1   0    0    1   
+	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:C_Small C11
@@ -450,7 +450,7 @@ F 1 "1u" H 9358 3045 50  0000 R CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 9450 3000 50  0001 C CNN
 F 3 "~" H 9450 3000 50  0001 C CNN
 	1    9450 3000
-	-1   0    0    1   
+	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:C_Small C13
@@ -461,7 +461,7 @@ F 1 "1u" H 9608 3145 50  0000 R CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 9700 3100 50  0001 C CNN
 F 3 "~" H 9700 3100 50  0001 C CNN
 	1    9700 3100
-	-1   0    0    1   
+	-1   0    0    -1  
 $EndComp
 Wire Wire Line
 	9750 2950 9700 2950
@@ -546,7 +546,7 @@ F 1 "1u" H 9408 1895 50  0000 R CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 9500 1850 50  0001 C CNN
 F 3 "~" H 9500 1850 50  0001 C CNN
 	1    9500 1850
-	-1   0    0    1   
+	-1   0    0    -1  
 $EndComp
 Wire Wire Line
 	9750 1650 9750 1550
@@ -575,7 +575,7 @@ F 1 "1u" V 8962 2050 50  0000 C CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 9100 2050 50  0001 C CNN
 F 3 "~" H 9100 2050 50  0001 C CNN
 	1    9100 2050
-	0    -1   1    0   
+	0    1    1    0   
 $EndComp
 $Comp
 L Device:C_Small C7
@@ -586,14 +586,12 @@ F 1 "1u" V 8988 2250 50  0000 C CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 8850 2250 50  0001 C CNN
 F 3 "~" H 8850 2250 50  0001 C CNN
 	1    8850 2250
-	0    -1   -1   0   
+	0    1    -1   0   
 $EndComp
 Wire Wire Line
 	9200 2050 9750 2050
 Wire Wire Line
 	9000 2150 9000 2050
-Wire Wire Line
-	9000 2150 9750 2150
 Wire Wire Line
 	9750 2250 8950 2250
 Wire Wire Line
@@ -782,7 +780,7 @@ F 1 "100u" H 5442 5405 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0402_1005Metric" H 5350 5450 50  0001 C CNN
 F 3 "~" H 5350 5450 50  0001 C CNN
 	1    5350 5450
-	1    0    0    -1  
+	1    0    0    1   
 $EndComp
 $Comp
 L power:GND #PWR0124
@@ -803,16 +801,8 @@ Wire Wire Line
 	6850 4900 6950 4900
 Wire Wire Line
 	5350 5200 5350 5350
-Connection ~ 5350 5350
 Wire Wire Line
 	5250 5350 5350 5350
-Wire Wire Line
-	8750 2350 9750 2350
-Wire Wire Line
-	9350 1750 9500 1750
-Connection ~ 9500 1750
-Wire Wire Line
-	9500 1750 9750 1750
 $Comp
 L AirQualitySensor:TC2030 J2
 U 1 1 61607D51
@@ -991,34 +981,201 @@ Display
 $Comp
 L Device:C_Small C14
 U 1 1 617462A1
-P 8950 1150
-F 0 "C14" H 9042 1196 50  0000 L CNN
-F 1 "100u" H 9042 1105 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0402_1005Metric" H 8950 1150 50  0001 C CNN
-F 3 "~" H 8950 1150 50  0001 C CNN
-	1    8950 1150
-	-1   0    0    1   
+P 8850 1150
+F 0 "C14" H 8942 1196 50  0000 L CNN
+F 1 "100u" H 8942 1105 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 8850 1150 50  0001 C CNN
+F 3 "~" H 8850 1150 50  0001 C CNN
+	1    8850 1150
+	1    0    0    -1  
 $EndComp
 $Comp
 L power:+3V3 #PWR0129
 U 1 1 617473D8
-P 8950 1050
-F 0 "#PWR0129" H 8950 900 50  0001 C CNN
-F 1 "+3V3" H 8800 1150 50  0000 C CNN
-F 2 "" H 8950 1050 50  0001 C CNN
-F 3 "" H 8950 1050 50  0001 C CNN
-	1    8950 1050
+P 8850 1050
+F 0 "#PWR0129" H 8850 900 50  0001 C CNN
+F 1 "+3V3" H 8700 1150 50  0000 C CNN
+F 2 "" H 8850 1050 50  0001 C CNN
+F 3 "" H 8850 1050 50  0001 C CNN
+	1    8850 1050
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR0130
 U 1 1 6174788F
-P 8950 1250
-F 0 "#PWR0130" H 8950 1000 50  0001 C CNN
-F 1 "GND" H 9000 1100 50  0000 R CNN
-F 2 "" H 8950 1250 50  0001 C CNN
-F 3 "" H 8950 1250 50  0001 C CNN
-	1    8950 1250
+P 8850 1250
+F 0 "#PWR0130" H 8850 1000 50  0001 C CNN
+F 1 "GND" H 8900 1100 50  0000 R CNN
+F 2 "" H 8850 1250 50  0001 C CNN
+F 3 "" H 8850 1250 50  0001 C CNN
+	1    8850 1250
 	1    0    0    -1  
 $EndComp
+$Comp
+L Device:LED_Small D1
+U 1 1 61768156
+P 1050 5600
+F 0 "D1" V 1096 5530 50  0000 R CNN
+F 1 "Red" V 1005 5530 50  0000 R CNN
+F 2 "LED_THT:LED_D3.0mm" V 1050 5600 50  0001 C CNN
+F 3 "~" V 1050 5600 50  0001 C CNN
+	1    1050 5600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:LED_Small D2
+U 1 1 61768FD8
+P 1500 5600
+F 0 "D2" V 1546 5530 50  0000 R CNN
+F 1 "Yellow" V 1455 5530 50  0000 R CNN
+F 2 "LED_THT:LED_D3.0mm" V 1500 5600 50  0001 C CNN
+F 3 "~" V 1500 5600 50  0001 C CNN
+	1    1500 5600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:LED_Small D3
+U 1 1 617694C1
+P 1950 5600
+F 0 "D3" V 1996 5530 50  0000 R CNN
+F 1 "Green" V 1905 5530 50  0000 R CNN
+F 2 "LED_THT:LED_D3.0mm" V 1950 5600 50  0001 C CNN
+F 3 "~" V 1950 5600 50  0001 C CNN
+	1    1950 5600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_Small R8
+U 1 1 61776347
+P 1950 5400
+F 0 "R8" H 1891 5354 50  0000 R CNN
+F 1 "100k" H 1891 5445 50  0000 R CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" H 1950 5400 50  0001 C CNN
+F 3 "~" H 1950 5400 50  0001 C CNN
+	1    1950 5400
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R7
+U 1 1 61776CEE
+P 1500 5400
+F 0 "R7" H 1441 5354 50  0000 R CNN
+F 1 "10k" H 1441 5445 50  0000 R CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" H 1500 5400 50  0001 C CNN
+F 3 "~" H 1500 5400 50  0001 C CNN
+	1    1500 5400
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R6
+U 1 1 61776FAB
+P 1050 5400
+F 0 "R6" H 991 5354 50  0000 R CNN
+F 1 "10k" H 991 5445 50  0000 R CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" H 1050 5400 50  0001 C CNN
+F 3 "~" H 1050 5400 50  0001 C CNN
+	1    1050 5400
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR0131
+U 1 1 617BCF08
+P 1050 5700
+F 0 "#PWR0131" H 1050 5450 50  0001 C CNN
+F 1 "GND" H 1000 5650 50  0000 R CNN
+F 2 "" H 1050 5700 50  0001 C CNN
+F 3 "" H 1050 5700 50  0001 C CNN
+	1    1050 5700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0132
+U 1 1 617BD3BE
+P 1500 5700
+F 0 "#PWR0132" H 1500 5450 50  0001 C CNN
+F 1 "GND" H 1450 5650 50  0000 R CNN
+F 2 "" H 1500 5700 50  0001 C CNN
+F 3 "" H 1500 5700 50  0001 C CNN
+	1    1500 5700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR0133
+U 1 1 617BD55D
+P 1950 5700
+F 0 "#PWR0133" H 1950 5450 50  0001 C CNN
+F 1 "GND" H 1900 5650 50  0000 R CNN
+F 2 "" H 1950 5700 50  0001 C CNN
+F 3 "" H 1950 5700 50  0001 C CNN
+	1    1950 5700
+	1    0    0    -1  
+$EndComp
+Text GLabel 1050 5250 1    50   Input ~ 0
+LED_RED
+Text GLabel 1500 5250 1    50   Input ~ 0
+LED_YELLOW
+Text GLabel 1950 5250 1    50   Input ~ 0
+LED_GREEN
+Wire Wire Line
+	1950 5250 1950 5300
+Wire Wire Line
+	1500 5250 1500 5300
+Wire Wire Line
+	1050 5250 1050 5300
+Wire Notes Line
+	750  4650 2300 4650
+Wire Notes Line
+	2300 4650 2300 5900
+Wire Notes Line
+	2300 5900 750  5900
+Wire Notes Line
+	750  5900 750  4650
+Text Notes 750  4650 0    50   ~ 0
+LEDs
+$Comp
+L Mechanical:MountingHole_Pad H1
+U 1 1 6181BCA6
+P 950 3800
+F 0 "H1" V 904 3950 50  0000 L CNN
+F 1 "MountingHole" V 995 3950 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.5mm_Pad" H 950 3800 50  0001 C CNN
+F 3 "~" H 950 3800 50  0001 C CNN
+	1    950  3800
+	0    1    1    0   
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H2
+U 1 1 6181ED3E
+P 950 4000
+F 0 "H2" V 904 4150 50  0000 L CNN
+F 1 "MountingHole" V 995 4150 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.5mm_Pad" H 950 4000 50  0001 C CNN
+F 3 "~" H 950 4000 50  0001 C CNN
+	1    950  4000
+	0    1    1    0   
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H3
+U 1 1 6181F050
+P 950 4200
+F 0 "H3" V 904 4350 50  0000 L CNN
+F 1 "MountingHole" V 995 4350 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.5mm_Pad" H 950 4200 50  0001 C CNN
+F 3 "~" H 950 4200 50  0001 C CNN
+	1    950  4200
+	0    1    1    0   
+$EndComp
+NoConn ~ 850  3800
+NoConn ~ 850  4000
+NoConn ~ 850  4200
+Wire Wire Line
+	9000 2150 9750 2150
+Wire Wire Line
+	8750 2350 9750 2350
+Wire Wire Line
+	9350 1750 9500 1750
+Connection ~ 9500 1750
+Wire Wire Line
+	9500 1750 9750 1750
+Connection ~ 5350 5350
 $EndSCHEMATC
