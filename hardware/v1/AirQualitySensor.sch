@@ -99,22 +99,11 @@ F 3 "https://rmtplusstoragesenseair.blob.core.windows.net/docs/publicerat/PSP126
 	1    0    0    -1  
 $EndComp
 $Comp
-L AirQualitySensor:DHT22 U2
-U 1 1 615E6A6B
-P 3800 6750
-F 0 "U2" H 4328 6646 50  0000 L CNN
-F 1 "DHT22" H 4328 6555 50  0000 L CNN
-F 2 "AirQualitySensor:DHT22" H 4550 6250 50  0001 C CNN
-F 3 "https://www.sparkfun.com/datasheets/Sensors/Temperature/DHT22.pdf" H 4550 6250 50  0001 C CNN
-	1    3800 6750
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:R_Small R2
 U 1 1 616037F6
 P 2100 1350
-F 0 "R2" H 2150 1250 50  0000 L CNN
-F 1 "5.1k" V 2200 1500 50  0000 R CNN
+F 0 "R2" H 2150 1450 50  0000 L CNN
+F 1 "5.1k" V 2200 1200 50  0000 L CNN
 F 2 "Resistor_SMD:R_0402_1005Metric" H 2100 1350 50  0001 C CNN
 F 3 "~" H 2100 1350 50  0001 C CNN
 	1    2100 1350
@@ -129,7 +118,7 @@ F 1 "5.1k" V 2000 1400 50  0000 R CNN
 F 2 "Resistor_SMD:R_0402_1005Metric" H 2100 1250 50  0001 C CNN
 F 3 "~" H 2100 1250 50  0001 C CNN
 	1    2100 1250
-	0    -1   1    0   
+	0    1    1    0   
 $EndComp
 Wire Wire Line
 	2200 1350 2400 1350
@@ -189,7 +178,7 @@ F 1 "1u" H 3942 1555 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric" H 3850 1600 50  0001 C CNN
 F 3 "~" H 3850 1600 50  0001 C CNN
 	1    3850 1600
-	1    0    0    -1  
+	1    0    0    1   
 $EndComp
 $Comp
 L Device:C_Small C1
@@ -258,9 +247,6 @@ Wire Wire Line
 	2600 1050 2750 1050
 Wire Wire Line
 	2950 1050 4250 1050
-Wire Wire Line
-	3850 1500 4250 1500
-Connection ~ 3850 1500
 $Comp
 L Device:C_Small C3
 U 1 1 6164F8D8
@@ -281,7 +267,7 @@ F 1 "4u7" H 4342 1555 50  0000 L CNN
 F 2 "Capacitor_SMD:C_0603_1608Metric" H 4250 1600 50  0001 C CNN
 F 3 "~" H 4250 1600 50  0001 C CNN
 	1    4250 1600
-	1    0    0    -1  
+	1    0    0    1   
 $EndComp
 $Comp
 L power:GND #PWR0108
@@ -305,9 +291,6 @@ F 3 "" H 4250 1700 50  0001 C CNN
 	1    4250 1700
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	4250 1500 4550 1500
-Connection ~ 4250 1500
 Wire Wire Line
 	4250 1050 4550 1050
 Connection ~ 4250 1050
@@ -1269,4 +1252,21 @@ Wire Wire Line
 	4700 4700 4850 4700
 Wire Wire Line
 	4850 4800 4700 4800
+Connection ~ 3850 1500
+Wire Wire Line
+	3850 1500 4250 1500
+Connection ~ 4250 1500
+Wire Wire Line
+	4250 1500 4550 1500
+$Comp
+L AirQualitySensor:DHT22 U2
+U 1 1 615E6A6B
+P 3800 6750
+F 0 "U2" H 4328 6646 50  0000 L CNN
+F 1 "DHT22" H 4328 6555 50  0000 L CNN
+F 2 "AirQualitySensor:DHT22" H 4550 6250 50  0001 C CNN
+F 3 "https://www.sparkfun.com/datasheets/Sensors/Temperature/DHT22.pdf" H 4550 6250 50  0001 C CNN
+	1    3800 6750
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
