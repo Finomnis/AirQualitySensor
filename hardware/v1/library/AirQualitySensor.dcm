@@ -46,6 +46,12 @@ $CMP EA_DOGM132W-5
 D LCD Graphic Display Modules & Accessories DOGM Grapic 132x32 White Background
 $ENDCMP
 #
+$CMP TC2030
+D Tag-Connect Plug-of-Nails Connector for SWD/J-Link
+K SWD, J-Link
+F https://www.tag-connect.com/wp-content/uploads/bsk-pdf-manager/TC2030-CTX_1.pdf
+$ENDCMP
+#
 $CMP Waveshare_Core52840
 D nRF52840 Module
 F https://infocenter.nordicsemi.com/pdf/nRF52840_PS_v1.1.pdf
