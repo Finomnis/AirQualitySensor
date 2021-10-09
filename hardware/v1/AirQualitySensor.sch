@@ -904,12 +904,12 @@ NoConn ~ 10200 6000
 Wire Notes Line
 	11050 6350 11050 4100
 Wire Notes Line
-	9350 6350 11050 6350
+	9100 6350 11050 6350
 Wire Notes Line
-	11050 4100 9350 4100
+	11050 4100 9100 4100
 Wire Notes Line
-	9350 4100 9350 6350
-Text Notes 9350 4100 0    50   ~ 0
+	9100 4100 9100 6350
+Text Notes 9100 4100 0    50   ~ 0
 Programming Connectors
 Wire Notes Line
 	750  6100 4650 6100
