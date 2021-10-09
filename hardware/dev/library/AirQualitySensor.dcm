@@ -1,0 +1,66 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP 004-0-0010
+D S8 Commercial, CO2 sensor, 400-2000 PPM, 1kHz PWM output, Modbus, THT
+K Senseair co2 gas sensor pwm modbus
+F https://rmtplusstoragesenseair.blob.core.windows.net/docs/publicerat/PSP103.pdf
+$ENDCMP
+#
+$CMP 004-0-0013
+D S8 Residential, CO2 sensor, 400-2000 PPM, 1kHz PWM output, Modbus, THT
+K Senseair co2 gas sensor pwm modbus
+F https://rmtplusstoragesenseair.blob.core.windows.net/docs/publicerat/PSP107.pdf
+$ENDCMP
+#
+$CMP 004-0-0050
+D S8 2%, CO2 sensor, 0.04-2% by volume, 1kHz PWM output, Modbus, THT
+K Senseair co2 gas sensor pwm modbus
+F https://rmtplusstoragesenseair.blob.core.windows.net/docs/publicerat/PSP108.pdf
+$ENDCMP
+#
+$CMP 004-0-0053
+D S8 LP, CO2 sensor, 400-2000 PPM, 1kHz PWM output, Modbus, THT
+K Senseair co2 gas sensor pwm modbus
+F https://rmtplusstoragesenseair.blob.core.windows.net/docs/publicerat/PSP126.pdf
+$ENDCMP
+#
+$CMP 004-0-0071
+D S8 5%, CO2 sensor, 0.04-5% by volume, 1kHz PWM output, Modbus, THT
+K Senseair co2 gas sensor pwm modbus
+F https://rmtplusstoragesenseair.blob.core.windows.net/docs/publicerat/PSP0113.pdf
+$ENDCMP
+#
+$CMP 004-0-0075
+D S8 Commercial, CO2 sensor, 400-2000 PPM, 1kHz PWM output, Modbus, THT
+K Senseair co2 gas sensor pwm modbus
+F https://rmtplusstoragesenseair.blob.core.windows.net/docs/publicerat/PSP103.pdf
+$ENDCMP
+#
+$CMP DHT22
+D Temperature/Humidity Sensor
+K Sensor
+F https://www.sparkfun.com/datasheets/Sensors/Temperature/DHT22.pdf
+$ENDCMP
+#
+$CMP EA_DOGM132W-5
+D LCD Graphic Display Modules & Accessories DOGM Grapic 132x32 White Background
+$ENDCMP
+#
+$CMP TC2030
+D Tag-Connect Plug-of-Nails Connector for SWD/J-Link
+K SWD, J-Link
+F https://www.tag-connect.com/wp-content/uploads/bsk-pdf-manager/TC2030-CTX_1.pdf
+$ENDCMP
+#
+$CMP UART_ftdi
+D For FTDI cable TTL-232R-3V3
+K UART, FTDI
+F https://ftdichip.com/wp-content/uploads/2021/02/DS_TTL-232R_CABLES.pdf
+$ENDCMP
+#
+$CMP Waveshare_Core52840
+D nRF52840 Module
+F https://infocenter.nordicsemi.com/pdf/nRF52840_PS_v1.1.pdf
+$ENDCMP
+#
+#End Doc Library

@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name AirQualitySensor)(type KiCad)(uri ${KIPRJMOD}/library/AirQualitySensor.pretty)(options "")(descr "Custom Symbols for AirQualitySensor project"))
+)
