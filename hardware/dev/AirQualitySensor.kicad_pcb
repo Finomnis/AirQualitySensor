@@ -3,7 +3,7 @@
   (general
     (thickness 1.6)
     (drawings 24)
-    (tracks 586)
+    (tracks 587)
     (zones 0)
     (modules 44)
     (nets 73)
@@ -34,7 +34,7 @@
   )
 
   (setup
-    (last_trace_width 0.25)
+    (last_trace_width 0.5)
     (user_trace_width 0.4)
     (user_trace_width 0.5)
     (user_trace_width 0.77)
@@ -259,7 +259,7 @@
   )
 
   (module Inductor_SMD:L_0805_2012Metric_Pad1.15x1.40mm_HandSolder (layer F.Cu) (tedit 5F68FEF0) (tstamp 61630E13)
-    (at 113.411 102.5145 270)
+    (at 113.411 102.87 270)
     (descr "Inductor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC_7351 nominal with elongated pad for handsoldering. (Body size source: https://docs.google.com/spreadsheets/d/1BsfQQcO9C6DZCsRaXUlFlo91Tg2WpOkGARC1WS5S8t0/edit?usp=sharing), generated with kicad-footprint-generator")
     (tags "inductor handsolder")
     (path /616349EE)
@@ -2407,13 +2407,14 @@
   (segment (start 111.20999 113.74999) (end 110.59599 113.13599) (width 0.5) (layer F.Cu) (net 26))
   (segment (start 111.20999 114.33501) (end 111.20999 113.74999) (width 0.5) (layer F.Cu) (net 26))
   (segment (start 113.440001 103.606001) (end 113.411 103.577) (width 0.5) (layer F.Cu) (net 26))
-  (segment (start 113.440001 108.096001) (end 113.440001 103.606001) (width 0.5) (layer F.Cu) (net 26))
   (segment (start 121.92 121.142006) (end 121.912003 121.150003) (width 0.5) (layer F.Cu) (net 26))
   (segment (start 121.92 120.9505) (end 121.92 121.142006) (width 0.5) (layer F.Cu) (net 26))
+  (segment (start 113.440001 103.924001) (end 113.411 103.895) (width 0.5) (layer F.Cu) (net 26))
+  (segment (start 113.440001 108.096001) (end 113.440001 103.924001) (width 0.5) (layer F.Cu) (net 26))
   (segment (start 113.046 100.187) (end 113.411 99.822) (width 0.5) (layer F.Cu) (net 27))
   (segment (start 110.871 100.187) (end 113.046 100.187) (width 0.5) (layer F.Cu) (net 27))
   (segment (start 113.411 100.552) (end 113.046 100.187) (width 0.5) (layer F.Cu) (net 27))
-  (segment (start 113.411 99.822) (end 113.411 101.452) (width 0.5) (layer F.Cu) (net 27))
+  (segment (start 113.411 99.822) (end 113.411 101.845) (width 0.5) (layer F.Cu) (net 27))
   (segment (start 115.572 112.988) (end 115.572 109.982) (width 0.25) (layer F.Cu) (net 29))
   (segment (start 113.986 114.574) (end 115.572 112.988) (width 0.25) (layer F.Cu) (net 29))
   (segment (start 113.011 114.574) (end 113.986 114.574) (width 0.25) (layer F.Cu) (net 29))
@@ -2717,7 +2718,7 @@
   (segment (start 151.022 107.614) (end 150.257 107.614) (width 0.25) (layer F.Cu) (net 71))
   (segment (start 142.621 102.489) (end 148.209 108.077) (width 0.25) (layer B.Cu) (net 71))
 
-  (zone (net 4) (net_name GND) (layer B.Cu) (tstamp 61622026) (hatch edge 0.508)
+  (zone (net 4) (net_name GND) (layer B.Cu) (tstamp 617B5687) (hatch edge 0.508)
     (connect_pads (clearance 0.508))
     (min_thickness 0.254)
     (fill yes (arc_segments 32) (thermal_gap 0.508) (thermal_bridge_width 0.508))
