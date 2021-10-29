@@ -1,0 +1,8 @@
+# Finomnis AirQualitySensor v1 board configuration
+
+# Copyright (c) 2021 Martin Stumpf
+# SPDX-License-Identifier: Apache-2.0
+
+config BOARD_FINOMNIS_AIRQUALITYSENSOR_V1
+	bool "Finomnis AirQualitySensor v1"
+	depends on SOC_NRF52840_QIAA
