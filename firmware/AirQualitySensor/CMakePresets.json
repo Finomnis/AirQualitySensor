@@ -8,7 +8,7 @@
             "cacheVariables": {
                 "BOARD": {
                     "type": "STRING",
-                    "value": "adafruit_feather_nrf52840"
+                    "value": "finomnis_airqualitysensor_v1_nrf52840"
                 }
             }
         }
