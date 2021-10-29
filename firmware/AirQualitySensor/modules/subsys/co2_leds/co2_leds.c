@@ -30,35 +30,24 @@ K_MUTEX_DEFINE(co2_leds_mutex);
 #define LED_YELLOW 1
 #define LED_GREEN 2
 
-static const char *const led_ports[] = {
-    DT_GPIO_LABEL(DT_NODELABEL(led_co2_red), gpios),
-    DT_GPIO_LABEL(DT_NODELABEL(led_co2_yellow), gpios),
-    DT_GPIO_LABEL(DT_NODELABEL(led_co2_green), gpios),
-};
-static const uint8_t led_pins[] = {
-    DT_GPIO_PIN(DT_NODELABEL(led_co2_red), gpios),
-    DT_GPIO_PIN(DT_NODELABEL(led_co2_yellow), gpios),
-    DT_GPIO_PIN(DT_NODELABEL(led_co2_green), gpios),
-};
-static const struct device *led_devices[] = {
-    NULL,
-    NULL,
-    NULL,
+static const struct gpio_dt_spec led_devices[] = {
+    GPIO_DT_SPEC_GET(DT_NODELABEL(led_co2_red), gpios),
+    GPIO_DT_SPEC_GET(DT_NODELABEL(led_co2_yellow), gpios),
+    GPIO_DT_SPEC_GET(DT_NODELABEL(led_co2_green), gpios),
 };
 
-static int init_leds()
+static int
+init_leds()
 {
     for (int i = 0; i < ARRAY_SIZE(led_devices); i++)
     {
-        led_devices[i] = device_get_binding(led_ports[i]);
-        if (!led_devices[i])
+        if (!device_is_ready(led_devices[i].port))
         {
             LOG_ERR("Cannot bind gpio device");
             return -ENODEV;
         }
 
-        int err = gpio_pin_configure(led_devices[i], led_pins[i],
-                                     GPIO_OUTPUT);
+        int err = gpio_pin_configure_dt(&led_devices[i], GPIO_OUTPUT);
         if (err)
         {
             LOG_ERR("Cannot configure LED gpio");
@@ -100,15 +89,15 @@ static void update_leds()
         break;
     }
 
-    if (gpio_pin_set_raw(led_devices[LED_RED], led_pins[LED_RED], red_on))
+    if (gpio_pin_set_dt(&led_devices[LED_RED], red_on))
     {
         LOG_ERR("Cannot write to red LED gpio");
     }
-    if (gpio_pin_set_raw(led_devices[LED_YELLOW], led_pins[LED_YELLOW], yellow_on))
+    if (gpio_pin_set_dt(&led_devices[LED_YELLOW], yellow_on))
     {
         LOG_ERR("Cannot write to yellow LED gpio");
     }
-    if (gpio_pin_set_raw(led_devices[LED_GREEN], led_pins[LED_GREEN], green_on))
+    if (gpio_pin_set_dt(&led_devices[LED_GREEN], green_on))
     {
         LOG_ERR("Cannot write to green LED gpio");
     }

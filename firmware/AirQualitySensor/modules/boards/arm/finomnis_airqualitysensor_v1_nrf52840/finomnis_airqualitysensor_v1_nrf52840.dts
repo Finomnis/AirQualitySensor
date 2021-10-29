@@ -27,11 +27,11 @@
     leds {
         compatible = "gpio-leds";
         led0: led_0 {
-            gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>;
+            gpios = <&gpio0 30 0>;
             label = "User LED 0";
         };
         led1: led_1 {
-            gpios = <&gpio0 31 GPIO_ACTIVE_HIGH>;
+            gpios = <&gpio0 31 0>;
             label = "User LED 1";
         };
     };
@@ -60,11 +60,11 @@
             label = "Red CO2 LED";
         };
         led_co2_yellow: led_ui_1 {
-            gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+            gpios = <&gpio0 28 GPIO_ACTIVE_HIGH>;
             label = "Yellow CO2 LED";
         };
         led_co2_green: led_ui_2 {
-            gpios = <&gpio1 29 GPIO_ACTIVE_HIGH>;
+            gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
             label = "Green CO2 LED";
         };
     };
