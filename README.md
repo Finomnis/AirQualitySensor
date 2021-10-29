@@ -2,8 +2,8 @@
 
 Simple Air Quality sensor based on:
 
--   ESP32 (Microcontroller + Wifi)
+-   nRF52840 (Microcontroller + Zigbee)
 -   Senseair S8 (CO2)
 -   AM2302/DHT22 (Temperature + Humidity)
--   Mqtt/Homie (SmartHome Connectivity)
+-   Zigbee (SmartHome Connectivity)
 -   Display DOGM132-5
