@@ -1,0 +1,19 @@
+
+menuconfig SUBSYS_DISPLAY_DOGM132W_5
+    bool "Display DOGM132W-5"
+    help
+      Enables the DOGM132W-5 display that shows sensor values and system status
+
+config SUBSYS_DISPLAY_DOGM132W_5_STACK_SIZE
+    int "CO2 LEDs thread stack size"
+    depends on SUBSYS_DISPLAY_DOGM132W_5
+    default 512
+    help
+      Size of display thread stack
+
+config SUBSYS_DISPLAY_DOGM132W_5_THREAD_PRIORITY
+    int "CO2 LEDs thread priority"
+    depends on SUBSYS_DISPLAY_DOGM132W_5
+    default 4
+    help
+      Priority of the display thread.

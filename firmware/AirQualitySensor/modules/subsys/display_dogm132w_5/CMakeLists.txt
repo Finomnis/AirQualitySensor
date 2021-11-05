@@ -1,0 +1,4 @@
+
+zephyr_library_named(subsys_display_dogm132w_5)
+zephyr_library_sources_ifdef(CONFIG_SUBSYS_DISPLAY_DOGM132W_5 display_dogm132w_5.c)
+zephyr_include_directories(.)
