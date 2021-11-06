@@ -34,8 +34,6 @@ zb_uint16_t g_attr_rel_humid_measurement_max_value = ZB_ZCL_REL_HUMIDITY_MEASURE
 
 /* CO2 Measurement cluster attributes data */
 float g_attr_co2_measurement_value = ZB_ZCL_CO2_MEASUREMENT_VALUE_DEFAULT_VALUE;
-float g_attr_co2_measurement_min_value = ZB_ZCL_CO2_MEASUREMENT_MIN_VALUE_DEFAULT_VALUE;
-float g_attr_co2_measurement_max_value = ZB_ZCL_CO2_MEASUREMENT_MAX_VALUE_DEFAULT_VALUE;
 
 ZB_ZCL_DECLARE_IDENTIFY_ATTRIB_LIST(identify_attr_list, &g_attr_identify_identify_time);
 
@@ -51,9 +49,7 @@ ZB_ZCL_DECLARE_REL_HUMIDITY_MEASUREMENT_ATTRIB_LIST(humidity_sensor_attr_list,
                                                     &g_attr_rel_humid_measurement_max_value);
 
 ZB_ZCL_DECLARE_CO2_MEASUREMENT_ATTRIB_LIST(co2_sensor_attr_list,
-                                           &g_attr_co2_measurement_value,
-                                           &g_attr_co2_measurement_min_value,
-                                           &g_attr_co2_measurement_max_value);
+                                           &g_attr_co2_measurement_value);
 
 ZB_HA_DECLARE_AIRQUALITY_SENSOR_CLUSTER_LIST(airquality_sensor_clusters,
                                              basic_attr_list,
