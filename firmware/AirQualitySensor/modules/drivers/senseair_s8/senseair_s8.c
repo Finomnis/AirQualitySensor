@@ -36,7 +36,7 @@ const static struct modbus_iface_param modbus_params = {
 
 static int senseair_s8_read_sample(struct senseair_s8_data *drv_data,
                                    uint16_t *error,
-                                   uint16_t *co2_value)
+                                   int16_t *co2_value)
 {
     uint16_t device_status[INPUT_REGISTER_DeviceStatus_LEN];
 
@@ -65,6 +65,7 @@ static int senseair_s8_init(const struct device *dev)
         .modbus_iface = modbus_iface_get_by_name(CONFIG_SENSEAIR_S8_MODBUS_DEV_NAME),
         .modbus_sensor_address = 0xFE,
         .sample = 0,
+        .error = true,
     };
 
     // Initialize modbus
@@ -122,19 +123,22 @@ static int senseair_s8_sample_fetch(const struct device *dev,
     struct senseair_s8_data *drv_data = dev->data;
 
     uint16_t error;
-    uint16_t co2_value;
+    int16_t co2_value;
     int ret = senseair_s8_read_sample(drv_data, &error, &co2_value);
     if (ret)
     {
+        drv_data->error = true;
         return -EIO;
     }
 
     if (error)
     {
         LOG_ERR("Sensor is in an error state: 0x%04x", error);
+        drv_data->error = true;
         return -EIO;
     }
 
+    drv_data->error = false;
     drv_data->sample = co2_value;
 
     return 0;
@@ -149,6 +153,10 @@ static int senseair_s8_channel_get(const struct device *dev,
     switch (chan)
     {
     case SENSOR_CHAN_CO2:
+        if (drv_data->error)
+        {
+            return -EIO;
+        }
         val->val1 = 0;
         val->val2 = drv_data->sample;
         break;
