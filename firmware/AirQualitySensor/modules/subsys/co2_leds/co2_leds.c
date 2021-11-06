@@ -103,13 +103,12 @@ static void update_leds()
     }
 }
 
-void co2_leds_set_co2_level(struct sensor_value value)
+void co2_leds_set_co2_level(struct sensor_value value, bool error)
 {
-    // TODO: LOCK
     uint16_t co2_value = value.val2;
 
     enum LED_STATE new_led_state;
-    if (co2_value < 0)
+    if (error)
     {
         new_led_state = LED_STATE_ERROR;
     }

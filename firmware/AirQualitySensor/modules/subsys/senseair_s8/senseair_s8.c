@@ -45,7 +45,18 @@ K_THREAD_DEFINE(sensor_senseair_s8, CONFIG_SUBSYS_SENSEAIR_S8_STACK_SIZE,
         k_mutex_lock(&senseair_s8_##name##_callback_mutex, K_FOREVER);   \
         for (int i = 0; i < num_##name##_callbacks_registered; i++)      \
         {                                                                \
-            name##_callbacks[i](value);                                  \
+            name##_callbacks[i](value, false);                           \
+        }                                                                \
+        k_mutex_unlock(&senseair_s8_##name##_callback_mutex);            \
+    }                                                                    \
+                                                                         \
+    static void publish_##name##_value_error()                           \
+    {                                                                    \
+        struct sensor_value error_value = {0, 0};                        \
+        k_mutex_lock(&senseair_s8_##name##_callback_mutex, K_FOREVER);   \
+        for (int i = 0; i < num_##name##_callbacks_registered; i++)      \
+        {                                                                \
+            name##_callbacks[i](error_value, true);                      \
         }                                                                \
         k_mutex_unlock(&senseair_s8_##name##_callback_mutex);            \
     }
@@ -75,7 +86,7 @@ static void senseair_s8_entry_point(void *u1, void *u2, void *u3)
         if (success != 0)
         {
             LOG_WRN("Sensor fetch failed: %d", success);
-            publish_co2_value(SENSEAIR_S8_ERROR_VALUE);
+            publish_co2_value_error();
             continue;
         }
 
@@ -84,7 +95,7 @@ static void senseair_s8_entry_point(void *u1, void *u2, void *u3)
         if (success != 0)
         {
             LOG_WRN("get failed: %d", success);
-            publish_co2_value(SENSEAIR_S8_ERROR_VALUE);
+            publish_co2_value_error();
         }
         else
         {

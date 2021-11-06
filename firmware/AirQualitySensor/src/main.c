@@ -53,10 +53,10 @@ static void handle_humidity_value(struct sensor_value value)
 #endif
 
 #if CONFIG_SUBSYS_SENSEAIR_S8
-static void handle_co2_value(struct sensor_value value)
+static void handle_co2_value(struct sensor_value value, bool error)
 {
     LOG_INF("CO2: %d.%06d", value.val1, value.val2);
-    if (value.val2 < 0)
+    if (error)
     {
         LOG_WRN("CO2 failed.");
     }
