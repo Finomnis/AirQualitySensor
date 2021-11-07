@@ -2,7 +2,7 @@
 
 menuconfig SENSEAIR_S8
     bool "Senseair S8 CO2 Sensor"
-    depends on (MODBUS && MODBUS_ROLE_CLIENT)
+    depends on (MODBUS_SERIAL && MODBUS_ROLE_CLIENT)
     help
       Enable Senseair S8 CO2 Sensor driver
 
