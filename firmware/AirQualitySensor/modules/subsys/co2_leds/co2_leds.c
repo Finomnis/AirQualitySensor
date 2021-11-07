@@ -105,10 +105,10 @@ static void update_leds()
 
 void co2_leds_set_co2_level(struct sensor_value value, bool error)
 {
-    uint16_t co2_value = value.val2;
+    int16_t co2_value = value.val2;
 
     enum LED_STATE new_led_state;
-    if (error)
+    if (error || co2_value <= 0)
     {
         new_led_state = LED_STATE_ERROR;
     }
