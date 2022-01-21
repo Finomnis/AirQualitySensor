@@ -1,0 +1,7 @@
+Voltmeter SO-45 AC 0-300V Round Analog Dial Panel Meter Voltmeter Gauge Black
+
+- Current controlled meter
+- max value: 1.13 mA
+- voltage: 2.77V + 2.20k Resistor in Series
+- internal resistance galvo: 250 Ohms
+- Added 2.2kOhm resistor in series and existing 100uF cap in parallel, this should make it controllable via PWM
