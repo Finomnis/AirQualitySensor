@@ -73,20 +73,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
-name = "clock-frequency-measurement"
-version = "0.1.0"
-dependencies = [
- "cortex-m",
- "cortex-m-rt",
- "cortex-m-rtic",
- "defmt",
- "defmt-rtt",
- "embedded-hal",
- "panic-probe",
- "stm32g0xx-hal",
-]
-
-[[package]]
 name = "cortex-m"
 version = "0.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -209,6 +195,39 @@ dependencies = [
 ]
 
 [[package]]
+name = "firmware"
+version = "0.1.0"
+dependencies = [
+ "cortex-m",
+ "cortex-m-rt",
+ "cortex-m-rtic",
+ "defmt",
+ "defmt-rtt",
+ "embedded-hal",
+ "panic-probe",
+ "stm32g0xx-hal",
+ "systick-monotonic",
+]
+
+[[package]]
+name = "fugit"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "22e489f95411a50db661b18e072459bbdc084de522a8530e4709bef593bf3c18"
+dependencies = [
+ "gcd",
+]
+
+[[package]]
+name = "gcd"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f37978dab2ca789938a83b2f8bc1ef32db6633af9051a6cd409eff72cbaaa79a"
+dependencies = [
+ "paste",
+]
+
+[[package]]
 name = "hash32"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -290,6 +309,12 @@ dependencies = [
  "cortex-m",
  "defmt",
 ]
+
+[[package]]
+name = "paste"
+version = "1.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0744126afe1a6dd7f394cb50a716dbe086cb06e255e53d8d0185d82828358fb5"
 
 [[package]]
 name = "proc-macro-error"
@@ -481,6 +506,17 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-xid",
+]
+
+[[package]]
+name = "systick-monotonic"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "57e71d8e4587d8f434b88b9aef901987f46164df813a3a1d6bdf3a58debf67f0"
+dependencies = [
+ "cortex-m",
+ "fugit",
+ "rtic-monotonic",
 ]
 
 [[package]]
