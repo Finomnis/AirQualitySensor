@@ -15,7 +15,7 @@ mod app {
     use systick_monotonic::*;
 
     #[monotonic(binds = SysTick, default = true)]
-    type SystickMono = Systick<1000>; // 100 Hz / 10 ms granularity
+    type SystickMono = Systick<1000>; // 1000 Hz / 1 ms granularity
 
     #[local]
     struct LocalResources {
