@@ -19,12 +19,11 @@ mod app {
     type SystickMono = Systick<1000>; // 1000 Hz / 1 ms granularity
 
     #[local]
-    struct LocalResources {
-        next_sensor_tick: <SystickMono as rtic::Monotonic>::Instant,
-    }
+    struct LocalResources {}
 
     #[shared]
     struct SharedResources {
+        next_sensor_tick: <SystickMono as rtic::Monotonic>::Instant,
         self_test_finished: bool,
         i2c: hal::i2c::I2c<
             stm32::I2C2,
@@ -65,20 +64,20 @@ mod app {
         finish_self_test::spawn_at(monotonics::now() + 15.secs()).unwrap();
 
         // Schedule PWM updates
-        let next_sensor_tick = monotonics::now() + 10.millis();
-        sensor_tick::spawn_at(next_sensor_tick).unwrap();
+        let next_sensor_tick = monotonics::now();
 
         (
             SharedResources {
                 i2c,
                 self_test_finished: false,
+                next_sensor_tick,
             },
-            LocalResources { next_sensor_tick },
+            LocalResources {},
             init::Monotonics(Systick::new(ctx.core.SYST, rcc.clocks.sys_clk.0)),
         )
     }
 
-    #[task(shared = [i2c, self_test_finished])]
+    #[task(shared = [i2c, self_test_finished, next_sensor_tick])]
     fn finish_self_test(mut ctx: finish_self_test::Context) {
         ctx.shared.i2c.lock(|i2c| {
             let mut controller = SCD4xController::new(i2c);
@@ -88,23 +87,21 @@ mod app {
             }
         });
         ctx.shared.self_test_finished.lock(|x| *x = true);
+
+        ctx.shared.next_sensor_tick.lock(|next_sensor_tick| {
+            *next_sensor_tick = monotonics::now() + 5.secs();
+            sensor_tick::spawn_at(*next_sensor_tick).unwrap();
+        })
     }
 
-    #[task(local = [next_sensor_tick], shared = [i2c, self_test_finished])]
-    fn sensor_tick(ctx: sensor_tick::Context) {
-        let sensor_tick::LocalResources { next_sensor_tick } = ctx.local;
-        let sensor_tick::SharedResources {
-            i2c: _,
-            mut self_test_finished,
-        } = ctx.shared;
-
-        if !self_test_finished.lock(|x| *x) {
-            return;
-        }
-
+    #[task(shared = [i2c, next_sensor_tick])]
+    fn sensor_tick(mut ctx: sensor_tick::Context) {
+        defmt::debug!("Reading sensor value ...");
         //i2c.lock(|i2c| {});
 
-        *next_sensor_tick = *next_sensor_tick + 5.secs();
-        sensor_tick::spawn_at(*next_sensor_tick).unwrap();
+        ctx.shared.next_sensor_tick.lock(|next_sensor_tick| {
+            *next_sensor_tick = *next_sensor_tick + 5.secs();
+            sensor_tick::spawn_at(*next_sensor_tick).unwrap();
+        });
     }
 }
