@@ -78,13 +78,13 @@ mod app {
             x if x < 200 => max_duty * (x as u64 - 100) / 300,
             x if x < 300 => max_duty * 100 / 300,
             x if x < 400 => max_duty * (x as u64 - 200) / 300,
-            x if x < 500 => max_duty * 2 / 3,
+            x if x < 500 => max_duty * 200 / 300,
             x if x < 600 => max_duty * (x as u64 - 300) / 300,
             x if x < 700 => max_duty,
             x if x < 800 => max_duty * (1000 - x as u64) / 300,
-            x if x < 900 => max_duty * 2 / 3,
+            x if x < 900 => max_duty * 200 / 300,
             x if x < 1000 => max_duty * (1100 - x as u64) / 300,
-            x if x < 1100 => max_duty * 1 / 3,
+            x if x < 1100 => max_duty * 100 / 300,
             x => max_duty * (1200 - x as u64) / 300,
         } as u16;
 
