@@ -47,8 +47,8 @@ where
             .map_err(from_i2c_error)?;
 
         let mut serial = 0;
-        for num in data::convert_response_to_words(&response) {
-            serial = serial << 16 | num? as u64;
+        for num in data::response_to_array::<3>(&response)? {
+            serial = serial << 16 | num as u64;
         }
 
         Ok(serial)
@@ -66,13 +66,9 @@ where
             .read(I2C_ADDR, &mut response)
             .map_err(from_i2c_error)?;
 
-        let mut result = data::convert_response_to_words(&response);
-        if 0 != result.next().ok_or(SCD4xError::ByteCountError)?? {
+        let result = data::response_to_array::<1>(&response)?[0];
+        if 0 != result {
             return Err(SCD4xError::SelfTestFailed);
-        }
-
-        if result.next().is_some() {
-            return Err(SCD4xError::ByteCountError);
         }
 
         Ok(())

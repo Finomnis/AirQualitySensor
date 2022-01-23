@@ -49,7 +49,7 @@ impl<'a> Iterator for WordsIterator<'a> {
     }
 }
 
-pub fn convert_response_to_words(data: &[u8]) -> WordsIterator {
+fn convert_response_to_words(data: &[u8]) -> WordsIterator {
     WordsIterator { data }
 }
 
