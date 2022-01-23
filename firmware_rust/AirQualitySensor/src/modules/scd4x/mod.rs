@@ -1,4 +1,9 @@
 mod data;
+mod measurement;
+
+pub struct Measurement {
+    raw_data: [u16; 3],
+}
 
 use embedded_hal::blocking::i2c::{Read, Write, WriteRead};
 
@@ -99,7 +104,7 @@ where
         Ok(ready)
     }
 
-    pub fn read_measurement(&mut self) -> Result<(), SCD4xError> {
+    pub fn read_measurement(&mut self) -> Result<Measurement, SCD4xError> {
         let mut response = [0u8; 9];
         self.i2c
             .write_read(I2C_ADDR, &[0xec, 0x05], &mut response)
@@ -109,6 +114,6 @@ where
 
         defmt::debug!("data: {:?}", data);
 
-        Ok(())
+        Ok(Measurement { raw_data: data })
     }
 }

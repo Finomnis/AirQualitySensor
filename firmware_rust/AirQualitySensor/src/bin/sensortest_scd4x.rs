@@ -114,7 +114,9 @@ mod app {
             if data_ready {
                 defmt::debug!("Reading sensor value ...");
                 match controller.read_measurement() {
-                    Ok(()) => defmt::info!("Measurement: {}", 0),
+                    Ok(measurement) => {
+                        defmt::info!("Measurement: {}", measurement)
+                    }
                     Err(e) => defmt::warn!("Reading measurement failed: {:?}", e),
                 }
             }
