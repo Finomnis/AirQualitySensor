@@ -11,6 +11,7 @@ pub enum SCD4xError {
     I2cArbitrationLost,
     ChecksumError,
     ByteCountError,
+    SelfTestFailed,
 }
 
 fn from_i2c_error(e: crate::hal::i2c::Error) -> SCD4xError {
@@ -39,7 +40,7 @@ where
         Self { i2c }
     }
 
-    pub fn get_serial_number(self) -> Result<u64, SCD4xError> {
+    pub fn get_serial_number(&mut self) -> Result<u64, SCD4xError> {
         let mut response = [0u8; 9];
         self.i2c
             .write_read(I2C_ADDR, &[0x36, 0x82], &mut response)
@@ -51,5 +52,31 @@ where
         }
 
         Ok(serial)
+    }
+
+    pub fn start_self_test(&mut self) -> Result<(), SCD4xError> {
+        self.i2c
+            .write(I2C_ADDR, &[0x36, 0x39])
+            .map_err(from_i2c_error)?;
+
+        Ok(())
+    }
+
+    pub fn finish_self_test(&mut self) -> Result<(), SCD4xError> {
+        let mut response = [0u8; 3];
+        self.i2c
+            .read(I2C_ADDR, &mut response)
+            .map_err(from_i2c_error)?;
+
+        let mut result = data::convert_response_to_words(&response);
+        if 0 != result.next().ok_or(SCD4xError::ByteCountError)?? {
+            return Err(SCD4xError::SelfTestFailed);
+        }
+
+        if result.next().is_some() {
+            return Err(SCD4xError::ByteCountError);
+        }
+
+        Ok(())
     }
 }
