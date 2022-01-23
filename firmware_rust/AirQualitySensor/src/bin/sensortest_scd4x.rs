@@ -19,12 +19,12 @@ mod app {
     type SystickMono = Systick<1000>; // 1000 Hz / 1 ms granularity
 
     #[local]
-    struct LocalResources {}
+    struct LocalResources {
+        next_sensor_tick: <SystickMono as rtic::Monotonic>::Instant,
+    }
 
     #[shared]
     struct SharedResources {
-        next_sensor_tick: <SystickMono as rtic::Monotonic>::Instant,
-        self_test_finished: bool,
         i2c: hal::i2c::I2c<
             stm32::I2C2,
             gpio::gpioa::PA12<gpio::Output<gpio::OpenDrain>>,
@@ -44,6 +44,7 @@ mod app {
         let gpioa = ctx.device.GPIOA.split(&mut rcc);
         let i2c_sda = gpioa.pa12.into_open_drain_output();
         let i2c_scl = gpioa.pa11.into_open_drain_output();
+        let mut delay = ctx.core.SYST.delay(&mut rcc);
 
         // Initialize I2C
         let mut i2c =
@@ -51,57 +52,75 @@ mod app {
                 .I2C2
                 .i2c(i2c_sda, i2c_scl, hal::i2c::Config::new(100.khz()), &mut rcc);
 
-        // Check sensor
+        // Get sensor controller
         let mut controller = SCD4xController::new(&mut i2c);
+
+        // Stop sensor periodic measuring. Many methods cannot be called while the sensor is active.
+        match controller.stop_periodic_measurement() {
+            Ok(()) => defmt::info!("Stopped periodic measurement."),
+            Err(e) => defmt::warn!("Unable to stop periodic measurement: {:?}", e),
+        }
+        delay.delay(500.ms());
+
+        // Query serial number, as sanity check
         match controller.get_serial_number() {
             Ok(serial) => defmt::info!("Sensor serial: {}", serial),
             Err(e) => defmt::warn!("Unable to query serial number: {:?}", e),
         };
-        match controller.start_self_test() {
-            Ok(()) => defmt::info!("Self test started ..."),
-            Err(e) => defmt::warn!("Unable to start self test: {:?}", e),
-        };
-        finish_self_test::spawn_at(monotonics::now() + 15.secs()).unwrap();
+
+        // Perform self test
+        // match controller.start_self_test() {
+        //     Ok(()) => defmt::info!("Self test started ..."),
+        //     Err(e) => defmt::warn!("Unable to start self test: {:?}", e),
+        // };
+        // delay.delay(10.seconds());
+        // match controller.finish_self_test() {
+        //     Ok(()) => defmt::info!("Self test succeeded."),
+        //     Err(e) => defmt::warn!("Self test: {:?}", e),
+        // }
+
+        // Start periodic measurements
+        match controller.start_periodic_measurement() {
+            Ok(()) => defmt::info!("Periodic measurement started."),
+            Err(e) => defmt::warn!("Starting periodic measurement: {:?}", e),
+        }
 
         // Schedule PWM updates
         let next_sensor_tick = monotonics::now();
+        sensor_tick::spawn_at(next_sensor_tick).unwrap();
 
         (
-            SharedResources {
-                i2c,
-                self_test_finished: false,
-                next_sensor_tick,
-            },
-            LocalResources {},
-            init::Monotonics(Systick::new(ctx.core.SYST, rcc.clocks.sys_clk.0)),
+            SharedResources { i2c },
+            LocalResources { next_sensor_tick },
+            init::Monotonics(Systick::new(delay.release(), rcc.clocks.sys_clk.0)),
         )
     }
 
-    #[task(shared = [i2c, self_test_finished, next_sensor_tick])]
-    fn finish_self_test(mut ctx: finish_self_test::Context) {
+    #[task(shared = [i2c], local = [next_sensor_tick])]
+    fn sensor_tick(mut ctx: sensor_tick::Context) {
+        let next_sensor_tick = ctx.local.next_sensor_tick;
+
         ctx.shared.i2c.lock(|i2c| {
             let mut controller = SCD4xController::new(i2c);
-            match controller.finish_self_test() {
-                Ok(()) => defmt::info!("Self test succeeded."),
-                Err(e) => defmt::warn!("Self test: {:?}", e),
+
+            let data_ready = match controller.get_data_ready_status() {
+                Ok(ready) => ready,
+                Err(e) => {
+                    defmt::warn!("Unable to ready data ready state: {:?}", e);
+                    false
+                }
+            };
+
+            if data_ready {
+                defmt::debug!("Reading sensor value ...");
+                match controller.read_measurement() {
+                    Ok(()) => defmt::info!("Measurement: {}", 0),
+                    Err(e) => defmt::warn!("Reading measurement failed: {:?}", e),
+                }
             }
         });
-        ctx.shared.self_test_finished.lock(|x| *x = true);
 
-        ctx.shared.next_sensor_tick.lock(|next_sensor_tick| {
-            *next_sensor_tick = monotonics::now() + 5.secs();
-            sensor_tick::spawn_at(*next_sensor_tick).unwrap();
-        })
-    }
-
-    #[task(shared = [i2c, next_sensor_tick])]
-    fn sensor_tick(mut ctx: sensor_tick::Context) {
-        defmt::debug!("Reading sensor value ...");
-        //i2c.lock(|i2c| {});
-
-        ctx.shared.next_sensor_tick.lock(|next_sensor_tick| {
-            *next_sensor_tick = *next_sensor_tick + 5.secs();
-            sensor_tick::spawn_at(*next_sensor_tick).unwrap();
-        });
+        *next_sensor_tick = *next_sensor_tick + 100.millis();
+        sensor_tick::spawn_at(*next_sensor_tick).unwrap();
     }
 }

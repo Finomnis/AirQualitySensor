@@ -52,3 +52,22 @@ impl<'a> Iterator for WordsIterator<'a> {
 pub fn convert_response_to_words(data: &[u8]) -> WordsIterator {
     WordsIterator { data }
 }
+
+pub fn response_to_array<const L: usize>(data: &[u8]) -> Result<[u16; L], SCD4xError> {
+    let mut result = [0u16; L];
+
+    let mut words_iter = convert_response_to_words(data);
+
+    for elem in &mut result {
+        match words_iter.next() {
+            None => return Err(SCD4xError::ByteCountError),
+            Some(num) => *elem = num?,
+        }
+    }
+
+    if words_iter.next().is_some() {
+        return Err(SCD4xError::ByteCountError);
+    }
+
+    Ok(result)
+}

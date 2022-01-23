@@ -57,9 +57,7 @@ where
     pub fn start_self_test(&mut self) -> Result<(), SCD4xError> {
         self.i2c
             .write(I2C_ADDR, &[0x36, 0x39])
-            .map_err(from_i2c_error)?;
-
-        Ok(())
+            .map_err(from_i2c_error)
     }
 
     pub fn finish_self_test(&mut self) -> Result<(), SCD4xError> {
@@ -76,6 +74,44 @@ where
         if result.next().is_some() {
             return Err(SCD4xError::ByteCountError);
         }
+
+        Ok(())
+    }
+
+    pub fn start_periodic_measurement(&mut self) -> Result<(), SCD4xError> {
+        self.i2c
+            .write(I2C_ADDR, &[0x21, 0xb1])
+            .map_err(from_i2c_error)
+    }
+
+    pub fn stop_periodic_measurement(&mut self) -> Result<(), SCD4xError> {
+        self.i2c
+            .write(I2C_ADDR, &[0x3f, 0x86])
+            .map_err(from_i2c_error)
+    }
+
+    pub fn get_data_ready_status(&mut self) -> Result<bool, SCD4xError> {
+        let mut response = [0u8; 3];
+        self.i2c
+            .write_read(I2C_ADDR, &[0xe4, 0xb8], &mut response)
+            .map_err(from_i2c_error)?;
+
+        let data = data::response_to_array::<1>(&response)?[0];
+
+        let ready = data & 0x07ff != 0;
+
+        Ok(ready)
+    }
+
+    pub fn read_measurement(&mut self) -> Result<(), SCD4xError> {
+        let mut response = [0u8; 9];
+        self.i2c
+            .write_read(I2C_ADDR, &[0xec, 0x05], &mut response)
+            .map_err(from_i2c_error)?;
+
+        let data = data::response_to_array::<3>(&response)?;
+
+        defmt::debug!("data: {:?}", data);
 
         Ok(())
     }
