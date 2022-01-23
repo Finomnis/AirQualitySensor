@@ -1,3 +1,0 @@
-[submodule "firmware/AirQualitySensor/modules/ext/ugfx/ugfx"]
-	path = firmware/AirQualitySensor/modules/subsys/display_dogm132w_5/ugfx
-	url = https://git.ugfx.io/uGFX/ugfx.git

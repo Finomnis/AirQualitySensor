@@ -1,3 +1,0 @@
-comment "Device Drivers"
-
-rsource "senseair_s8/Kconfig"

@@ -1,4 +1,0 @@
-
-zephyr_library_named(subsys_co2_leds)
-zephyr_library_sources_ifdef(CONFIG_SUBSYS_CO2_LEDS co2_leds.c)
-zephyr_include_directories(.)

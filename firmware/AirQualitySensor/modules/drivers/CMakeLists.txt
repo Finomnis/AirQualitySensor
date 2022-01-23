@@ -1,2 +1,0 @@
-
-add_subdirectory_ifdef(CONFIG_SENSEAIR_S8 senseair_s8)

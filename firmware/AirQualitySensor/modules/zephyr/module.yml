@@ -1,7 +1,0 @@
-
-build:
-  cmake: .
-  kconfig: Kconfig.aqs
-  settings:
-    board_root: .
-    dts_root: .
