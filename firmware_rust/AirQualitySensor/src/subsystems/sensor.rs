@@ -41,16 +41,16 @@ impl Sensor {
     ///
     /// After how much time the next tick should be performed, in millis
     ///
-    pub fn tick(&mut self, i2c: &mut impl I2cConnection) -> u64 {
+    pub fn tick(&mut self, i2c: &mut impl I2cConnection) -> (u64, bool) {
         let mut controller = SCD4xController::new(i2c);
 
         match self.update(&mut controller) {
             Ok(Some(value)) => {
                 self.value = Some(value);
                 defmt::info!("New value: {}", self.value);
-                100
+                (100, true)
             }
-            Ok(None) => 100,
+            Ok(None) => (100, false),
             Err(e) => {
                 defmt::warn!(
                     "Error while trying to read new sensor value: {}: {}",
@@ -63,7 +63,7 @@ impl Sensor {
                 controller.stop_periodic_measurement().ok();
                 self.needs_init = true;
 
-                1000
+                (1000, true)
             }
         }
     }

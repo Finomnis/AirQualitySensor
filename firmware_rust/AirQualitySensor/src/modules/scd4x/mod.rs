@@ -6,6 +6,7 @@ mod tasks;
 pub use controller::SCD4xController;
 pub use tasks::SCD4xTasks;
 
+#[derive(Clone)]
 pub struct Measurement {
     raw_data: [u16; 3],
 }
