@@ -100,12 +100,12 @@ mod app {
         let next_sensor_tick = ctx.local.next_sensor_tick;
 
         let delay = ctx.shared.i2c.lock(|i2c| {
-            ctx.shared.sensor_subsystem.lock(|e| {
-                let (delay, changed) = e.tick(i2c);
+            ctx.shared.sensor_subsystem.lock(|sensor_subsystem| {
+                let (delay, changed) = sensor_subsystem.tick(i2c);
                 if changed {
-                    ctx.shared
-                        .led_subsystem
-                        .lock(|l| l.update_leds(e.get_value()))
+                    ctx.shared.led_subsystem.lock(|led_subsystem| {
+                        led_subsystem.update_leds(sensor_subsystem.get_value())
+                    })
                 }
                 delay
             })
