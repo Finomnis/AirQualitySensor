@@ -2,6 +2,7 @@
 #![no_std]
 
 pub mod modules;
+pub mod subsystems;
 
 use defmt_rtt as _; // global logger
 
