@@ -1,8 +1,10 @@
 use embedded_hal::PwmPin;
 
-const GALVO_TICK_PERIOD_MS: u64 = 10;
+const GALVO_TICK_PERIOD_MS: u64 = 20;
+const GALVO_TUNING_P: f32 = 25.0;
+const GALVO_TUNING_I: f32 = 7.0;
 
-pub const GALVO_CALIBRATION: (f32, f32, f32) = (0.94, 0.80, 0.84);
+pub const GALVO_CALIBRATION: (f32, f32, f32) = (0.94, 0.79, 0.84);
 
 pub struct Galvos<PWM0, PWM1, PWM2> {
     pwm: ((PWM0, bool, f32), (PWM1, bool, f32), (PWM2, bool, f32)),
@@ -10,6 +12,7 @@ pub struct Galvos<PWM0, PWM1, PWM2> {
     speed: (f32, f32, f32),
     desired_position: (f32, f32, f32),
     tick_id: u64,
+    t_millis: u64,
 }
 
 impl<PWM0, PWM1, PWM2> Galvos<PWM0, PWM1, PWM2>
@@ -25,6 +28,7 @@ where
             speed: (0.0, 0.0, 0.0),
             desired_position: (1.0, 1.0, 1.0),
             tick_id: 0,
+            t_millis: 0,
         };
 
         s.update_pwm();
@@ -36,12 +40,19 @@ where
         s
     }
 
-    const P: f32 = 0.0015;
-    const I: f32 = 0.05;
-    fn perform_control_loop_update(position: &mut f32, speed: &mut f32, desired_position: f32) {
-        let acceleration = Self::P * (desired_position - *position) - Self::I * *speed;
-        *speed += acceleration;
-        *position += *speed;
+    fn perform_control_loop_update(
+        delta_millis: u64,
+        position: &mut f32,
+        speed: &mut f32,
+        desired_position: f32,
+    ) {
+        let delta_secs: f32 = delta_millis as f32 / 1000.0;
+
+        let acceleration =
+            GALVO_TUNING_P * (desired_position - *position) - GALVO_TUNING_I * *speed;
+
+        *speed += acceleration * delta_secs;
+        *position += *speed * delta_secs;
         *position = position.clamp(0.0, 1.0);
     }
 
@@ -52,25 +63,41 @@ where
     /// After how much time the next tick should be performed, in millis
     ///
     pub fn tick(&mut self) -> u64 {
-        self.tick_id += 1;
+        let delta = GALVO_TICK_PERIOD_MS;
+        self.t_millis += delta;
+
+        let desired_position = if self.t_millis < 500 {
+            (1.0, 0.0, 0.0)
+        } else if self.t_millis < 1000 {
+            (1.0, 1.0, 0.0)
+        } else if self.t_millis < 3000 {
+            (1.0, 1.0, 1.0)
+        } else {
+            self.desired_position
+        };
 
         Self::perform_control_loop_update(
+            delta,
             &mut self.position.0,
             &mut self.speed.0,
-            self.desired_position.0,
+            desired_position.0,
         );
         Self::perform_control_loop_update(
+            delta,
             &mut self.position.1,
             &mut self.speed.1,
-            self.desired_position.1,
+            desired_position.1,
         );
         Self::perform_control_loop_update(
+            delta,
             &mut self.position.2,
             &mut self.speed.2,
-            self.desired_position.2,
+            desired_position.2,
         );
 
         self.update_pwm();
+
+        self.tick_id += 1;
         GALVO_TICK_PERIOD_MS
     }
 
