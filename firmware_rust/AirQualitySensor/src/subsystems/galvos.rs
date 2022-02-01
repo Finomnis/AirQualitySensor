@@ -1,5 +1,7 @@
 use embedded_hal::PwmPin;
 
+use crate::modules::scd4x::Measurement;
+
 const GALVO_TICK_PERIOD_MS: u64 = 20;
 const GALVO_TUNING_P: f32 = 25.0;
 const GALVO_TUNING_I: f32 = 7.0;
@@ -119,5 +121,27 @@ where
         update(&mut self.pwm.0, self.position.0);
         update(&mut self.pwm.1, self.position.1);
         update(&mut self.pwm.2, self.position.2);
+    }
+
+    pub fn update_values(&mut self, values: &Option<Measurement>) {
+        const TEMP_MIN: f32 = 15.0;
+        const TEMP_MAX: f32 = 30.0;
+        const CO2_MIN: f32 = 500.0;
+        const CO2_MAX: f32 = 2000.0;
+        const HUMID_MIN: f32 = 30.0;
+        const HUMID_MAX: f32 = 70.0;
+
+        let lerp_clamp = |value: f32, min: f32, max: f32| -> f32 {
+            ((value - min) / (max - min)).clamp(0.0, 1.0)
+        };
+
+        self.desired_position = match values {
+            None => (1.0, 1.0, 1.0),
+            Some(measurements) => (
+                lerp_clamp(measurements.get_temperature(), TEMP_MIN, TEMP_MAX),
+                lerp_clamp(measurements.get_co2() as f32, CO2_MIN, CO2_MAX),
+                lerp_clamp(measurements.get_humidity(), HUMID_MIN, HUMID_MAX),
+            ),
+        };
     }
 }

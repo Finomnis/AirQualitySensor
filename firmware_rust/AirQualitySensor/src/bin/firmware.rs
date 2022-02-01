@@ -117,7 +117,7 @@ mod app {
         )
     }
 
-    #[task(shared = [i2c, sensor_subsystem, led_subsystem], local = [next_sensor_tick])]
+    #[task(shared = [i2c, sensor_subsystem, led_subsystem, galvo_subsystem], local = [next_sensor_tick])]
     fn sensor_tick(mut ctx: sensor_tick::Context) {
         let next_sensor_tick = ctx.local.next_sensor_tick;
 
@@ -127,7 +127,10 @@ mod app {
                 if changed {
                     ctx.shared.led_subsystem.lock(|led_subsystem| {
                         led_subsystem.update_leds(sensor_subsystem.get_value())
-                    })
+                    });
+                    ctx.shared.galvo_subsystem.lock(|galvo_subsystem| {
+                        galvo_subsystem.update_values(sensor_subsystem.get_value())
+                    });
                 }
                 delay
             })
