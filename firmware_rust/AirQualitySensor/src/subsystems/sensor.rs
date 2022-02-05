@@ -73,6 +73,41 @@ impl Sensor {
         controller: &mut SCD4xController<impl I2cConnection>,
     ) -> Result<Option<Measurement>, SensorError> {
         if self.needs_init {
+            defmt::info!("Setting calibration values ...");
+            defmt::info!(
+                "Previous temperature offset: {}",
+                controller
+                    .get_temperature_offset()
+                    .error_message("Unable to get temperature offset")?
+            );
+            defmt::info!(
+                "Previous altitude: {}",
+                controller
+                    .get_sensor_altitude()
+                    .error_message("Unable to get sensor altitude")?
+            );
+
+            // TODO: Adjust calibration values if necessary
+            controller
+                .set_temperature_offset(10.7)
+                .error_message("Unable to set temperature offset")?;
+            controller
+                .set_sensor_altitude(320)
+                .error_message("Unable to set sensor altitude")?;
+
+            defmt::info!(
+                "New temperature offset: {}",
+                controller
+                    .get_temperature_offset()
+                    .error_message("Unable to get temperature offset")?
+            );
+            defmt::info!(
+                "New altitude: {}",
+                controller
+                    .get_sensor_altitude()
+                    .error_message("Unable to get sensor altitude")?
+            );
+
             defmt::info!("Starting periodic measurement ...");
             controller
                 .start_periodic_measurement()
