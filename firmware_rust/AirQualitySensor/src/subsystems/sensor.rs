@@ -89,7 +89,7 @@ impl Sensor {
 
             // TODO: Adjust calibration values if necessary
             controller
-                .set_temperature_offset(10.7)
+                .set_temperature_offset(9.2)
                 .error_message("Unable to set temperature offset")?;
             controller
                 .set_sensor_altitude(320)
