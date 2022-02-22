@@ -1,5 +1,7 @@
 # AirQualitySensor
 
+-- in development --
+
 Simple Air Quality sensor based on:
 
 -   nRF52840 (Microcontroller + Zigbee)
