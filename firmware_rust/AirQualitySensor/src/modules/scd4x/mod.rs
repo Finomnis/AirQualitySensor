@@ -21,6 +21,7 @@ pub enum SCD4xError {
     ChecksumError,
     ByteCountError,
     SelfTestFailed,
+    IncorrectFrameSize(usize),
 }
 
 impl SCD4xError {
@@ -31,6 +32,7 @@ impl SCD4xError {
             stm32g0xx_hal::i2c::Error::PECError => SCD4xError::I2cPECError,
             stm32g0xx_hal::i2c::Error::BusError => SCD4xError::I2cBusError,
             stm32g0xx_hal::i2c::Error::ArbitrationLost => SCD4xError::I2cArbitrationLost,
+            stm32g0xx_hal::i2c::Error::IncorrectFrameSize(s) => SCD4xError::IncorrectFrameSize(s),
         }
     }
 }
