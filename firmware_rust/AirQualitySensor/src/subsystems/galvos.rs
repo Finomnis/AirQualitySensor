@@ -127,7 +127,7 @@ where
         const TEMP_MIN: f32 = 15.0;
         const TEMP_MAX: f32 = 30.0;
         const CO2_MIN: f32 = 500.0;
-        const CO2_MAX: f32 = 2000.0;
+        const CO2_MAX: f32 = 2500.0;
         const HUMID_MIN: f32 = 30.0;
         const HUMID_MAX: f32 = 70.0;
 

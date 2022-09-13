@@ -5,8 +5,8 @@ use crate::modules::scd4x::Measurement;
 const LED_BLINK_HALF_INTERVAL_MS: u64 = 600;
 
 const CO2_LEDS_LEVEL_EXCELLENT: u16 = 600;
-const CO2_LEDS_LEVEL_WARN_WEAK: u16 = 1000;
-const CO2_LEDS_LEVEL_WARN_STRONG: u16 = 1500;
+const CO2_LEDS_LEVEL_WARN_WEAK: u16 = 1125;
+const CO2_LEDS_LEVEL_WARN_STRONG: u16 = 1875;
 
 pub struct LEDs<PinR, PinY, PinG> {
     blink_value: bool,
