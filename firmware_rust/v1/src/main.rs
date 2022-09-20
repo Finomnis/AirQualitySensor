@@ -143,41 +143,88 @@ fn main() -> ! {
     disp.flush().unwrap();
     disp.set_display_on(true).unwrap();
 
-    // Wait for DHT22 initialization
-    timer.delay_ms(500u16);
-
     let font = FontRenderer::new::<fonts::u8g2_font_timB10_tf>().with_line_height(14);
+
+    font.render(
+        format_args!("Starting ..."),
+        Point::new(30, 2),
+        VerticalPosition::Top,
+        FontColor::Transparent(BinaryColor::On),
+        &mut disp,
+    )
+    .unwrap();
+    disp.flush().unwrap();
+
+    // Wait for DHT22 initialization
+    timer.delay_ms(2500u16);
+
+    font.render(
+        format_args!("Starting ..."),
+        Point::new(30, 2),
+        VerticalPosition::Top,
+        FontColor::Transparent(BinaryColor::Off),
+        &mut disp,
+    )
+    .unwrap();
 
     loop {
         // Read sensor value
-        let value = dht_sensor::dht22::Reading::read(&mut timer, &mut dht22).unwrap();
-        defmt::info!("{:?} C", value.temperature);
-        defmt::info!("{:?} %", value.relative_humidity);
+        match dht_sensor::dht22::Reading::read(&mut timer, &mut dht22) {
+            Ok(value) => {
+                defmt::info!("{:?} C", value.temperature);
+                defmt::info!("{:?} %", value.relative_humidity);
 
-        // Draw content
-        font.render(
-            format_args!("{:?} C\n{:?} %", value.temperature, value.relative_humidity),
-            Point::new(30, 2),
-            VerticalPosition::Top,
-            FontColor::Transparent(BinaryColor::On),
-            &mut disp,
-        )
-        .unwrap();
+                // Draw content
+                font.render(
+                    format_args!("{:?} C\n{:?} %", value.temperature, value.relative_humidity),
+                    Point::new(30, 2),
+                    VerticalPosition::Top,
+                    FontColor::Transparent(BinaryColor::On),
+                    &mut disp,
+                )
+                .unwrap();
 
-        // Send content to display
-        disp.flush().unwrap();
+                // Send content to display
+                disp.flush().unwrap();
 
-        // Wait for new DHT22 value
-        timer.delay_ms(2000u16);
+                // Wait for new DHT22 value
+                timer.delay_ms(2000u16);
 
-        // Draw content
-        font.render(
-            format_args!("{:?} C\n{:?} %", value.temperature, value.relative_humidity),
-            Point::new(30, 2),
-            VerticalPosition::Top,
-            FontColor::Transparent(BinaryColor::Off),
-            &mut disp,
-        )
-        .unwrap();
+                // Draw content
+                font.render(
+                    format_args!("{:?} C\n{:?} %", value.temperature, value.relative_humidity),
+                    Point::new(30, 2),
+                    VerticalPosition::Top,
+                    FontColor::Transparent(BinaryColor::Off),
+                    &mut disp,
+                )
+                .unwrap();
+            }
+            Err(e) => {
+                font.render(
+                    format_args!("Error:\n{:?}", e),
+                    Point::new(30, 2),
+                    VerticalPosition::Top,
+                    FontColor::Transparent(BinaryColor::On),
+                    &mut disp,
+                )
+                .unwrap();
+
+                // Send content to display
+                disp.flush().unwrap();
+
+                // Wait for new DHT22 value
+                timer.delay_ms(2000u16);
+
+                font.render(
+                    format_args!("Error:\n{:?}", e),
+                    Point::new(30, 2),
+                    VerticalPosition::Top,
+                    FontColor::Transparent(BinaryColor::Off),
+                    &mut disp,
+                )
+                .unwrap();
+            }
+        };
     }
 }
