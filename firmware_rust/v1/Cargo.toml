@@ -18,6 +18,7 @@ u8g2-fonts = { version = "0.2.0" }
 st7565 = "0.1.4"
 dht-sensor = "0.2.1"
 embedded-hal = "0.2.7"
+void = { version = "1.0.2", default-features = false }
 
 # cargo build/run
 [profile.dev]

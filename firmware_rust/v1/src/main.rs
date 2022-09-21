@@ -11,13 +11,14 @@ use panic_probe as _;
 use display_interface_spi::SPIInterface;
 use embedded_graphics::{pixelcolor::BinaryColor, prelude::*};
 use embedded_hal::blocking::delay::DelayMs;
-use hal::gpio::{Level, OpenDrain, OpenDrainConfig, Output, Pin};
+use hal::gpio::{Level, OpenDrainConfig, Output, Pin};
 use st7565::{displays::DOGM132W5, ST7565};
 use u8g2_fonts::{
     fonts,
     types::{FontColor, VerticalPosition},
     FontRenderer,
 };
+use void::Void;
 
 // same panicking *behavior* as `panic-probe` but doesn't print a panic message
 // this prevents the panic message being printed *twice* when `defmt::panic` is invoked
@@ -33,65 +34,69 @@ pub fn exit() -> ! {
     }
 }
 
-struct OpenDrainIOPin {
-    pin: Pin<Output<OpenDrain>>,
+trait PinExt<MODE> {
+    fn into_io_pin(self) -> IoPin<MODE>;
 }
-impl OpenDrainIOPin {
-    fn new(pin: Pin<Output<OpenDrain>>) -> Self {
-        let this = Self { pin };
-        let pin_cnf = &this.p().pin_cnf[this.pin.pin() as usize];
-        let prev = pin_cnf.read().bits();
-        defmt::println!("{:b}", prev);
-        this.p().pin_cnf[this.pin.pin() as usize].write(|w| {
-            unsafe {
-                w.bits(prev);
-            }
+
+impl<MODE> PinExt<MODE> for Pin<Output<MODE>> {
+    fn into_io_pin(self) -> IoPin<MODE> {
+        let this = IoPin { pin: self };
+        this.p().pin_cnf[this.pin.pin() as usize].modify(|_, w| {
             w.input().connect();
             w
         });
-        defmt::println!("{:b}", pin_cnf.read().bits());
         this
     }
+}
 
+pub struct IoPin<MODE> {
+    pin: Pin<Output<MODE>>,
+}
+
+impl<MODE> IoPin<MODE> {
     fn p(&self) -> &'static hal::pac::p0::RegisterBlock {
         match self.pin.port() {
             hal::gpio::Port::Port0 => unsafe { &*hal::pac::P0::ptr() },
             hal::gpio::Port::Port1 => unsafe { &*hal::pac::P1::ptr() },
         }
     }
+
+    pub fn take(self) -> Pin<Output<MODE>> {
+        self.pin
+    }
 }
 
-impl OutputPin for OpenDrainIOPin {
-    type Error = <Pin<Output<OpenDrain>> as OutputPin>::Error;
-
-    fn set_low(&mut self) -> Result<(), Self::Error> {
-        self.pin.set_low()
-    }
+impl<MODE> OutputPin for IoPin<MODE> {
+    type Error = <Pin<Output<MODE>> as OutputPin>::Error;
 
     fn set_high(&mut self) -> Result<(), Self::Error> {
         self.pin.set_high()
     }
-}
 
-impl InputPin for OpenDrainIOPin {
-    type Error = <Pin<Output<OpenDrain>> as OutputPin>::Error;
-
-    fn is_high(&self) -> Result<bool, Self::Error> {
-        Ok(self.p().in_.read().bits() & (1 << self.pin.pin()) != 0)
-    }
-
-    fn is_low(&self) -> Result<bool, Self::Error> {
-        self.is_high().map(|h| !h)
+    fn set_low(&mut self) -> Result<(), Self::Error> {
+        self.pin.set_low()
     }
 }
 
-impl StatefulOutputPin for OpenDrainIOPin {
+impl<MODE> StatefulOutputPin for IoPin<MODE> {
     fn is_set_high(&self) -> Result<bool, Self::Error> {
         self.pin.is_set_high()
     }
 
     fn is_set_low(&self) -> Result<bool, Self::Error> {
         self.pin.is_set_low()
+    }
+}
+
+impl<MODE> InputPin for IoPin<MODE> {
+    type Error = Void;
+
+    fn is_high(&self) -> Result<bool, Self::Error> {
+        self.is_low().map(|v| !v)
+    }
+
+    fn is_low(&self) -> Result<bool, Self::Error> {
+        Ok(self.p().in_.read().bits() & (1 << self.pin.pin()) == 0)
     }
 }
 
@@ -112,13 +117,12 @@ fn main() -> ! {
     let disp_si = port0.p0_19.into_push_pull_output(Level::Low).degrade();
 
     // Get DHT22 pin
-    let pin_dht22 = port0
+    let mut dht22 = port0
         .p0_22
         .into_open_drain_output(OpenDrainConfig::Standard0Disconnect1, Level::High)
         //.into_push_pull_output(Level::Low)
-        .degrade();
-
-    let mut dht22 = OpenDrainIOPin::new(pin_dht22);
+        .degrade()
+        .into_io_pin();
 
     // Create DOGM132W-5 spi bus
     let disp_spi = SPIInterface::new(
