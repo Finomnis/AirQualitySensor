@@ -10,7 +10,7 @@
 > I kind of finished the project but didn't actually manufacture a dedicated PCB for it. Therefore there
 > are no official schematics for the hardware.
 >
-> Note that the `v1` hardware that I did get manufactures had an unknown fail in it that kept messing up the calibration of the Sensair S8 in random intervals. I never found out what the problem was.
+> Note that the `v1` hardware that I did get manufactured had an unknown error in it that kept messing up the calibration of the Senseair S8 in random intervals. I never found out what the problem was.
 
 ---
 
