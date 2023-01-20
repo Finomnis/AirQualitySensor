@@ -7,6 +7,7 @@ const LED_BLINK_HALF_INTERVAL_MS: u64 = 600;
 const CO2_LEDS_LEVEL_EXCELLENT: u16 = 600;
 const CO2_LEDS_LEVEL_WARN_WEAK: u16 = 1125;
 const CO2_LEDS_LEVEL_WARN_STRONG: u16 = 1875;
+const CO2_LEDS_LEVEL_WARN_CRITICAL: u16 = 2500;
 
 pub struct LEDs<PinR, PinY, PinG> {
     blink_value: bool,
@@ -48,6 +49,7 @@ where
         let (red, yellow, green) = {
             match value {
                 Some(measurement) => match measurement.get_co2() {
+                    co2 if co2 > CO2_LEDS_LEVEL_WARN_CRITICAL => (self.blink_value, false, false),
                     co2 if co2 > CO2_LEDS_LEVEL_WARN_STRONG => (true, false, false),
                     co2 if co2 > CO2_LEDS_LEVEL_WARN_WEAK => (false, true, false),
                     co2 if co2 < CO2_LEDS_LEVEL_EXCELLENT => (false, false, self.blink_value),
